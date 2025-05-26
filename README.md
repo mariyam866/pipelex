@@ -1,11 +1,11 @@
 <div align="center">
-  <a href="https://www.pipelex.com/"><img src="https://raw.githubusercontent.com/Pipelex/pipelex/dev/.github/assets/logo.png" alt="Pipelex Logo" width="400" style="max-width: 100%; height: auto;"></a>
+  <a href="https://www.pipelex.com/"><img src="https://raw.githubusercontent.com/Pipelex/pipelex/main/.github/assets/logo.png" alt="Pipelex Logo" width="400" style="max-width: 100%; height: auto;"></a>
 
   <h3 align="center">The simpler way to build reliable LLM Pipelines</h3>
   <p align="center">Pipelex is an open‑source dev tool based on a simple declarative language<br/>that lets you define replicable, structured, composable LLM pipelines.</p>
 
   <div>
-    <a href="https://github.com/Pipelex/pipelex/blob/dev/doc/Documentation.md"><strong>Docs</strong></a> -
+    <a href="https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.md"><strong>Docs</strong></a> -
     <a href="https://github.com/Pipelex/pipelex/issues"><strong>Report Bug</strong></a> -
     <a href="https://github.com/Pipelex/pipelex/discussions"><strong>Feature Request</strong></a>
   </div>
