@@ -34,16 +34,16 @@ We are open to contributions in all areas of our core Pipelex library:
 ## Requirements
 
 - Python ≥ 3.11 < 3.12
-- poetry ≥ 2.0.1
+- uv ≥ 0.7.2
 
 ## Development Setup
 
 - Fork & clone the repository
 - Run `make install` to set up virtualenv and dependencies
 - Copy `.env.example` to `.env` and configure API keys
-- Use Poetry for dependency management:
-  - Runtime deps: `poetry add <package>`
-  - Dev deps: `poetry add --group dev <package>`
+- Use uv for dependency management:
+  - Runtime deps: `uv pip install <package>`
+  - Dev deps: `uv pip install --extra dev <package>`
   - Keep dependencies alphabetically ordered in pyproject.toml
 
 ## Pull Request Process

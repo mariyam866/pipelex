@@ -242,3 +242,6 @@ select = [
     "E501",
     "I",
 ]
+
+[tool.uv]
+version = "0.7.2"

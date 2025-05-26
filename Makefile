@@ -11,12 +11,16 @@ LOCAL_PYTEST := $(VIRTUAL_ENV)/bin/pytest
 LOCAL_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 LOCAL_RUFF := $(VIRTUAL_ENV)/bin/ruff
 
+define GET_UV_VERSION
+$(shell awk '/^\[tool.uv\]/{f=1;next} f==1&&/^version/{print $$3;exit}' pyproject.toml | tr -d '"')
+endef
+
 define PRINT_TITLE
-    $(eval PADDED_PROJECT_NAME := $(shell printf '%-15s' "[$(PROJECT_NAME)] " | sed 's/ /=/g'))
-    $(eval PADDED_TARGET_NAME := $(shell printf '%-15s' "($@) " | sed 's/ /=/g'))
+    $(eval PADDED_PROJECT_NAME := $(shell printf '%-15s' "[$(PROJECT_NAME)] " | sed 's/ /=/g'))
+    $(eval PADDED_TARGET_NAME := $(shell printf '%-15s' "($@) " | sed 's/ /=/g'))
     $(if $(1),\
-		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g')$(shell echo " $(1) " | sed 's/[[:space:]]/ /g')),\
-		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g'))\
+		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g')$(shell echo " $(1) " | sed 's/[[:space:]]/ /g')),\
+		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g'))\
 	)
 	$(eval PADDED_TITLE := $(shell printf '%-126s' "$(TITLE)" | sed 's/ /=/g'))
 	@echo ""
@@ -74,7 +78,7 @@ make fix-unused-imports       - Fix unused imports with ruff
 endef
 export HELP
 
-.PHONY: all help env lock install update format lint pyright mypy build cleanderived cleanenv run-setup s runtests test test-with-prints t test-inference ti test-imgg tg test-ocr to check cc li merge-check-ruff-lint merge-check-ruff-format merge-check-mypy check-unused-imports fix-unused-imports test-name bump-version
+.PHONY: all help env lock install update format lint pyright mypy build cleanderived cleanenv run-setup s runtests test test-with-prints t test-inference ti test-imgg tg test-ocr to check cc li merge-check-ruff-lint merge-check-ruff-format merge-check-mypy check-unused-imports fix-unused-imports test-name bump-version check-uv get-uv-version
 
 all help:
 	@echo "$$HELP"
@@ -84,7 +88,25 @@ all help:
 ### SETUP
 ##########################################################################################
 
-env:
+check-uv:
+	$(call PRINT_TITLE,"Checking UV version")
+	@UV_VERSION=$(GET_UV_VERSION); \
+	if [ -z "$$UV_VERSION" ]; then \
+		echo "Error: UV version not found in pyproject.toml"; \
+		exit 1; \
+	fi; \
+	echo "UV_VERSION: $$UV_VERSION"; \
+	if ! command -v uv >/dev/null 2>&1; then \
+		echo "Installing UV version $$UV_VERSION"; \
+		curl -LsSf https://astral.sh/uv/$$UV_VERSION/install.sh | sh; \
+	elif [ "$$(uv --version | cut -d ' ' -f 2)" != "$$UV_VERSION" ]; then \
+		echo "Updating UV to version $$UV_VERSION"; \
+		curl -LsSf https://astral.sh/uv/$$UV_VERSION/install.sh | sh; \
+	else \
+		echo "UV version $$UV_VERSION is already installed"; \
+	fi
+
+env: check-uv
 	$(call PRINT_TITLE,"Creating virtual environment")
 	@if [ ! -d $(VIRTUAL_ENV) ]; then \
 		echo "Creating Python virtual env in \`${VIRTUAL_ENV}\`"; \
@@ -317,4 +339,12 @@ fix-unused-imports: env
 
 CURRENT_VERSION := $(shell grep '^version = ' pyproject.toml | sed -E 's/version = "(.*)"/\1/')
 NEXT_VERSION := $(shell echo $(CURRENT_VERSION) | awk -F. '{$$NF = $$NF + 1;} 1' | sed 's/ /./g')
+
+get-uv-version:
+	@UV_VERSION=$(GET_UV_VERSION); \
+	if [ -z "$$UV_VERSION" ]; then \
+		echo "Error: UV version not found in pyproject.toml" >&2; \
+		exit 1; \
+	fi; \
+	echo "$$UV_VERSION"
 
