@@ -16,7 +16,6 @@ class ActivityManagerError(RootException):
 class ActivityManager(ActivityManagerProtocol):
     def __init__(self) -> None:
         self.activity_callbacks: Dict[str, ActivityCallback] = Field(default_factory=dict)
-        log.debug("ActivityManager initialized")
 
     @override
     def setup(self) -> None:
