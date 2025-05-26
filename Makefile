@@ -111,11 +111,8 @@ env: check-uv
 	@if [ ! -d $(VIRTUAL_ENV) ]; then \
 		echo "Creating Python virtual env in \`${VIRTUAL_ENV}\`"; \
 		uv venv $(VIRTUAL_ENV) --python 3.11; \
-		. $(VIRTUAL_ENV)/bin/activate && \
-		echo "Created Python virtual env in \`${VIRTUAL_ENV}\`"; \
 	else \
 		echo "Python virtual env already exists in \`${VIRTUAL_ENV}\`"; \
-		. $(VIRTUAL_ENV)/bin/activate; \
 	fi
 
 init: env
@@ -124,7 +121,8 @@ init: env
 
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
-	@uv sync --extra anthropic --extra google --extra mistralai --extra bedrock --extra fal --extra dev && \
+	@. $(VIRTUAL_ENV)/bin/activate && \
+	uv sync --extra anthropic --extra google --extra mistralai --extra bedrock --extra fal --extra dev && \
 	pipelex init --overwrite && \
 	echo "Installed Pipelex dependencies in ${VIRTUAL_ENV} with all extras and initialized Pipelex";
 
