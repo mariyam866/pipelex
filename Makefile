@@ -12,7 +12,7 @@ LOCAL_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 LOCAL_RUFF := $(VIRTUAL_ENV)/bin/ruff
 
 define GET_UV_VERSION
-$(shell awk '/^\[tool.uv\]/{f=1;next} f==1&&/^version/{print $$3;exit}' pyproject.toml | tr -d '"')
+$(shell awk '/^\[tool.uv\]/{f=1;next} f==1&&/^required-version/{print $$3;exit}' pyproject.toml | tr -d '"')
 endef
 
 define PRINT_TITLE
