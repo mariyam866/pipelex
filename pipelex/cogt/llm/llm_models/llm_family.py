@@ -89,13 +89,7 @@ class LLMFamily(StrEnum):
     def creator(self) -> LLMCreator:
         match self:
             case (
-                LLMFamily.GPT_4
-                | LLMFamily.GPT_3_5
-                | LLMFamily.GPT_3
-                | LLMFamily.O_SERIES
-                | LLMFamily.GPT_4_5
-                | LLMFamily.GPT_4_1
-                | LLMFamily.GPT_4O
+                LLMFamily.GPT_4 | LLMFamily.GPT_3_5 | LLMFamily.GPT_3 | LLMFamily.O_SERIES | LLMFamily.GPT_4_5 | LLMFamily.GPT_4_1 | LLMFamily.GPT_4O
             ):
                 return LLMCreator.OPENAI
             case LLMFamily.CLAUDE_3 | LLMFamily.CLAUDE_3_5 | LLMFamily.CLAUDE_2 | LLMFamily.CLAUDE_INSTANT | LLMFamily.CLAUDE_3_7:
