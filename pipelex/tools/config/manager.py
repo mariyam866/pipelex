@@ -68,19 +68,20 @@ class ConfigManager:
             return
 
         pyproject = toml.load(pyproject_path)
-
-        pyproject = toml.load(pyproject_path)
         if "tool" in pyproject and "pipelex" in pyproject["tool"] and "config_inheritance" in pyproject["tool"]["pipelex"]:
             for config_name in pyproject["tool"]["pipelex"]["config_inheritance"]:
                 print(f"Loading config inheritance for {config_name}")
-                # First check if it's a local dependency in poetry
+                # First check if it's a local dependency
                 package_path: Optional[str] = None
-                if "tool" in pyproject and "poetry" in pyproject["tool"] and "dependencies" in pyproject["tool"]["poetry"]:
-                    dep_config: Dict[str, Any] = pyproject["tool"]["poetry"]["dependencies"].get(config_name, {})
-                    if "path" in dep_config:
-                        # It's a local path
-                        local_path: str = str(dep_config["path"])
-                        package_path = os.path.abspath(os.path.join(self.local_root_dir, local_path))
+                if "project" in pyproject and "dependencies" in pyproject["project"]:
+                    # Try to find path in dependencies list
+                    dependencies = pyproject["project"]["dependencies"]
+                    for dep in dependencies:
+                        if isinstance(dep, str) and dep.startswith(f"{config_name} @ file://"):
+                            # Extract local path from file:// URL
+                            local_path = dep.split("file://", 1)[1]
+                            package_path = os.path.abspath(os.path.join(self.local_root_dir, local_path))
+                            break
 
                 if not package_path:
                     # Try to find in .venv
@@ -147,7 +148,7 @@ class ConfigManager:
 
         Checks the following files in order:
         1. pipelex's pyproject.toml
-        2. Local pyproject.toml (poetry or other tools)
+        2. Local pyproject.toml
         3. setup.cfg
         4. setup.py
 
@@ -158,7 +159,7 @@ class ConfigManager:
         pipelex_pyproject_path = os.path.join(os.path.dirname(self.local_root_dir), "pyproject.toml")
         try:
             pyproject = toml.load(pipelex_pyproject_path)
-            if project_name := pyproject.get("tool", {}).get("poetry", {}).get("name"):
+            if project_name := pyproject.get("project", {}).get("name"):
                 if isinstance(project_name, str):
                     return project_name
         except FileNotFoundError:
@@ -172,11 +173,6 @@ class ConfigManager:
         pyproject_path = os.path.join(self.local_root_dir, "pyproject.toml")
         try:
             pyproject = toml.load(pyproject_path)
-            # Check poetry config
-            if poetry_name := pyproject.get("tool", {}).get("poetry", {}).get("name"):
-                if isinstance(poetry_name, str):
-                    return poetry_name
-            # Check project config (PEP 621)
             if project_name := pyproject.get("project", {}).get("name"):
                 if isinstance(project_name, str):
                     return project_name

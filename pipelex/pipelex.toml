@@ -45,10 +45,6 @@ instructor = "INFO"
 urllib3-connectionpool = "INFO"
 urllib3-util-retry = "INFO"
 
-kajson = "INFO"
-kajson-decoder-sandbox = "INFO"
-kajson-encoder-sandbox = "INFO"
-
 pipelex = "INFO"
 
 
@@ -65,14 +61,7 @@ tracebacks_suppress = []
 keywords_to_hilight = []
 
 [pipelex.aws_config]
-api_key_method = "env"  # "env", "secret_provider"
-aws_region = ""
-
-aws_access_key_id_env_var_name = "AWS_ACCESS_KEY_ID"
-aws_secret_access_key_env_var_name = "AWS_SECRET_ACCESS_KEY"
-aws_region_env_var_name = "AWS_REGION"
-aws_access_key_id_secret_name = "AWS_ACCESS_KEY_ID"
-aws_secret_access_key_secret_name = "AWS_SECRET_ACCESS_KEY"
+api_key_method = "env"
 
 [cogt]
 
@@ -108,43 +97,30 @@ is_streaming_enabled = false
 # "gpt-4o-mini" = "openai"
 
 [cogt.llm_config.openai_openai_config]
-api_key_method = "env"  # "env", "secret_provider"
-api_key_env_var_name = "OPENAI_API_KEY"
-api_key_secret_name = "OPENAI_API_KEY"
+api_key_method = "env"
 
 [cogt.llm_config.azure_openai_config]
-api_endpoint = ""
-api_version = "2024-05-01-preview"
-api_key_method = "env"  # "env", "secret_provider"
-api_key_env_var_name = "AZURE_OPENAI_API_KEY"
-api_key_secret_name = "AZURE_OPENAI_API_KEY"
+api_key_method = "env"
 
 # TODO: handle multiple azure openai accounts with different resource groups and account names for various llm model
 
 [cogt.llm_config.perplexity_config]
-api_endpoint = "https://api.perplexity.ai"
-api_key_method = "env"  # "env", "secret_provider"
-api_key_env_var_name = "PERPLEXITY_API_KEY"
-api_key_secret_name = "PERPLEXITY_API_KEY"
+api_key_method = "env"
 
 [cogt.llm_config.vertexai_config]
-project_id = ""
-region = ""
+api_key_method = "env"
 
 [cogt.llm_config.mistral_config]
-api_key_secret_name = "MISTRAL_API_KEY"
+api_key_method = "env"
 
 [cogt.llm_config.bedrock_config]
 client_method = "aioboto3"
-aws_region = ""
 
 [cogt.llm_config.anthropic_config]
-api_key_method = "env"  # "env", "secret_provider"
-api_key_env_var_name = "ANTHROPIC_API_KEY"
-api_key_secret_name = "ANTHROPIC_API_KEY"
+api_key_method = "env"
 
-[cogt.llm_config.custom_openai_config]
-base_url = "http://localhost:11434/v1"
+[cogt.llm_config.custom_endpoint_config]
+api_key_method = "env"
 
 ####################################################################################################
 # Image generation config
@@ -229,5 +205,4 @@ choice_edge_style = "-----"
 ####################################################################################################
 
 [pipelex.pipe_run_config]
-# TODO: this config value is not applied yet
 pipe_stack_limit = 20

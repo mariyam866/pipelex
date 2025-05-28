@@ -1,7 +1,15 @@
+from click import ClickException
+
 from pipelex.tools.exceptions import RootException
 
 
 class PipelexError(RootException):
+    pass
+
+
+class PipelexCLIError(PipelexError, ClickException):
+    """Raised when there's an error in CLI usage or operation."""
+
     pass
 
 
