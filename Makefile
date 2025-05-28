@@ -124,14 +124,14 @@ env: check-uv
 	fi
 
 init: env
-	$(call PRINT_TITLE,"Running `pipelex init` with overwrite")
-	pipelex init --overwrite
+	$(call PRINT_TITLE,"Running `pipelex init`")
+	pipelex init
 
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
-	pipelex init --overwrite && \
+	pipelex init && \
 	echo "Installed Pipelex dependencies in ${VIRTUAL_ENV} with all extras and initialized Pipelex";
 
 lock: env
