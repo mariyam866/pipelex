@@ -25,14 +25,7 @@
 </div>
 
 <div align="center">
-  <a href="https://www.pipelex.com/demo">
-    <h1>Checkout our Demo</h1>
-  </a>
-  <!--
-  <a href="https://www.pipelex.com/demo">
-    <img src="https://raw.githubusercontent.com/Pipelex/pipelex/dev/.github/assets/demo_thumbnail.png" alt="Pipelex Demo" style="width: 40%; height: auto;">
-  </a>
-  -->
+  <a href="https://www.pipelex.com/demo"><strong>Checkout our demo!</strong></a>
 </div>
 
 # 📑 Table of Contents
