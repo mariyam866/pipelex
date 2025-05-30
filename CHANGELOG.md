@@ -8,7 +8,7 @@
 - Use a minimum version for `uv` instead of a fixed version
 - Implement `AGENTS.md` for Codex
 - Add tests for some of the `tools.misc`
-- Rename `pipelex run-setup` to `pipelex validate`
+- pipelex cli: Rename `pipelex run-setup` to `pipelex validate`
 
 ## [v0.2.8] - 2025-05-28
 
