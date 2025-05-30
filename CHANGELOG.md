@@ -1,38 +1,21 @@
 # Changelog
 
-## [v0.2.6] - 2025-05-26
+## [v0.2.9] - 2025-05-30
 
-- Refactor: use ActivityManagerProtocol, rename BaseModelTypeVar
+- Include pyproject.toml inside the project build
+- Fix image handle factory
+- pipelex cli: list-pipes
+- Use a minimum version for uv instead of a fixed version
+- Implement AGENT.md for Codex
+- Add tests for some of the tools.misc
+- Rename pipelex run-setup to pipelex validate
 
-## [v0.2.5] - 2025-05-25
+## [v0.2.8] - 2025-05-28
 
-- Add custom LLM integration via OpenAI sdk with custom base_url
+- Defaults to uv
+- Simplify llm provider config
+- logging level OFF
 
-## [v0.2.4] - 2025-05-25
-
-- Tidy tools
-- Tidy inference API plugins
-- Tidy WIP feature ActivityManager
-- Replace license ELv2 by MIT and remove Reuse dependency
-
-## [v0.2.2] - 2025-05-22
-
-- Simplify the use of native concepts
-- Include "page views" in the outputs of Ocr features
-
-## [v0.2.1] - 2025-05-22
-
-- Added OcrWorkerAbstract and MistralOcrWorker, along with PipeOcr for OCR processing of images and PDFs.
-- Introduced MissionManager for managing missions, cost reports, and activity tracking.
-- Added detection and handling for pipe stack overflow, configurable with pipe_stack_limit.
-- More possibilities for dependency injection and better class structure.
-- Misc updates including simplified PR template, LLM deck overrides, removal of unused config vars, and disabling of an LLM platform id.
-
-## [v0.2.0] - 2025-05-19
-
-- Added OCR, thanks to Mistral
-- Refactoring and cleanup
-
-## [v0.1.14] - 2025-05-13
+## [v0.2.7] - 2025-05-26
 
 - Initial release 🎉
