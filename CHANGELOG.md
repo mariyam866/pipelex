@@ -3,8 +3,8 @@
 ## [v0.2.9] - 2025-05-30
 
 - Include `pyproject.toml` inside the project build.
-- Fix image handle factory: handle required format is `platform/model_name`
-- pipelex cli: Added `list-pipes` method that can list all the availables pipes with descriptions/
+- Fix `ImggEngineFactory`: image generation (imgg) handle required format is `platform/model_name`
+- pipelex cli: Added `list-pipes` method that can list all the availables pipes with descriptions.
 - Use a minimum version for `uv` instead of a fixed version
 - Implement `AGENTS.md` for Codex
 - Add tests for some of the `tools.misc`
