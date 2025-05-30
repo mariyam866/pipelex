@@ -2,8 +2,8 @@
 
 ## [v0.2.9] - 2025-05-30
 
-- Include `pyproject.toml` inside the project build
-- Fix image handle factory: handle format is `platform/model_name`
+- Include `pyproject.toml` inside the project build.
+- Fix image handle factory: handle required format is `platform/model_name`
 - pipelex cli: Added `list-pipes` method that can list all the availables pipes with descriptions/
 - Use a minimum version for `uv` instead of a fixed version
 - Implement `AGENTS.md` for Codex
@@ -13,7 +13,7 @@
 ## [v0.2.8] - 2025-05-28
 
 - Defaults to `uv`
-- Simplify llm provider config
+- Simplify llm provider config: All the API keys, urls, and regions are to be set in `.env`.
 - Added logging level `OFF`, prevents any log from hitting the console
 
 ## [v0.2.7] - 2025-05-26
