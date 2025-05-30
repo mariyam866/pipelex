@@ -1,0 +1,35 @@
+name: Changelog Version Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Changelog Version
+        run: |
+          # Get the current branch name
+          BRANCH_NAME=${GITHUB_HEAD_REF}
+          
+          # Check if this is a release branch
+          if [[ $BRANCH_NAME =~ ^release/v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+            echo "Release branch detected for version v$VERSION"
+            
+            # Look for the version in the changelog
+            if ! grep -q "## \[v$VERSION\] -" CHANGELOG.md; then
+              echo "Error: No changelog entry found for version v$VERSION"
+              echo "Please add a changelog entry for v$VERSION before merging this release"
+              exit 1
+            else
+              echo "✅ Changelog entry found for version v$VERSION"
+            fi
+          else
+            echo "Not a release branch, skipping changelog check"
+          fi 
