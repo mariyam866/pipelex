@@ -5,7 +5,8 @@ endif
 VIRTUAL_ENV := $(CURDIR)/.venv
 PROJECT_NAME := $(shell grep '^name = ' pyproject.toml | sed -E 's/name = "(.*)"/\1/')
 
-VENV_PYTHON := $(VIRTUAL_ENV)/bin/python3.11
+PYTHON_VERSION ?= 3.11
+VENV_PYTHON := $(VIRTUAL_ENV)/bin/python$(PYTHON_VERSION)
 VENV_PYTEST := $(VIRTUAL_ENV)/bin/pytest
 VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
@@ -107,10 +108,11 @@ env: check-uv
 	$(call PRINT_TITLE,"Creating virtual environment")
 	@if [ ! -d $(VIRTUAL_ENV) ]; then \
 		echo "Creating Python virtual env in \`${VIRTUAL_ENV}\`"; \
-		uv venv $(VIRTUAL_ENV) --python 3.11; \
+		uv venv $(VIRTUAL_ENV) --python $(PYTHON_VERSION); \
 	else \
 		echo "Python virtual env already exists in \`${VIRTUAL_ENV}\`"; \
 	fi
+	@echo "Using Python: $$($(VIRTUAL_ENV)/bin/python3 --version) from $$(which $$(readlink -f $(VIRTUAL_ENV)/bin/python3))"
 
 init: env
 	$(call PRINT_TITLE,"Running pipelex init")
@@ -277,7 +279,7 @@ lint: env
 
 pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
-	$(VENV_PYRIGHT) --pythonpath $(VENV_PYTHON)  && \
+	$(VENV_PYRIGHT) --pythonpath $(VIRTUAL_ENV)/bin/python3  && \
 	echo "Done typechecking with pyright — disregard warning about latest version, it's giving us false positives"
 
 mypy: env
@@ -291,19 +293,18 @@ mypy: env
 
 merge-check-ruff-format: env
 	$(call PRINT_TITLE,"Formatting with ruff")
-	$(VENV_RUFF) format --check -v .
+	$(VENV_RUFF) format --check .
 
 merge-check-ruff-lint: env check-unused-imports
 	$(call PRINT_TITLE,"Linting with ruff without fixing files")
-	$(VENV_RUFF) check -v .
+	$(VENV_RUFF) check .
 
 merge-check-pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
-	$(VENV_PYRIGHT) --pythonpath $(VENV_PYTHON)
+	$(VENV_PYRIGHT) --pythonpath $(VIRTUAL_ENV)/bin/python3
 
 merge-check-mypy: env
 	$(call PRINT_TITLE,"Typechecking with mypy")
-	$(VENV_MYPY) --version && \
 	$(VENV_MYPY) --config-file pyproject.toml
 
 ##########################################################################################
