@@ -4,7 +4,7 @@ from pipelex import pretty_print
 from pipelex.cogt.imgg.imgg_handle import ImggHandle
 from pipelex.cogt.imgg.imgg_job_factory import ImggJobFactory
 from pipelex.hub import get_imgg_worker
-from tests.cogt.test_data import IMGGTestCases
+from tests.pipelex.cogt.test_data import IMGGTestCases
 
 
 @pytest.mark.imgg
