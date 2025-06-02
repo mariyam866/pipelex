@@ -1,6 +1,5 @@
 import pytest
 
-from pipelex.cogt.imgg.imgg_handle import ImggHandle
 from pipelex.cogt.llm.llm_job_components import LLMJobParams
 from pipelex.cogt.llm.llm_models.llm_family import LLMCreator, LLMFamily
 from pipelex.cogt.llm.llm_models.llm_platform import LLMPlatform
@@ -81,10 +80,12 @@ def llm_handle_for_vision(request: pytest.FixtureRequest) -> str:
 @pytest.fixture(
     params=[
         # LLMFamily.GPT_4,
-        # LLMFamily.GPT_4_1,
         LLMFamily.GPT_4O,
         # LLMFamily.GPT_4_5,
+        # LLMFamily.GPT_4_1,
         # LLMFamily.O_SERIES,
+        # LLMFamily.CLAUDE_3_7,
+        # LLMFamily.CLAUDE_4,
         # LLMFamily.PERPLEXITY_SEARCH,
         # LLMFamily.PERPLEXITY_REASONING,
         # LLMFamily.PERPLEXITY_RESEARCH,
@@ -116,6 +117,7 @@ def llm_creator(request: pytest.FixtureRequest) -> LLMCreator:
     return request.param
 
 
+# TODO: build llm_id/platform combos dynalically from config data
 @pytest.fixture(
     params=[
         # LLMPlatform.ANTHROPIC,
@@ -127,6 +129,7 @@ def llm_creator(request: pytest.FixtureRequest) -> LLMCreator:
         # LLMPlatform.PERPLEXITY,
         # LLMPlatform.VERTEXAI_OPENAI,
         # LLMPlatform.CUSTOM_OPENAI,
+        # LLMPlatform.XAI,
     ]
 )
 def llm_platform(request: pytest.FixtureRequest) -> LLMPlatform:
@@ -139,31 +142,26 @@ def llm_platform(request: pytest.FixtureRequest) -> LLMPlatform:
         "gpt-4o-mini",
         # "open-mixtral-8x7b",
         # "google/gemini-2.0-flash",
-        # "google/gemini-2.5-pro-exp-03-25",
+        # "google/gemini-2.5-pro-preview-05-06",
+        # "google/gemini-2.5-flash-preview-04-17",
+        # "google/gemini-2.5-flash-preview-05-20",
         # "o1",
         # "o4-mini",
         # "bedrock-mistral-large",
         # "sonar",
         # "claude-3-7-sonnet",
+        # "claude-4-sonnet",
+        # "claude-4-opus",
+        # "us.anthropic.claude-sonnet-4-20250514-v1:0",
+        # "us.anthropic.claude-opus-4-20250514-v1:0",
+        # "sonar",
+        # "sonar-pro",
         # "gemma3:4b",
         # "llama4:scout",
     ]
 )
 def llm_id(request: pytest.FixtureRequest) -> str:
     assert isinstance(request.param, str)
-    return request.param
-
-
-@pytest.fixture(
-    params=[
-        # ImggHandle.FLUX_1_PRO_LEGACY,
-        # ImggHandle.FLUX_1_1_PRO,
-        # ImggHandle.FLUX_1_1_ULTRA,
-        ImggHandle.SDXL_LIGHTNING,
-    ]
-)
-def imgg_handle(request: pytest.FixtureRequest) -> ImggHandle:
-    assert isinstance(request.param, ImggHandle)
     return request.param
 
 

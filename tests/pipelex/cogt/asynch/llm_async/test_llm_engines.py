@@ -11,13 +11,13 @@ from pipelex.cogt.llm.llm_models.llm_platform import LLMPlatform
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
 from pipelex.cogt.llm.llm_worker_factory import LLMWorkerFactory
 from pipelex.hub import get_inference_manager, get_llm_deck, get_llm_models_provider, get_report_delegate
-from tests.cogt.test_data import LLMTestConstants, Person
+from tests.pipelex.cogt.test_data import LLMTestConstants, Person
 
 
 @pytest.mark.llm
 @pytest.mark.inference
 @pytest.mark.asyncio(loop_scope="class")
-class TestAsyncLLMEngines:
+class TestLLMEngines:
     async def run_inference(self, llm_worker: LLMWorkerAbstract, llm_job: LLMJob):
         generated_text = await llm_worker.gen_text(llm_job=llm_job)
         assert generated_text
@@ -45,6 +45,7 @@ class TestAsyncLLMEngines:
         llm_models_provider = get_llm_models_provider()
         llm_models = llm_models_provider.get_all_llm_models()
         llm_worker_factory = LLMWorkerFactory()
+        count = 0
         for llm_model in llm_models:
             platform_llm_id = llm_model.platform_llm_id.get(llm_platform)
             if llm_id != platform_llm_id:
@@ -65,6 +66,11 @@ class TestAsyncLLMEngines:
             )
             log.info(f"Running inference for {llm_model.name_and_version_and_platform}")
             await self.run_inference(llm_worker=llm_worker, llm_job=llm_job)
+            count += 1
+        if count > 0:
+            log.info(f"Tested {count} llm_engines for llm_id '{llm_id}' on platform '{llm_platform}'")
+        else:
+            pytest.fail(f"No llm_engines found for llm_id '{llm_id}' on platform '{llm_platform}'")
 
     async def test_llm_engines_from_one_family(self, llm_job_params: LLMJobParams, llm_family: LLMFamily):
         inference_manager = get_inference_manager()

@@ -13,7 +13,7 @@ from openai.types.chat.chat_completion_content_part_image_param import ImageURL
 from openai.types.completion_usage import CompletionUsage
 
 from pipelex import log
-from pipelex.cogt.exceptions import CogtError
+from pipelex.cogt.exceptions import LLMEngineParameterError, LLMPromptParameterError
 from pipelex.cogt.image.prompt_image import PromptImage, PromptImageBytes, PromptImagePath, PromptImageUrl
 from pipelex.cogt.llm.llm_job import LLMJob
 from pipelex.cogt.llm.llm_models.llm_engine import LLMEngine
@@ -22,10 +22,6 @@ from pipelex.cogt.llm.token_category import NbTokensByCategoryDict, TokenCategor
 from pipelex.config import get_config
 from pipelex.hub import get_secrets_provider
 from pipelex.tools.misc.base_64_utils import load_binary_as_base64
-
-
-class OpenAIFactoryError(CogtError):
-    pass
 
 
 class OpenAIFactory:
@@ -66,6 +62,15 @@ class OpenAIFactory:
                     api_key=api_key,
                     base_url=endpoint,
                 )
+            case LLMPlatform.XAI:
+                xai_config = get_config().cogt.llm_config.xai_config
+                endpoint, api_key = xai_config.configure(secrets_provider=get_secrets_provider())
+
+                log.verbose(f"Making Xai AsyncOpenAI client with endpoint: {endpoint}")
+                the_client = openai.AsyncOpenAI(
+                    api_key=api_key,
+                    base_url=endpoint,
+                )
             case LLMPlatform.CUSTOM_OPENAI:
                 custom_endpoint_config = get_config().cogt.llm_config.custom_endpoint_config
                 base_url, api_key = custom_endpoint_config.configure(secrets_provider=get_secrets_provider())
@@ -76,7 +81,7 @@ class OpenAIFactory:
                     base_url=base_url,
                 )
             case LLMPlatform.ANTHROPIC | LLMPlatform.BEDROCK | LLMPlatform.BEDROCK_ANTHROPIC | LLMPlatform.MISTRAL:
-                raise OpenAIFactoryError(f"Platform '{llm_platform}' is not supported by this factory '{cls.__name__}'")
+                raise LLMEngineParameterError(f"Platform '{llm_platform}' is not supported by this factory '{cls.__name__}'")
 
         return the_client
 
@@ -121,7 +126,7 @@ class OpenAIFactory:
             image_bytes = load_binary_as_base64(path=prompt_image.file_path)
             return cls.make_openai_image_url(PromptImageBytes(b64_image_bytes=image_bytes))
         else:
-            raise ValueError(f"prompt_image of type {type(prompt_image)} is not supported")
+            raise LLMPromptParameterError(f"prompt_image of type {type(prompt_image)} is not supported")
         return openai_image_url
 
     @staticmethod
