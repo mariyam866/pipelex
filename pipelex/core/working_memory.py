@@ -1,7 +1,8 @@
 from operator import attrgetter
-from typing import Any, Dict, List, Optional, Self, Set, Type, TypeVar
+from typing import Any, Dict, List, Optional, Set, Type, TypeVar
 
 from pydantic import BaseModel, Field, model_validator
+from typing_extensions import Self
 
 from pipelex import log, pretty_print
 from pipelex.core.concept_native import NativeConcept
@@ -281,6 +282,10 @@ class WorkingMemory(BaseModel):
     def get_stuff_as_text(self, name: str) -> TextContent:
         """Get stuff content as TextContent if applicable."""
         return self.get_stuff(name=name).as_text
+
+    def get_stuff_as_str(self, name: str) -> str:
+        """Get stuff content as string if applicable."""
+        return self.get_stuff_as_text(name=name).text
 
     def get_stuff_as_image(self, name: str) -> ImageContent:
         """Get stuff content as ImageContent if applicable."""

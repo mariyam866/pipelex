@@ -1,4 +1,3 @@
-from enum import StrEnum
 from pathlib import Path
 from typing import Any, ClassVar, Dict, List, Optional, Type
 
@@ -23,6 +22,7 @@ from pipelex.tools.misc.json_utils import deep_update
 from pipelex.tools.misc.toml_utils import load_toml_from_path
 from pipelex.tools.runtime_manager import runtime_manager
 from pipelex.tools.typing.pydantic_utils import format_pydantic_validation_error
+from pipelex.types import StrEnum
 
 
 class LibraryComponent(StrEnum):
@@ -78,7 +78,7 @@ class LibraryManager:
         for llm_deck_path in llm_deck_paths:
             llm_deck_dict = load_toml_from_path(path=llm_deck_path)
             log.debug(f"Loaded LLM deck from {llm_deck_path}")
-            log.debug(llm_deck_dict)
+            log.verbose(llm_deck_dict)
             deep_update(full_llm_deck_dict, llm_deck_dict)
 
         self.llm_deck = LLMDeck.model_validate(full_llm_deck_dict)

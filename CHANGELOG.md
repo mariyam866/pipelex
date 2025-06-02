@@ -1,5 +1,53 @@
 # Changelog
 
+## [v0.2.10] - 2025-06-02
+
+### Highlights
+
+**Python Support Expansion** - We're no longer tied to Python 3.11! Now supporting Python 3.10, 3.11, 3.12, and 3.13 with full CI coverage across all versions.
+
+**Major Model Additions** - Claude 4 (Opus & Sonnet), Grok-3, and GPT-4 image generation are now in the house.
+
+### Pipeline Base Library update
+- **New pipe** - `extract_page_contents_and_views_from_pdf` transfered from cookbook to base library (congrats on the promotion!). This pipe extracts text, linked images, **AND** page_view images (rendered pages) - it's very useful if you want to use Vision in follow-up pipes
+
+### Added
+
+- **Template preprocessor** - New `@?` token prefix for optional variable insertion - if a variable doesn't exist, we gracefully skip it instead of throwing exceptions
+- **Claude 4 support** - Both Opus and Sonnet variants, available through Anthropic SDK (direct & Bedrock) plus Bedrock SDK. Includes specific max_tokens limit reduction to prevent timeout/streaming issues (temporary workaround)
+- **Grok-3 family support** - Full support via OpenAI SDK for X.AI's latest models  
+- **GPT-4 image generation** - New `gpt-image-1` model through OpenAI SDK, available via PipeImgGen. Currently saves local files (addressing in next release)
+- **Gemini update** - Added latest `gemini-2.5-pro` to the lineup
+- **Image generation enhancements** - Better quality controls, improved background handling options, auto-adapts to different models: Flux, SDXL and now gpt-image-1
+
+### Refactored
+
+- Moved subpackage `plugin` to the same level as `cogt` within **pipelex** for better visibility
+- Major cleanup in the unit tests, hierarchy significantly flattened
+- Strengthened error handling throughout inference flows and template preprocessing
+- Added `make test-quiet` (shorthand `tq`) to Makefile to run tests without capturing outputs (i.e. without pytest `-s` option)
+- Stopped using Fixtures for `pipe_router` and `content_generator`: we're now always getting the singleton from `pipelex.hub`
+
+
+### Fixed
+
+- **Perplexity integration** - Fixed breaking changes from recent updates
+
+### Dependencies
+
+- Added **pytest-xdist** to run unit tests in parallel on multiple CPUs. Not yet integrated into the Makefile, so run it manually with `pytest -n auto` (without inference) or `pytest -n auto -m "inference"` (inference only). 
+- Swapped pytest-pretty for pytest-sugar - because readable test names > pretty tables
+- Updated instructor to v1.8.3
+- All dependencies tested against Python 3.10, 3.11, 3.12, and 3.13
+
+### Tests
+
+- TestTemplatePreprocessor
+- TestImggByOpenAIGpt
+- TestImageGeneration
+- TestPipeImgg
+
+
 ## [v0.2.9] - 2025-05-30
 
 - Include `pyproject.toml` inside the project build.
