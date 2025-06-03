@@ -23,6 +23,7 @@ class PipelexCLI(TyperGroup):
     def get_command(self, ctx: Context, cmd_name: str) -> Optional[Command]:
         cmd = super().get_command(ctx, cmd_name)
         if cmd is None:
+            typer.echo(f"Unknown command: {cmd_name}")
             typer.echo(ctx.get_help())
             ctx.exit(1)
         return cmd
@@ -36,22 +37,40 @@ app = typer.Typer(
 )
 
 
-@app.command()
-def init(
+@app.command("init-libraries")
+def init_libraries(
     overwrite: Annotated[bool, typer.Option("--overwrite", "-o", help="Warning: If set, existing files will be overwritten.")] = False,
 ) -> None:
-    """Initialize pipelex configuration in the current directory."""
-    LibraryConfig.export_libraries(overwrite=overwrite)
+    """Initialize pipelex libraries in the current directory.
 
-    pipelex_init_path = os.path.join(config_manager.pipelex_root_dir, "pipelex_init.toml")
+    If overwrite is False, only create files that don't exist yet.
+    If overwrite is True, all files will be overwritten even if they exist.
+    """
+    try:
+        # TODO: Have a more proper print message regarding the overwrited files (e.g. list of files that were overwritten or not)
+        LibraryConfig.export_libraries(overwrite=overwrite)
+        if overwrite:
+            typer.echo("Successfully initialized pipelex libraries (all files overwritten)")
+        else:
+            typer.echo("Successfully initialized pipelex libraries (only created non-existing files)")
+    except Exception as e:
+        raise PipelexCLIError(f"Failed to initialize libraries: {e}")
+
+
+@app.command("init-config")
+def init_config(
+    reset: Annotated[bool, typer.Option("--reset", "-r", help="Warning: If set, existing files will be overwritten.")] = False,
+) -> None:
+    """Initialize pipelex configuration in the current directory."""
+    pipelex_template_path = os.path.join(config_manager.pipelex_root_dir, "pipelex_template.toml")
     target_config_path = os.path.join(config_manager.local_root_dir, "pipelex.toml")
 
-    if os.path.exists(target_config_path) and not overwrite:
-        typer.echo("Warning: pipelex.toml already exists. Use --overwrite to force creation.")
+    if os.path.exists(target_config_path) and not reset:
+        typer.echo("Warning: pipelex.toml already exists. Use --reset to force creation.")
         return
 
     try:
-        shutil.copy2(pipelex_init_path, target_config_path)
+        shutil.copy2(pipelex_template_path, target_config_path)
         typer.echo(f"Created pipelex.toml at {target_config_path}")
     except Exception as e:
         raise PipelexCLIError(f"Failed to create pipelex.toml: {e}")

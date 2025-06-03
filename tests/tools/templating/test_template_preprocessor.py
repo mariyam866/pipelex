@@ -80,3 +80,45 @@ Optional notes:
         result = preprocess_template(template)
         expected = '{% if optional %}{{ optional|tag("optional") }}{% endif %} {{ required|tag("required") }}'
         assert result == expected
+
+    def test_dollar_amounts_not_processed(self):
+        """Test that dollar amounts are not processed as variables."""
+        template = "The price is $10M and the budget is $1000.50"
+        result = preprocess_template(template)
+        assert result == template
+
+    def test_mixed_dollar_amounts_and_variables(self):
+        """Test mixing dollar amounts with dollar variables."""
+        template = "The price is $10M and the budget is $budget_amount"
+        result = preprocess_template(template)
+        expected = "The price is $10M and the budget is {{ budget_amount|format() }}"
+        assert result == expected
+
+    def test_dollar_amounts_with_spaces(self):
+        """Test dollar amounts with spaces after the dollar sign."""
+        template = "The price is $ 10M and the budget is $ 1000.50"
+        result = preprocess_template(template)
+        assert result == template
+
+    def test_at_with_numbers_not_processed(self):
+        """Test that @ patterns followed by numbers are not processed."""
+        template = "The version is @1.0 and the build is @2.3.4"
+        result = preprocess_template(template)
+        assert result == template
+
+    def test_optional_at_with_numbers_not_processed(self):
+        """Test that @? patterns followed by numbers are not processed."""
+        template = "The version is @?1.0 and the build is @?2.3.4"
+        result = preprocess_template(template)
+        assert result == template
+
+    def test_mixed_at_patterns_with_numbers(self):
+        """Test mixing @ patterns with numbers and valid variables."""
+        template = "Version @1.0, build @?2.3.4, and @valid_var with @?optional_var"
+        result = preprocess_template(template)
+        expected = (
+            "Version @1.0, build @?2.3.4, and "
+            '{{ valid_var|tag("valid_var") }} with '
+            '{% if optional_var %}{{ optional_var|tag("optional_var") }}{% endif %}'
+        )
+        assert result == expected
