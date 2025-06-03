@@ -70,6 +70,8 @@ def llm_handle(request: pytest.FixtureRequest) -> str:
         # "gemini-2-pro",
         # "gemini-2-5-pro",
         # "gemini-2-5-flash",
+        # "mistral-small3.1",
+        # "qwen3:8b",
     ]
 )
 def llm_handle_for_vision(request: pytest.FixtureRequest) -> str:
@@ -128,7 +130,7 @@ def llm_creator(request: pytest.FixtureRequest) -> LLMCreator:
         LLMPlatform.OPENAI,
         # LLMPlatform.PERPLEXITY,
         # LLMPlatform.VERTEXAI_OPENAI,
-        # LLMPlatform.CUSTOM_OPENAI,
+        # LLMPlatform.CUSTOM_LLM,
         # LLMPlatform.XAI,
     ]
 )
@@ -158,6 +160,8 @@ def llm_platform(request: pytest.FixtureRequest) -> LLMPlatform:
         # "sonar-pro",
         # "gemma3:4b",
         # "llama4:scout",
+        # "mistral-small3.1:24b",
+        # "qwen3:8b",
     ]
 )
 def llm_id(request: pytest.FixtureRequest) -> str:
