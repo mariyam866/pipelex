@@ -1,7 +1,6 @@
 from typing import Optional
 
 from pipelex.cogt.exceptions import MissingDependencyError
-from pipelex.cogt.inference.inference_report_delegate import InferenceReportDelegate
 from pipelex.cogt.llm.llm_models.llm_engine import LLMEngine
 from pipelex.cogt.llm.llm_models.llm_platform import LLMPlatform
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
@@ -9,13 +8,14 @@ from pipelex.cogt.llm.structured_output import StructureMethod
 from pipelex.cogt.plugin_manager import PluginHandle
 from pipelex.config import get_config
 from pipelex.hub import get_plugin_manager
+from pipelex.reporting.reporting_protocol import ReportingProtocol
 
 
 class LLMWorkerFactory:
     @staticmethod
     def make_llm_worker(
         llm_engine: LLMEngine,
-        report_delegate: Optional[InferenceReportDelegate] = None,
+        reporting_delegate: Optional[ReportingProtocol] = None,
     ) -> LLMWorkerAbstract:
         llm_sdk_handle = PluginHandle.get_for_llm_platform(llm_platform=llm_engine.llm_platform)
         plugin_manager = get_plugin_manager()
@@ -39,7 +39,7 @@ class LLMWorkerFactory:
                     sdk_instance=llm_sdk_instance,
                     llm_engine=llm_engine,
                     structure_method=structure_method,
-                    report_delegate=report_delegate,
+                    reporting_delegate=reporting_delegate,
                 )
             case LLMPlatform.VERTEXAI:
                 try:
@@ -59,7 +59,7 @@ class LLMWorkerFactory:
                     sdk_instance=llm_sdk_instance,
                     llm_engine=llm_engine,
                     structure_method=StructureMethod.INSTRUCTOR_VERTEX_JSON,
-                    report_delegate=report_delegate,
+                    reporting_delegate=reporting_delegate,
                 )
             case LLMPlatform.CUSTOM_LLM:
                 from pipelex.plugins.openai.openai_factory import OpenAIFactory
@@ -74,7 +74,7 @@ class LLMWorkerFactory:
                     sdk_instance=llm_sdk_instance,
                     llm_engine=llm_engine,
                     structure_method=StructureMethod.INSTRUCTOR_OPENAI_STRUCTURED,
-                    report_delegate=report_delegate,
+                    reporting_delegate=reporting_delegate,
                 )
             case LLMPlatform.ANTHROPIC | LLMPlatform.BEDROCK_ANTHROPIC:
                 try:
@@ -100,7 +100,7 @@ class LLMWorkerFactory:
                     sdk_instance=llm_sdk_instance,
                     llm_engine=llm_engine,
                     structure_method=StructureMethod.INSTRUCTOR_ANTHROPIC_TOOLS,
-                    report_delegate=report_delegate,
+                    reporting_delegate=reporting_delegate,
                 )
             case LLMPlatform.MISTRAL:
                 try:
@@ -126,7 +126,7 @@ class LLMWorkerFactory:
                     sdk_instance=llm_sdk_instance,
                     llm_engine=llm_engine,
                     structure_method=StructureMethod.INSTRUCTOR_MISTRAL_TOOLS,
-                    report_delegate=report_delegate,
+                    reporting_delegate=reporting_delegate,
                 )
             case LLMPlatform.BEDROCK:
                 try:
@@ -148,6 +148,6 @@ class LLMWorkerFactory:
                 llm_worker = BedrockLLMWorker(
                     sdk_instance=llm_sdk_instance,
                     llm_engine=llm_engine,
-                    report_delegate=report_delegate,
+                    reporting_delegate=reporting_delegate,
                 )
         return llm_worker

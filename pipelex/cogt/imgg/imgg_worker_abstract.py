@@ -8,9 +8,9 @@ from pipelex import log
 from pipelex.cogt.image.generated_image import GeneratedImage
 from pipelex.cogt.imgg.imgg_engine import ImggEngine
 from pipelex.cogt.imgg.imgg_job import ImggJob
-from pipelex.cogt.inference.inference_report_delegate import InferenceReportDelegate
 from pipelex.cogt.inference.inference_worker_abstract import InferenceWorkerAbstract
 from pipelex.pipeline.job_metadata import UnitJobId
+from pipelex.reporting.reporting_protocol import ReportingProtocol
 
 F = TypeVar("F", bound=Callable[..., Awaitable[Any]])
 
@@ -43,8 +43,8 @@ def imgg_job_func(func: F) -> F:
 
         # Report job
         imgg_job.imgg_job_after_complete()
-        if self.report_delegate:
-            self.report_delegate.report_inference_job(inference_job=imgg_job)
+        if self.reporting_delegate:
+            self.reporting_delegate.report_inference_job(inference_job=imgg_job)
 
         return result
 
@@ -55,9 +55,9 @@ class ImggWorkerAbstract(InferenceWorkerAbstract):
     def __init__(
         self,
         imgg_engine: ImggEngine,
-        report_delegate: Optional[InferenceReportDelegate] = None,
+        reporting_delegate: Optional[ReportingProtocol] = None,
     ):
-        InferenceWorkerAbstract.__init__(self, report_delegate=report_delegate)
+        InferenceWorkerAbstract.__init__(self, reporting_delegate=reporting_delegate)
         self.imgg_engine = imgg_engine
 
     #########################################################
