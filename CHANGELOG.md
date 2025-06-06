@@ -8,7 +8,7 @@
 [pipelex.feature_config]
 is_reporting_enabled = true
 ```
-- Moved the reporting config to the Pipelex config.
+- Moved the reporting config form the `cogt`config to the Pipelex config.
 
 ## [v0.2.13] - 2025-06-06
 
