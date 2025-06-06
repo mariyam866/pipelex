@@ -84,7 +84,7 @@ class TestPipelexApiClient:
             ),
         ]
 
-    async def test_client_execute_pipe(
+    async def test_client_execute_pipeline(
         self,
         examples: List[Example],
     ):

@@ -4,10 +4,10 @@
 
 - Added Discord badge on the Readme. Join the community! -> https://discord.gg/SReshKQjWt
 - Added a client for the Pipelex API. Join the waitlist -> https://www.pipelex.com/signup
-- Remove the `run_pipe_code` function. Replace by `execute_pipeline` in `pipelex.pipeline.execute`.
+- Removed the `run_pipe_code` function. Replaced by `execute_pipeline` in `pipelex.pipeline.execute`.
 - Added llm deck `llm_for_img_to_text`.
-- Renamed `InferenceReportManager` to `ReportManager`: It can report more than Inference cost
-- Added an injection of dependency for `ReportManager`
+- Renamed `InferenceReportManager` to `ReportingManager`: It can report more than Inference cost
+- Added an injection of dependency for `ReportingManager`
 - pipelex cli: fixed some bugs
 
 ## [v0.2.12] - 2025-06-03
