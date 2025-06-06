@@ -39,12 +39,11 @@ You have to create a `python` file to run your script. You can save it anywhere 
 # character.py
 
 import asyncio
-from pipelex.pipelex import Pipelex
-from pipelex.run import execute_pipe
+from pipelex.pipeline.execute import execute_pipeline
 
 async def create_character() -> str:
     # Run the script with execute_pipe
-    pipe_output = await execute_pipe(
+    pipe_output, pipeline_run_id = await execute_pipeline(
         pipe_code="create_character",
     )
     # Print the output
@@ -208,7 +207,7 @@ Your task is to extract specific data from the following description.
 
 ```python
 from pipelex.core.stuff_factory import StuffFactory
-from pipelex.client.client import PipelexClient
+from pipelex.pipeline.execute import execute_pipeline
 from pipelex_libraries.pipeline.characters import Character, CharacterMetadata
 
 async def process_existing_character():
@@ -236,8 +235,7 @@ async def process_existing_character():
         stuff=character_stuff,
     )
     # Run the pipe identified by its pipe_code (it's the name of the pipe)
-    pipelex_client = PipelexClient()
-    pipe_output = await pipelex_client.execute_pipeline(
+    pipe_output, pipeline_run_id = await execute_pipeline(
         pipe_code="extract_character_1",
         working_memory=working_memory,
     )
