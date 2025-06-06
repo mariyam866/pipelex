@@ -9,8 +9,8 @@ from pipelex.cogt.image.generated_image import GeneratedImage
 from pipelex.cogt.imgg.imgg_engine import ImggEngine
 from pipelex.cogt.imgg.imgg_job import ImggJob
 from pipelex.cogt.imgg.imgg_worker_abstract import ImggWorkerAbstract, imgg_job_func
-from pipelex.cogt.inference.inference_report_delegate import InferenceReportDelegate
 from pipelex.plugins.fal.fal_factory import FalFactory
+from pipelex.reporting.reporting_protocol import ReportingProtocol
 
 
 class FalImggWorker(ImggWorkerAbstract):
@@ -18,9 +18,9 @@ class FalImggWorker(ImggWorkerAbstract):
         self,
         sdk_instance: Any,
         imgg_engine: ImggEngine,
-        report_delegate: Optional[InferenceReportDelegate] = None,
+        reporting_delegate: Optional[ReportingProtocol] = None,
     ):
-        super().__init__(imgg_engine=imgg_engine, report_delegate=report_delegate)
+        super().__init__(imgg_engine=imgg_engine, reporting_delegate=reporting_delegate)
 
         if not isinstance(sdk_instance, AsyncClient):
             raise SdkTypeError(f"Provided Imgg sdk_instance is not of type fal_client.AsyncClient: it's a '{type(sdk_instance)}'")

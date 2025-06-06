@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Optional, Protocol
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing_extensions import runtime_checkable
 
 from pipelex.core.pipe_output import PipeOutput
@@ -10,16 +10,17 @@ from pipelex.core.working_memory import WorkingMemory
 from pipelex.types import StrEnum
 
 
-class PipeState(StrEnum):
+class PipelineState(StrEnum):
     """
     Enum representing the possible states of a pipe execution.
     """
 
-    RUNNING = "running"
-    COMPLETED = "completed"
-    FAILED = "failed"
-    CANCELLED = "cancelled"
-    ERROR = "error"
+    RUNNING = "RUNNING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+    CANCELLED = "CANCELLED"
+    ERROR = "ERROR"
+    STARTED = "STARTED"
 
 
 class ApiResponse(BaseModel):
@@ -27,69 +28,50 @@ class ApiResponse(BaseModel):
     Base response class for Pipelex API calls.
 
     Attributes:
-        status: Status of the API call ("success", "error", etc.)
-        message: Optional message providing additional information
-        error: Optional error message when status is not "success"
+        status (Optional[str]): Status of the API call ("success", "error", etc.)
+        message (Optional[str]): Optional message providing additional information
+        error (Optional[str]): Optional error message when status is not "success"
     """
 
-    status: str
+    status: Optional[str] = None
     message: Optional[str] = None
     error: Optional[str] = None
 
 
-class PipeStatus(BaseModel):
+class PipelineRequest(BaseModel):
     """
-    Status information for a pipe execution.
+    Request for executing a pipeline.
 
     Attributes:
-        pipe_execution_id: Unique identifier for this execution
-        pipe_code: Code of the pipe that was executed
-        state: Current state of execution (running, completed, failed, etc.)
-        created_at: ISO 8601 formatted timestamp (YYYY-MM-DDThh:mm:ss.sssZ) when execution started
-        finished_at: ISO 8601 formatted timestamp (YYYY-MM-DDThh:mm:ss.sssZ) when execution finished,
-                     only populated for completed or failed executions
-        result: Complete WorkingMemory with all results, only populated when execution is finished
-        main_output: Primary output Stuff instance, only populated when execution is finished
+        working_memory (Optional[WorkingMemory]): WorkingMemory instance passed to the pipeline
+        output_name (Optional[str]): Name of the output slot to write to
+        output_multiplicity (Optional[PipeOutputMultiplicity]): Output multiplicity setting
+        dynamic_output_concept_code (Optional[str]): Override for the dynamic output concept code
     """
 
-    pipe_execution_id: str
-    pipe_code: str
-    state: PipeState
-    created_at: Optional[str] = None  # ISO format timestamp, only populated when execution is finished
-    finished_at: Optional[str] = None  # ISO format timestamp, only populated when execution is finished
-    pipe_output: Optional[PipeOutput] = None
+    working_memory: Optional[WorkingMemory] = None
+    output_name: Optional[str] = None
+    output_multiplicity: Optional[PipeOutputMultiplicity] = None
+    dynamic_output_concept_code: Optional[str] = None
 
 
-class PipeStartResponse(ApiResponse):
+class PipelineResponse(ApiResponse):
     """
-    Response for pipe execution requests when starting a pipe in non-blocking mode.
-
-    This response is returned when a pipe execution is started but does not wait for completion.
-    It contains only the minimal details needed to identify and track the execution.
-    For results, the client must call get_pipe_status with the pipe_execution_id.
+    Response for pipeline execution requests.
 
     Attributes:
-        pipe_execution_id: Unique identifier for this execution, used to check status later
-        created_at: ISO 8601 formatted timestamp (YYYY-MM-DDThh:mm:ss.sssZ) when execution started
-
-        # Inherited from ApiResponse:
-        status: Status of the API call ("success", "error", etc.)
-        message: Optional message providing additional information
-        error: Optional error message when status is not "success"
+        pipeline_run_id (str): Unique identifier for the pipeline run
+        created_at (str): Timestamp when the pipeline was created
+        pipeline_state (PipelineState): Current state of the pipeline
+        finished_at (Optional[str]): Timestamp when the pipeline finished, if completed
+        pipe_output (Optional[PipeOutput]): Output data from the pipeline execution, if available
     """
 
-    pipe_execution_id: str
+    pipeline_run_id: str
     created_at: str
-
-
-class PipeRequest(BaseModel):
-    """
-    Request model for executing a pipe.
-    """
-
-    memory: WorkingMemory = Field(..., description="Input memory for the pipe")
-    dynamic_output_concept: Optional[str] = Field(default=None, description="Concept code of the output stuff")
-    output_multiplicity: Optional[PipeOutputMultiplicity] = Field(default=None, description="Multiplicity of the output stuff")
+    pipeline_state: PipelineState
+    finished_at: Optional[str] = None
+    pipe_output: Optional[PipeOutput] = None
 
 
 @runtime_checkable
@@ -98,83 +80,67 @@ class PipelexProtocol(Protocol):
     Protocol defining the contract for the Pipelex API.
 
     This protocol specifies the interface that any Pipelex API implementation must adhere to.
-    The protocol includes methods for executing pipes both synchronously and asynchronously,
-    as well as cancelling running executions.
+    All methods are asynchronous and handle pipeline execution, monitoring, and control.
+
+    Attributes:
+        api_token (Optional[str]): Authentication token for API access
+        api_base_url (Optional[str]): Base URL for the API
     """
 
-    @abstractmethod
-    async def execute_pipe(self, pipe_code: str, request: PipeRequest) -> PipeStatus:
-        """
-        Execute a pipe with the given memory and wait for completion.
+    api_token: str
+    api_base_url: str
 
-        This is a blocking operation that does not return until the pipe execution
-        is complete. For long-running pipes, consider using start_pipe instead.
+    @abstractmethod
+    async def execute_pipeline(
+        self,
+        pipe_code: str,
+        working_memory: Optional[WorkingMemory] = None,
+        output_name: Optional[str] = None,
+        output_multiplicity: Optional[PipeOutputMultiplicity] = None,
+        dynamic_output_concept_code: Optional[str] = None,
+    ) -> PipelineResponse:
+        """
+        Execute a pipeline synchronously and wait for its completion.
 
         Args:
-            pipe_code: The unique identifier for the pipe to execute
-            request: PipeRequest containing the input instances required by the pipe
-
+            pipe_code (str): The code identifying the pipeline to execute
+            working_memory (Optional[WorkingMemory]): Memory context passed to the pipeline
+            output_name (Optional[str]): Target output slot name
+            output_multiplicity (Optional[PipeOutputMultiplicity]): Output multiplicity setting
+            dynamic_output_concept_code (Optional[str]): Override for dynamic output concept
         Returns:
-            PipeStatus with the final execution status including complete results.
+            PipelineResponse: Complete execution results including pipeline state and output
 
         Raises:
-            HTTPException: If the execution fails or encounters an error
+            HTTPException: On execution failure or error
+            ClientAuthenticationError: If API token is missing for API execution
         """
         ...
 
     @abstractmethod
-    async def start_pipe(self, pipe_code: str, request: PipeRequest) -> PipeStartResponse:
+    async def start_pipeline(
+        self,
+        pipe_code: str,
+        working_memory: Optional[WorkingMemory] = None,
+        output_name: Optional[str] = None,
+        output_multiplicity: Optional[PipeOutputMultiplicity] = None,
+        dynamic_output_concept_code: Optional[str] = None,
+    ) -> PipelineResponse:
         """
-        Start a pipe execution in the background without waiting for completion.
-
-        This is a non-blocking operation that returns immediately with an execution ID.
+        Start a pipeline execution asynchronously without waiting for completion.
 
         Args:
-            pipe_code: The unique identifier for the pipe to execute
-            request: PipeRequest containing the input instances required by the pipe
+            pipe_code (str): The code identifying the pipeline to execute
+            working_memory (Optional[WorkingMemory]): Memory context passed to the pipeline
+            output_name (Optional[str]): Target output slot name
+            output_multiplicity (Optional[PipeOutputMultiplicity]): Output multiplicity setting
+            dynamic_output_concept_code (Optional[str]): Override for dynamic output concept
 
         Returns:
-            PipeStartResponse with the pipe_execution_id and created_at timestamp.
+            PipelineResponse: Initial response with pipeline_run_id and created_at timestamp
 
         Raises:
-            HTTPException: If starting the execution fails
-        """
-        ...
-
-    @abstractmethod
-    async def cancel_pipe(self, pipe_execution_id: str) -> ApiResponse:
-        """
-        Cancel a running pipe execution.
-
-        This method allows clients to stop a pipe execution that is currently in progress.
-        Once cancelled, a pipe cannot be resumed and must be started again if needed.
-
-        Args:
-            pipe_execution_id: The unique identifier for the pipe execution
-
-        Returns:
-            ApiResponse indicating success or failure of the cancellation
-
-        Raises:
-            HTTPException: If the cancellation fails or the execution ID is invalid
-        """
-        ...
-
-    @abstractmethod
-    async def get_pipe_status(self, pipe_execution_id: str) -> PipeStatus:
-        """
-        Get the current status of a pipe execution.
-
-        This method allows clients to check the current status of a pipe execution
-        that was started with start_pipe.
-
-        Args:
-            pipe_execution_id: The unique identifier for the pipe execution
-
-        Returns:
-            PipeStatus with the current execution status
-
-        Raises:
-            HTTPException: If the status check fails or the execution ID is invalid
+            HTTPException: On pipeline start failure
+            ClientAuthenticationError: If API token is missing for API execution
         """
         ...
