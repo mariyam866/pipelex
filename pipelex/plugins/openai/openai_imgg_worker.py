@@ -11,9 +11,9 @@ from pipelex.cogt.imgg.imgg_engine import ImggEngine
 from pipelex.cogt.imgg.imgg_job import ImggJob
 from pipelex.cogt.imgg.imgg_job_components import Quality
 from pipelex.cogt.imgg.imgg_worker_abstract import ImggWorkerAbstract, imgg_job_func
-from pipelex.cogt.inference.inference_report_delegate import InferenceReportDelegate
 from pipelex.config import get_config
 from pipelex.plugins.openai.openai_imgg_factory import OpenAIImggFactory
+from pipelex.reporting.reporting_protocol import ReportingProtocol
 from pipelex.tools.misc.base_64_utils import save_base64_to_binary_file
 from pipelex.tools.misc.file_utils import ensure_path
 
@@ -25,9 +25,9 @@ class OpenAIImggWorker(ImggWorkerAbstract):
         self,
         sdk_instance: Any,
         imgg_engine: ImggEngine,
-        report_delegate: Optional[InferenceReportDelegate] = None,
+        reporting_delegate: Optional[ReportingProtocol] = None,
     ):
-        super().__init__(imgg_engine=imgg_engine, report_delegate=report_delegate)
+        super().__init__(imgg_engine=imgg_engine, reporting_delegate=reporting_delegate)
 
         if not isinstance(sdk_instance, openai.AsyncOpenAI):
             raise SdkTypeError(f"Provided Imgg sdk_instance is not of type openai.AsyncOpenAI: it's a '{type(sdk_instance)}'")
