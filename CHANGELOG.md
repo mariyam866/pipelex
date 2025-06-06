@@ -6,7 +6,7 @@
 - Added a client for the Pipelex API. Join the waitlist -> https://www.pipelex.com/signup
 - Removed the `run_pipe_code` function. Replaced by `execute_pipeline` in `pipelex.pipeline.execute`.
 - Added llm deck `llm_for_img_to_text`.
-- Renamed `InferenceReportManager` to `ReportingManager`: It can report more than Inference cost
+- Renamed `InferenceReportManager` to `ReportingManager`: It can report more than Inference cost. Renamed `InferenceReportDelegate` to `ReportingProtocol`.
 - Added an injection of dependency for `ReportingManager`
 - pipelex cli: fixed some bugs
 
