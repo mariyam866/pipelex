@@ -19,22 +19,24 @@
     <br/>
     <br/>
     <a href="https://www.youtube.com/@PipelexAI"><img src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white" alt="YouTube"></a>
-    <a href="https://pipelex.com"><img src="https://img.shields.io/badge/Web-pipelex.com-03bb95?logo=google-chrome&logoColor=white&style=flat" alt="Website"></a>
+    <a href="https://pipelex.com"><img src="https://img.shields.io/badge/Homepage-03bb95?logo=google-chrome&logoColor=white&style=flat" alt="Website"></a>
+    <a href="https://github.com/Pipelex/pipelex-cookbook"><img src="https://img.shields.io/badge/Cookbook-03bb95?logo=github&logoColor=white&style=flat" alt="Cookbook"></a>
     <a href="https://discord.gg/SReshKQjWt"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
     <br/> 
     <br/>
 </div>
 
 <div align="center">
+  <h2 align="center">📜 The Knowledge Pipeline Manifesto</h2>
+  <p align="center">
+    <a href="https://www.pipelex.com/post/the-knowledge-pipeline-manifesto"><strong>Read why we built Pipelex to transform unreliable AI workflows into deterministic pipelines 🔗</strong></a>
+  </p>
+
   <h2 align="center">🚀 See Pipelex in Action</h2>
   <p align="center">
     <a href="https://www.pipelex.com/demo"><strong>Checkout our Demo</strong></a>
   </p>
   
-  <h2 align="center">📜 Discover Our Vision</h2>
-  <p align="center">
-    <a href="https://www.pipelex.com/post/the-knowledge-pipeline-manifesto"><strong>Read our Manifesto</strong></a>
-  </p>
 </div>
 
 # 📑 Table of Contents
@@ -50,15 +52,31 @@
 
 # Introduction
 
-Pipelex™ is a developer tool designed to simplify building reliable AI applications. At its core is a clear, declarative pipeline language specifically crafted for knowledge-processing tasks.
+Pipelex makes it easy for developers to define and run repeatable AI workflows. At its core is a clear, declarative pipeline language specifically crafted for knowledge-processing tasks.
 
-**The Pipelex language uses pipelines,** or "pipes", each capable of integrating different language models (LLMs) or software to process knowledge. Pipes consistently deliver **structured, predictable outputs** at each stage.
+Build **pipelines** from modular pipes that snap together. Each pipe can use a different language model (LLM) or software to process knowledge. Pipes consistently deliver **structured, predictable outputs** at each stage.
 
-Pipelex employs user-friendly TOML syntax, enabling developers to intuitively define workflows in a narrative-like manner. This approach facilitates collaboration between business professionals, developers, and language models (LLMs), ensuring clarity and ease of communication.
+Pipelex uses TOML syntax, making workflows readable and shareable. Business professionals, developers, and AI coding agents can all understand and modify the same pipeline definitions.
 
-Pipes function like modular building blocks, **assembled by connecting other pipes sequentially, in parallel, or by calling sub-pipes.** This assembly resembles function calls in traditional programming but emphasizes a more intuitive, plug-and-play structure, focused explicitly on clear knowledge input and output.
+Example:
+```toml
+[concept]
+Buyer = "The person who made the purchase"
+PurchaseDocument = "A scanned receipt, invoice, or order confirmation"
 
-Pipelex is distributed as an **open-source Python library,** with a hosted API launching soon, enabling effortless integration into existing software systems and automation frameworks. Additionally, Pipelex will provide an MCP server that will enable AI Agents to run pipelines like any other tool.
+[pipe.extract_buyer]
+PipeLLM = "Extract buyer from purchase document"
+inputs = { scan = "PurchaseDocument" }
+output = "Buyer"
+llm = "llm_to_extract_info"
+prompt_template = """
+Extract the first and last name of the buyer from this purchase document.
+"""
+```
+
+Pipes are modular building blocks that **connect sequentially, run in parallel, or call sub-pipes.** Like function calls in traditional programming, but with a clear contract: knowledge-in, knowledge-out. This modularity makes pipelines perfect for sharing: fork someone's invoice processor, adapt it for receipts, share it back. 
+
+Pipelex is an **open-source Python library** with a hosted API launching soon. It integrates seamlessly into existing systems and automation frameworks. Plus, it works as an [MCP server](https://github.com/Pipelex/pipelex-mcp) so AI agents can use pipelines as tools.
 
 # 🚀 Quick start
 
