@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.3.2] - 2025-06-12
+
+- Added a better printing of class structure (corresponding to the `output_concept_code`) at the end of the prompts. (Coming with UT)
+- The ReportingManager now reports all `pipeline_run_id` when none is provided
+- The `make_from_str` method from the `StuffFactory` now has a default value for `concept_code`: `native.Text`
+
 ## [v0.3.1] - 2025-06-10
 
 ### Added
