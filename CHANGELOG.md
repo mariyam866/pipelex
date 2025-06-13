@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.3.2] - 2025-06-13
+
+- Improved automatic insertion of class structure from BaseModel into prompts, based on the PipeLLM's `output_concept`. New unit test included.
+- The ReportingManager now reports costs for all pipeline IDs when no `pipeline_run_id` is specified.
+- The `make_from_str` method from the `StuffFactory` class now uses `Text` context by default.
+
 ## [v0.3.1] - 2025-06-10
 
 ### Added

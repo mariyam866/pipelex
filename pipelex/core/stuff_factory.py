@@ -95,9 +95,9 @@ class StuffFactory:
     @classmethod
     def make_from_str(
         cls,
-        concept_code: str,
         str_value: str,
         name: Optional[str] = None,
+        concept_code: str = NativeConcept.TEXT.code,
         pipelex_session_id: Optional[str] = None,
     ) -> Stuff:
         if not Concept.concept_str_contains_domain(concept_code):
