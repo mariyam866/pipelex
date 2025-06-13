@@ -1,10 +1,10 @@
 # Changelog
 
-## [v0.3.2] - 2025-06-12
+## [v0.3.2] - 2025-06-13
 
-- Added a better printing of class structure (corresponding to the `output_concept_code`) at the end of the prompts. (Coming with UT)
-- The ReportingManager now reports all `pipeline_run_id` when none is provided
-- The `make_from_str` method from the `StuffFactory` now has a default value for `concept_code`: `native.Text`
+- Improved automatic insertion of class structure from BaseModel into prompts, based on the PipeLLM's `output_concept`. New unit test included.
+- The ReportingManager now reports costs for all pipeline IDs when no `pipeline_run_id` is specified.
+- The `make_from_str` method from the `StuffFactory` class now uses `Text` context by default.
 
 ## [v0.3.1] - 2025-06-10
 
