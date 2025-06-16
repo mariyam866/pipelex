@@ -1,5 +1,48 @@
 # Changelog
 
+## [v0.4.0] - 2025-06-16
+
+### Highlight: Complete documentation overhaul
+
+- **MkDocs** setup for static web docs generation
+    - **Material** for MkDocs theme, custom styling and navigation
+    - Other plugins: meta-manager, glightbox
+    - **GitHub Pages** deployment, mapped to [docs.pipelex.com](http://docs.pipelex.com)
+    - Added GHA workflows for documentation deployment and validation
+- **Added to docs:**
+    - [**Manifesto**](https://docs.pipelex.com/manifesto/) explaining the Pipelex viewpoint
+    - [**The Pipelex Paradigm**](https://docs.pipelex.com/pages/pipelex-paradigm-for-repeatable-ai-workflows/) explaining the fundamentals of Pipelex’s solution
+    - [**Cookbook examples](https://docs.pipelex.com/pages/cookbook-examples/)** presented and explained, commented code, some event with [mermaid](https://docs.pipelex.com/pages/cookbook-examples/invoice-extractor/) [flow](https://docs.pipelex.com/pages/cookbook-examples/extract-gantt/) [charts](https://docs.pipelex.com/pages/cookbook-examples/write-tweet/)
+    - And plenty of details about **using Pipelex** and **developing for Pipelex,** from **structured generation** to PipeOperators (**LLM**, **Image generation**, **OCR**…) to PipeControllers (**Sequence**, **Parallel**, **Batch**, **Condition**…), workflow **optimization**, workflow static **validation** and dry run… there’s still work to do, but we move fast!
+- **Also a major update of Cursor rules**
+
+### Tooling Improvements
+
+- Pipeline tracking: restored **visual flowchart generation using Mermaid**
+- Enhanced dry run configuration: added more granular control with `nb_list_items`, `nb_ocr_pages`, and `image_urls`
+- New feature flags: better control over pipeline tracking, activity tracking, and reporting
+- Improved OCR configuration: handle image file type for Mistral-OCR, added `default_page_views_dpi` setting
+- Enhanced LLM configuration: **better prompting for structured generation with automatic schema insertion** for two-step structuring: generate plain text and then structure via Json
+- Better logging: Enhanced log truncation and display for large objects like image bytes (there are still cases to deal with)
+
+### Refactor
+
+**Concept system refactoring**
+
+- Improved concept code factory with better domain handling, so you no longer need the `native` domain prefix for native domains, you can just call them by their names: `Text`, `Image`, `PDF`, `Page`, `Number`…
+- Concept `refines` attribute can now be a string for single refined concepts (the most common case)
+
+### Breaking Changes
+
+- File structure changes: documentation moved from `doc/` to `docs/`
+- Configuration changes: some configuration keys have been renamed or restructured
+- `StuffFactory.make_stuff()` argument `concept_code` renamed to `concept_str` to explicitly support concepts without fully qualified domains (e.g., `Text` or `PDF` implicitly `native` )
+- Some method signatures have been updated
+
+### Tests
+
+- **Added Concept refinement validation:** `TestConceptRefinesValidationFunction` and `TestConceptPydanticFieldValidation` ensure proper concept inheritance and field validation
+
 ## [v0.3.2] - 2025-06-13
 
 - Improved automatic insertion of class structure from BaseModel into prompts, based on the PipeLLM's `output_concept`. New unit test included.

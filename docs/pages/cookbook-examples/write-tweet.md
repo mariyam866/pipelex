@@ -91,4 +91,33 @@ Evaluate the tweet for these key issues:
 @draft_tweet
 """
 ```
-This "analyze and refine" pattern is a great way to build more reliable and sophisticated text generation workflows. The first step provides a structured critique, and the second step uses that critique to improve the final output. 
+This "analyze and refine" pattern is a great way to build more reliable and sophisticated text generation workflows. The first step provides a structured critique, and the second step uses that critique to improve the final output.
+
+Here is the flowchart generated during this run:
+
+```mermaid
+---
+config:
+  layout: dagre
+  theme: base
+---
+flowchart LR
+    subgraph "optimize_tweet_sequence"
+    direction LR
+        FGunn["draft_tweet:<br>**Draft tweet**"]
+        EWhtJ["tweet_analysis:<br>**Tweet analysis**"]
+        65Eb2["optimized_tweet:<br>**Optimized tweet**"]
+        i34D5["writing_style:<br>**Writing style**"]
+    end
+class optimize_tweet_sequence sub_a;
+
+    classDef sub_a fill:#e6f5ff,color:#333,stroke:#333;
+
+    classDef sub_b fill:#fff5f7,color:#333,stroke:#333;
+
+    classDef sub_c fill:#f0fff0,color:#333,stroke:#333;
+    FGunn -- "Analyze tweet" ----> EWhtJ
+    FGunn -- "Optimize tweet" ----> 65Eb2
+    EWhtJ -- "Optimize tweet" ----> 65Eb2
+    i34D5 -- "Optimize tweet" ----> 65Eb2
+```
