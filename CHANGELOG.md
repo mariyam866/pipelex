@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.4.1] - 2025-06-16
+
+- Changed discord link to the new one: https://go.pipelex.com/discord
+- Added `hello-world` example in the `cookbook-examples` of the documentation.
+
 ## [v0.4.0] - 2025-06-16
 
 ### Highlight: Complete documentation overhaul
@@ -113,7 +118,7 @@ is_reporting_enabled = true
 
 ## [v0.2.13] - 2025-06-06
 
-- Added Discord badge on the Readme. Join the community! -> https://discord.gg/SReshKQjWt
+- Added Discord badge on the Readme. Join the community! -> https://go.pipelex.com/discord
 - Added a client for the Pipelex API. Join the waitlist -> https://www.pipelex.com/signup
 - Removed the `run_pipe_code` function. Replaced by `execute_pipeline` in `pipelex.pipeline.execute`.
 - Added llm deck `llm_for_img_to_text`.
