@@ -13,6 +13,7 @@ VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
 VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
+VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
@@ -44,6 +45,7 @@ make install                  - Create local virtualenv & install all dependenci
 make update                   - Upgrade dependencies via uv
 make validate                 - Run the setup sequence to validate the config and libraries
 make build                    - Build the wheels
+make doc                      - Serve documentation locally with mkdocs
 
 make format                   - format with ruff format
 make lint                     - lint with ruff check
@@ -99,7 +101,7 @@ export HELP
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
 	validate v check c cc \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-mypy merge-check-pyright \
-	li check-unused-imports fix-unused-imports check-uv check-TODOs
+	li check-unused-imports fix-unused-imports check-uv check-TODOs doc doc-check
 
 all help:
 	@echo "$$HELP"
@@ -205,7 +207,7 @@ cleanall: cleanderived cleanenv cleanlibraries
 codex-tests: env
 	$(call PRINT_TITLE,"Unit testing for Codex")
 	@echo "• Running unit tests for Codex (excluding inference and codex_disabled)"
-	$(VENV_PYTEST) -n auto --exitfirst --quiet -m "(dry_runnable or not inference) and not (needs_output or pipelex_api)" || [ $$? = 5 ]
+	$(VENV_PYTEST) -n auto --exitfirst --quiet -m "(dry_runnable or not inference) and not (needs_output or pipelex_api or codex_disabled)" || [ $$? = 5 ]
 
 gha-tests: env
 	$(call PRINT_TITLE,"Unit testing for github actions")
@@ -388,3 +390,16 @@ check-TODOs: env
 fix-unused-imports: env
 	$(call PRINT_TITLE,"Fixing unused imports")
 	$(VENV_RUFF) check --select=F401 --fix -v .
+
+doc: env
+	$(call PRINT_TITLE,"Serving documentation with mkdocs")
+	$(VENV_MKDOCS) serve
+
+doc-check: env
+	$(call PRINT_TITLE,"Checking documentation build with mkdocs")
+	$(VENV_MKDOCS) build --strict
+
+doc-deploy: env
+	$(call PRINT_TITLE,"Deploying documentation with mkdocs")
+	$(VENV_MKDOCS) gh-deploy
+	

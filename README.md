@@ -1,12 +1,12 @@
 <div align="center">
   <a href="https://www.pipelex.com/"><img src="https://raw.githubusercontent.com/Pipelex/pipelex/main/.github/assets/logo.png" alt="Pipelex Logo" width="400" style="max-width: 100%; height: auto;"></a>
 
-  <h2 align="center">Lean-code language for repeatable workflows</h2>
+  <h2 align="center">Open-source language for repeatable AI workflows</h2>
   <p align="center">Pipelex is based on a simple declarative language that lets you define repeatable, structured, composable AI workflows.</p>
 
   <div>
     <a href="https://www.pipelex.com/demo"><strong>Demo</strong></a> -
-    <a href="https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.md"><strong>Documentation</strong></a> -
+    <a href="https://github.com/Pipelex/pipelex/blob/main/docs/Documentation.md"><strong>Documentation</strong></a> -
     <a href="https://github.com/Pipelex/pipelex/issues"><strong>Report Bug</strong></a> -
     <a href="https://github.com/Pipelex/pipelex/discussions"><strong>Feature Request</strong></a>
   </div>
@@ -18,10 +18,12 @@
      alt="PyPI – latest release">
     <br/>
     <br/>
+    <a href="https://discord.gg/SReshKQjWt"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
     <a href="https://www.youtube.com/@PipelexAI"><img src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white" alt="YouTube"></a>
     <a href="https://pipelex.com"><img src="https://img.shields.io/badge/Homepage-03bb95?logo=google-chrome&logoColor=white&style=flat" alt="Website"></a>
-    <a href="https://github.com/Pipelex/pipelex-cookbook"><img src="https://img.shields.io/badge/Cookbook-03bb95?logo=github&logoColor=white&style=flat" alt="Cookbook"></a>
-    <a href="https://discord.gg/SReshKQjWt"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
+    <a href="https://github.com/Pipelex/pipelex-cookbook"><img src="https://img.shields.io/badge/Cookbook-5a0dad?logo=github&logoColor=white&style=flat" alt="Cookbook"></a>
+    <a href="https://docs.pipelex.com/"><img src="https://img.shields.io/badge/Docs-03bb95?logo=read-the-docs&logoColor=white&style=flat" alt="Documentation"></a>
+    <a href="https://docs.pipelex.com/changelog/"><img src="https://img.shields.io/badge/Changelog-03bb95?logo=git&logoColor=white&style=flat" alt="Changelog"></a>
     <br/> 
     <br/>
 </div>
@@ -81,7 +83,7 @@ Pipelex is an **open-source Python library** with a hosted API launching soon. I
 
 # 🚀 Quick start
 
-> :books: Note that you can check out the [Pipelex Documentation](doc/Documentation.md) for more information and clone the [Pipelex Cookbook](https://github.com/Pipelex/pipelex-cookbook) repository for ready-to-run samples.
+> :books: Note that you can check out the [Pipelex Documentation](docs/Documentation.md) for more information and clone the [Pipelex Cookbook](https://github.com/Pipelex/pipelex-cookbook) repository for ready-to-run samples.
 
 Follow these steps to get started:
 
@@ -92,7 +94,12 @@ Follow these steps to get started:
 - Python ≥3.10
 - [pip](https://pip.pypa.io/en/stable/), [poetry](https://python-poetry.org/), or [uv](https://github.com/astral-sh/uv) package manager
 
-### Install the package
+### Option #1: Run examples
+
+Visit the 
+[![GitHub](https://img.shields.io/badge/Cookbook-5a0dad?logo=github&logoColor=white&style=flat)](https://github.com/Pipelex/pipelex-cookbook/): you can clone it, fork it, play with it 
+
+### Option #2: Install the package
 
 ```bash
 # Using pip
@@ -136,6 +143,130 @@ Using `uv`:
 uv pip install "pipelex[anthropic,google,mistralai,bedrock,fal]"
 ```
 
+---
+
+## Example: optimizing a tweet in 2 steps
+
+### 1. Define the pipeline in TOML
+
+```toml
+domain = "tech_tweet"
+definition = "A pipeline for optimizing tech tweets using Twitter/X best practices"
+
+[concept]
+DraftTweet = "A draft version of a tech tweet that needs optimization"
+OptimizedTweet = "A tweet optimized for Twitter/X engagement following best practices"
+TweetAnalysis = "Analysis of the tweet's structure and potential improvements"
+WritingStyle = "A style of writing"
+
+[pipe]
+[pipe.analyze_tweet]
+PipeLLM = "Analyze the draft tweet and identify areas for improvement"
+inputs = { draft_tweet = "DraftTweet" }
+output = "TweetAnalysis"
+llm = "llm_for_writing_analysis"
+system_prompt = """
+You are an expert in social media optimization, particularly for tech content on Twitter/X.
+Your role is to analyze tech tweets and check if they display typical startup communication pitfalls.
+"""
+prompt_template = """
+Evaluate the tweet for these key issues:
+
+**Fluffiness** - Overuse of buzzwords without concrete meaning (e.g., "synergizing disruptive paradigms")
+
+**Cringiness** - Content that induces secondhand embarrassment (overly enthusiastic, trying too hard to be cool, excessive emoji use)
+
+**Humblebragginess** - Disguising boasts as casual updates or false modesty ("just happened to close our $ 10M round 🤷")
+
+**Vagueness** - Failing to clearly communicate what the product/service actually does
+
+For each criterion, provide:
+1. A score (1-5) where 1 = not present, 5 = severely present
+2. If the problem is not present, no comment. Otherwise, explain of the issue and give concise guidance on fixing it, without providing an actual rewrite
+
+@draft_tweet
+
+"""
+
+[pipe.optimize_tweet]
+PipeLLM = "Optimize the tweet based on the analysis"
+inputs = { draft_tweet = "DraftTweet", tweet_analysis = "TweetAnalysis", writing_style = "WritingStyle" }
+output = "OptimizedTweet"
+llm = "llm_for_social_post_writing"
+system_prompt = """
+You are an expert in writing engaging tech tweets that drive meaningful discussions and engagement.
+Your goal is to rewrite tweets to be impactful and avoid the pitfalls identified in the analysis.
+"""
+prompt_template = """
+Rewrite this tech tweet to be more engaging and effective, based on the analysis:
+
+Original tweet:
+@draft_tweet
+
+Analysis:
+@tweet_analysis
+
+Requirements:
+- Include a clear call-to-action
+- Make it engaging and shareable
+- Use clear, concise language
+
+### Reference style example
+
+@writing_style
+
+### Additional style instructions
+
+No hashtags.
+Minimal emojis.
+Keep the core meaning of the original tweet.
+"""
+
+[pipe.optimize_tweet_sequence]
+PipeSequence = "Analyze and optimize a tech tweet in sequence"
+inputs = { draft_tweet = "DraftTweet", writing_style = "WritingStyle" }
+output = "OptimizedTweet"
+steps = [
+    { pipe = "analyze_tweet", result = "tweet_analysis" },
+    { pipe = "optimize_tweet", result = "optimized_tweet" },
+]
+```
+
+### 2. Run the pipeline
+
+Here is the flowchart generated during this run:
+```mermaid
+---
+config:
+  layout: dagre
+  theme: base
+---
+flowchart LR
+    subgraph "optimize_tweet_sequence"
+    direction LR
+        FGunn["draft_tweet:<br>**Draft tweet**"]
+        EWhtJ["tweet_analysis:<br>**Tweet analysis**"]
+        65Eb2["optimized_tweet:<br>**Optimized tweet**"]
+        i34D5["writing_style:<br>**Writing style**"]
+    end
+class optimize_tweet_sequence sub_a;
+
+    classDef sub_a fill:#e6f5ff,color:#333,stroke:#333;
+
+    classDef sub_b fill:#fff5f7,color:#333,stroke:#333;
+
+    classDef sub_c fill:#f0fff0,color:#333,stroke:#333;
+    FGunn -- "Analyze tweet" ----> EWhtJ
+    FGunn -- "Optimize tweet" ----> 65Eb2
+    EWhtJ -- "Optimize tweet" ----> 65Eb2
+    i34D5 -- "Optimize tweet" ----> 65Eb2
+```
+
+
+### 3. wait… no, there is not 3, you're done!
+
+---
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started, including development setup and testing information.
@@ -150,7 +281,7 @@ Join our vibrant Discord community to connect with other developers, share your 
 
 - **GitHub Issues**: For bug reports and feature requests
 - **Discussions**: For questions and community discussions
-- [**Documentation**](doc/Documentation.md)
+- [**Documentation**](docs/Documentation.md)
 
 ## ⭐ Star Us!
 

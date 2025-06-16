@@ -13,7 +13,7 @@ from pipelex.cogt.llm.llm_models.llm_setting import LLMSetting
 from pipelex.cogt.llm.llm_prompt import LLMPrompt
 from pipelex.cogt.llm.llm_prompt_factory_abstract import LLMPromptFactoryAbstract
 from pipelex.config import StaticValidationReaction, get_config
-from pipelex.core.concept_factory import ConceptFactory
+from pipelex.core.concept_code_factory import ConceptCodeFactory
 from pipelex.core.concept_native import NativeConcept, NativeConceptClass
 from pipelex.core.domain import Domain, SpecialDomain
 from pipelex.core.pipe_input_spec import PipeInputSpec
@@ -122,13 +122,19 @@ class PipeLLM(PipeOperator):
                         input_concept_class = class_registry.get_required_subclass(name=input_concept_class_name, base_class=StuffContent)
                         if issubclass(input_concept_class, StructuredContent):
                             continue
+                    explanation = "The input provided for LLM Vision must be an image or a concept that refines image"
+                    if inadequate_concept := get_concept_provider().get_concept(concept_code=concept_code_of_declared_input):
+                        explanation += f",\nconcept = {inadequate_concept}"
+                    else:
+                        explanation += ",\nconcept not found"
+
                     inadequate_input_concept_error = StaticValidationError(
                         error_type=StaticValidationErrorType.INADEQUATE_INPUT_CONCEPT,
                         domain_code=self.domain,
                         pipe_code=self.code,
                         variable_names=[required_variable_name],
                         provided_concept_code=concept_code_of_declared_input,
-                        explanation="The input provided for LLM Vision must be an image or a concept that refines image",
+                        explanation=explanation,
                     )
                     match reactions.get(StaticValidationErrorType.INADEQUATE_INPUT_CONCEPT, default_reaction):
                         case StaticValidationReaction.IGNORE:
@@ -212,7 +218,7 @@ class PipeLLM(PipeOperator):
         content_generator = content_generator or get_content_generator()
         # interpret / unwrap the arguments
         log.debug(f"PipeLLM pipe_code = {self.code}")
-        if self.output_concept_code == ConceptFactory.make_concept_code(
+        if self.output_concept_code == ConceptCodeFactory.make_concept_code(
             SpecialDomain.NATIVE,
             NativeConcept.DYNAMIC.code,
         ):
@@ -412,6 +418,7 @@ class PipeLLM(PipeOperator):
                     llm_setting_main=self.llm_setting_main,
                     llm_prompt_factory_for_object_list=llm_prompt_2_factory,
                     llm_setting_for_object_list=self.llm_setting_for_object_list,
+                    nb_items=fixed_nb_output,
                     wfid=task_desc,
                 )
             else:
@@ -423,6 +430,7 @@ class PipeLLM(PipeOperator):
                     object_class=content_class,
                     llm_prompt_for_object_list=llm_prompt_1,
                     llm_setting_for_object_list=self.llm_setting_for_object_list_direct,
+                    nb_items=fixed_nb_output,
                     wfid=task_desc,
                 )
 
