@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.4.0] - 2025-06-16
+## [v0.4.1] - 2025-06-16
 
 - Changed discord link to the new one: https://go.pipelex.com/discord
 - Added `hello-world` example in the `cookbook-examples` of the documentation.
