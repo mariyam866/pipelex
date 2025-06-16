@@ -7,13 +7,14 @@
 - **MkDocs** setup for static web docs generation
     - **Material** for MkDocs theme, custom styling and navigation
     - Other plugins: meta-manager, glightbox
-- **GitHub Pages** deployment, mapped to [docs.pipelex.com](http://docs.pipelex.com)
-- Added GHA workflows for documentation deployment and validation
+    - **GitHub Pages** deployment, mapped to [docs.pipelex.com](http://docs.pipelex.com)
+    - Added GHA workflows for documentation deployment and validation
 - **Added to docs:**
     - [**Manifesto**](https://docs.pipelex.com/manifesto/) explaining the Pipelex viewpoint
     - [**The Pipelex Paradigm**](https://docs.pipelex.com/pages/pipelex-paradigm-for-repeatable-ai-workflows/) explaining the fundamentals of Pipelex’s solution
     - [**Cookbook examples](https://docs.pipelex.com/pages/cookbook-examples/)** presented and explained, commented code, some event with [mermaid](https://docs.pipelex.com/pages/cookbook-examples/invoice-extractor/) [flow](https://docs.pipelex.com/pages/cookbook-examples/extract-gantt/) [charts](https://docs.pipelex.com/pages/cookbook-examples/write-tweet/)
     - And plenty of details about **using Pipelex** and **developing for Pipelex,** from **structured generation** to PipeOperators (**LLM**, **Image generation**, **OCR**…) to PipeControllers (**Sequence**, **Parallel**, **Batch**, **Condition**…), workflow **optimization**, workflow static **validation** and dry run… there’s still work to do, but we move fast!
+- **Also a major update of Cursor rules**
 
 ### Tooling Improvements
 
