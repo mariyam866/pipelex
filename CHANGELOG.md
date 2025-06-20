@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.4.4] - 2025-06-20
+
+### Fixed
+- Changed the allowed base branch names in the GHA `guard-branches.yml`: `doc` -> `docs`
+- Fixed `kajson` dependency (see [kajson v0.1.6 changelog](https://github.com/Pipelex/kajson/blob/main/CHANGELOG.md))
+
+### Cursor rules
+- Added Cursor rules for coding best practices and standards (including linting methods). Added TDD (Test Driven Development) rule on demand.
+- Various changes
+
+### Documentation
+- Added documentation for referencing images in PipeLLM.
+- Fixed typos
+
+### Refactor
+- Removed the `images` field from PipeLLM - images can now be referenced directly in the `inputs`
+- Moved the list-pipes CLI function to the `PipeLibrary` class.
+
 ## [v0.4.3] - 2025-06-19
 
 ### Fixed
@@ -35,9 +53,9 @@
     - Added GHA workflows for documentation deployment and validation
 - **Added to docs:**
     - [**Manifesto**](https://docs.pipelex.com/manifesto/) explaining the Pipelex viewpoint
-    - [**The Pipelex Paradigm**](https://docs.pipelex.com/pages/pipelex-paradigm-for-repeatable-ai-workflows/) explaining the fundamentals of Pipelex’s solution
+    - [**The Pipelex Paradigm**](https://docs.pipelex.com/pages/pipelex-paradigm-for-repeatable-ai-workflows/) explaining the fundamentals of Pipelex's solution
     - [**Cookbook examples](https://docs.pipelex.com/pages/cookbook-examples/)** presented and explained, commented code, some event with [mermaid](https://docs.pipelex.com/pages/cookbook-examples/invoice-extractor/) [flow](https://docs.pipelex.com/pages/cookbook-examples/extract-gantt/) [charts](https://docs.pipelex.com/pages/cookbook-examples/write-tweet/)
-    - And plenty of details about **using Pipelex** and **developing for Pipelex,** from **structured generation** to PipeOperators (**LLM**, **Image generation**, **OCR**…) to PipeControllers (**Sequence**, **Parallel**, **Batch**, **Condition**…), workflow **optimization**, workflow static **validation** and dry run… there’s still work to do, but we move fast!
+    - And plenty of details about **using Pipelex** and **developing for Pipelex,** from **structured generation** to PipeOperators (**LLM**, **Image generation**, **OCR**…) to PipeControllers (**Sequence**, **Parallel**, **Batch**, **Condition**…), workflow **optimization**, workflow static **validation** and dry run… there's still work to do, but we move fast!
 - **Also a major update of Cursor rules**
 
 ### Tooling Improvements
