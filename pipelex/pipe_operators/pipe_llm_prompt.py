@@ -1,6 +1,5 @@
 from typing import ClassVar, List, Optional, Set, cast
 
-from kajson.class_registry import class_registry
 from pydantic import model_validator
 from typing_extensions import Self, override
 
@@ -22,7 +21,7 @@ from pipelex.exceptions import (
     PipeRunParamsError,
     WorkingMemoryVariableError,
 )
-from pipelex.hub import get_template
+from pipelex.hub import get_class_registry, get_template
 from pipelex.pipe_operators.pipe_jinja2 import PipeJinja2, PipeJinja2Output
 from pipelex.pipe_operators.pipe_operator import PipeOperator
 from pipelex.pipeline.job_metadata import JobCategory, JobMetadata
@@ -106,10 +105,6 @@ class PipeLLMPrompt(PipeOperator):
                 # variables starting with _ are run parameters, not inputs
                 continue
             pipe_input_spec.add_requirement(variable_name=conceptless_required_variable, concept_code=NativeConcept.ANYTHING.code)
-
-        if self.user_images:
-            for user_image in self.user_images:
-                pipe_input_spec.add_requirement(variable_name=user_image, concept_code=NativeConcept.IMAGE.code)
 
         return pipe_input_spec
 
@@ -219,7 +214,7 @@ class PipeLLMPrompt(PipeOperator):
     @staticmethod
     def get_output_structure_prompt(output_concept: str) -> str:
         class_name = Concept.extract_concept_name_from_str(concept_str=output_concept)
-        output_class = class_registry.get_class(class_name)
+        output_class = get_class_registry().get_class(class_name)
         if not output_class:
             return ""
 
