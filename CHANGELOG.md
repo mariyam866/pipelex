@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.6] - 2025-06-24
+
+- Changed the link to the doc in the `README.md`: https://docs.pipelex.com
+
 ## [v0.4.5] - 2025-06-23
 
 ### Changed
