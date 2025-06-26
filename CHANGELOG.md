@@ -3,7 +3,7 @@
 ## [v0.4.8] - 2025-06-26
 
 - Added `StorageProviderAbstract`
-- Updated the changelog of `v0.4.7`: Moved `Added StorageProviderAbstract` to v0.4.8
+- Updated the changelog of `v0.4.7`: Moved `Added StorageProviderAbstract` to `v0.4.8`
 
 ## [v0.4.7] - 2025-06-26
 
