@@ -2,9 +2,9 @@
 
 ## [v0.4.7] - 2025-06-26
 
-- Added an API serializer: introducing the `compact_memory`, a new way to store the working memeory for the API.
+- Added an API serializer: introducing the `compact_memory`, a new way to encode/decode the working memory as json, for the API.
 - Added `StorageProviderAbstract`
-- Improved creating concept from attributes (without useless dict creation). When the Concept has no given structure and no explicit `refines`, set it to refine `native.Text`
+- When creating a Concept with no structure specified and no explicit `refines`, set it to refine `native.Text`
 
 ## [v0.4.6] - 2025-06-24
 
