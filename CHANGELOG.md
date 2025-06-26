@@ -5,6 +5,8 @@
 - Added an API serializer: introducing the `compact_memory`, a new way to encode/decode the working memory as json, for the API.
 - Added `StorageProviderAbstract`
 - When creating a Concept with no structure specified and no explicit `refines`, set it to refine `native.Text`
+- `JobMetadata`: added `job_name`. Removed `top_job_id` and `wfid`
+- `PipeOutput`: added `pipeline_run_id`
 
 ## [v0.4.6] - 2025-06-24
 
