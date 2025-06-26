@@ -1,4 +1,4 @@
-from typing import List, cast
+from typing import List
 
 import pytest
 from pytest import FixtureRequest
@@ -64,9 +64,7 @@ class TestContentGenerator:
         llm_setting_main = get_llm_deck().get_llm_setting(llm_setting_or_preset_id="llm_for_testing_gen_text")
 
         text: str = await get_content_generator().make_llm_text(
-            job_metadata=JobMetadata(
-                top_job_id=cast(str, request.node.originalname),  # pyright: ignore[reportUnknownMemberType]
-            ),
+            job_metadata=JobMetadata(job_name=request.node.originalname),  # type: ignore
             llm_prompt_for_text=LLMPrompt(user_text=USER_TEXT_FOR_BASE),
             llm_setting_main=llm_setting_main,
         )
@@ -80,9 +78,7 @@ class TestContentGenerator:
         llm_setting_for_object = get_llm_deck().get_llm_setting(llm_setting_or_preset_id="llm_for_testing_gen_object")
 
         person_direct: Employee = await get_content_generator().make_object_direct(
-            job_metadata=JobMetadata(
-                top_job_id=cast(str, request.node.originalname),  # pyright: ignore[reportUnknownMemberType]
-            ),
+            job_metadata=JobMetadata(job_name=request.node.originalname),  # type: ignore
             object_class=Employee,
             llm_prompt_for_object=LLMPrompt(user_text=USER_TEXT_FOR_SINGLE_PERSON),
             llm_setting_for_object=llm_setting_for_object,
@@ -97,9 +93,7 @@ class TestContentGenerator:
         llm_setting_for_object = get_llm_deck().get_llm_setting(llm_setting_or_preset_id="llm_for_testing_gen_object")
 
         person_list_direct: List[Employee] = await get_content_generator().make_object_list_direct(
-            job_metadata=JobMetadata(
-                top_job_id=cast(str, request.node.originalname),  # pyright: ignore[reportUnknownMemberType]
-            ),
+            job_metadata=JobMetadata(job_name=request.node.originalname),  # type: ignore
             object_class=Employee,
             llm_prompt_for_object_list=LLMPrompt(user_text=USER_TEXTS_FOR_PEOPLE_STR),
             llm_setting_for_object_list=llm_setting_for_object,
@@ -113,9 +107,7 @@ class TestContentGenerator:
     @pytest.mark.inference
     async def test_make_image(self, request: FixtureRequest):
         image: GeneratedImage = await get_content_generator().make_single_image(
-            job_metadata=JobMetadata(
-                top_job_id=cast(str, request.node.originalname),  # pyright: ignore[reportUnknownMemberType]
-            ),
+            job_metadata=JobMetadata(job_name=request.node.originalname),  # type: ignore
             imgg_handle=ImggHandle.SDXL_LIGHTNING,
             imgg_prompt=ImggPrompt(
                 positive_text="A dog with sunglasses coding on a laptop",
@@ -141,9 +133,7 @@ class TestContentGenerator:
     @pytest.mark.inference
     async def test_make_ocr_extract_pages(self, request: FixtureRequest):
         ocr_output = await get_content_generator().make_ocr_extract_pages(
-            job_metadata=JobMetadata(
-                top_job_id=cast(str, request.node.originalname),  # pyright: ignore[reportUnknownMemberType]
-            ),
+            job_metadata=JobMetadata(job_name=request.node.originalname),  # type: ignore
             ocr_handle=OcrHandle.MISTRAL_OCR,
             ocr_input=OcrInput(image_uri=ImageTestCases.IMAGE_FILE_PATH_PNG),
             ocr_job_params=OcrJobParams.make_default_ocr_job_params(),
@@ -159,9 +149,7 @@ class TestContentGenerator:
         llm_setting_main = LLMSetting(llm_handle=BAD_HANDLE_TO_TEST_FAILURE, temperature=0.5, max_tokens=100)
         with pytest.raises(LLMHandleNotFoundError) as excinfo:
             await get_content_generator().make_llm_text(
-                job_metadata=JobMetadata(
-                    top_job_id=cast(str, request.node.originalname),  # pyright: ignore[reportUnknownMemberType]
-                ),
+                job_metadata=JobMetadata(job_name=request.node.originalname),  # type: ignore
                 llm_prompt_for_text=LLMPrompt(user_text=USER_TEXT_FOR_BASE),
                 llm_setting_main=llm_setting_main,
             )
