@@ -11,7 +11,9 @@ from typing_extensions import Self
 
 from pipelex import log
 from pipelex.cogt.content_generation.content_generator import ContentGenerator
-from pipelex.cogt.content_generation.content_generator_protocol import ContentGeneratorProtocol
+from pipelex.cogt.content_generation.content_generator_protocol import (
+    ContentGeneratorProtocol,
+)
 from pipelex.cogt.inference.inference_manager import InferenceManager
 from pipelex.cogt.llm.llm_models.llm_model import LATEST_VERSION_NAME
 from pipelex.cogt.llm.llm_models.llm_model_library import LLMModelLibrary
@@ -24,10 +26,16 @@ from pipelex.libraries.library_manager import LibraryManager
 from pipelex.pipe_works.pipe_router import PipeRouter
 from pipelex.pipe_works.pipe_router_protocol import PipeRouterProtocol
 from pipelex.pipeline.activity.activity_manager import ActivityManager
-from pipelex.pipeline.activity.activity_manager_protocol import ActivityManagerNoOp, ActivityManagerProtocol
+from pipelex.pipeline.activity.activity_manager_protocol import (
+    ActivityManagerNoOp,
+    ActivityManagerProtocol,
+)
 from pipelex.pipeline.pipeline_manager import PipelineManager
 from pipelex.pipeline.track.pipeline_tracker import PipelineTracker
-from pipelex.pipeline.track.pipeline_tracker_protocol import PipelineTrackerNoOp, PipelineTrackerProtocol
+from pipelex.pipeline.track.pipeline_tracker_protocol import (
+    PipelineTrackerNoOp,
+    PipelineTrackerProtocol,
+)
 from pipelex.reporting.reporting_manager import ReportingManager
 from pipelex.reporting.reporting_protocol import ReportingNoOp, ReportingProtocol
 from pipelex.test_extras.registry_test_models import PipelexTestModels
@@ -36,6 +44,7 @@ from pipelex.tools.func_registry import func_registry
 from pipelex.tools.runtime_manager import runtime_manager
 from pipelex.tools.secrets.env_secrets_provider import EnvSecretsProvider
 from pipelex.tools.secrets.secrets_provider_abstract import SecretsProviderAbstract
+from pipelex.tools.storage.storage_provider_abstract import StorageProviderAbstract
 from pipelex.tools.templating.template_library import TemplateLibrary
 from pipelex.tools.typing.pydantic_utils import format_pydantic_validation_error
 
@@ -172,10 +181,11 @@ class Pipelex:
         content_generator: Optional[ContentGeneratorProtocol] = None,
         pipe_router: Optional[PipeRouterProtocol] = None,
         structure_classes: Optional[List[Type[Any]]] = None,
+        storage_provider: Optional[StorageProviderAbstract] = None,
     ):
         # tools
         self.pipelex_hub.set_secrets_provider(secrets_provider or EnvSecretsProvider())
-
+        self.pipelex_hub.set_storage_provider(storage_provider)
         # cogt
         self.pipelex_hub.set_content_generator(content_generator or ContentGenerator())
         self.reporting_delegate.setup()
