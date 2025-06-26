@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.4.7] - 2025-06-26
+
+- Added an API serializer: introducing the `compact_memory`, a new way to store the working memeory for the API.
+- Added `StorageProviderAbstract`
+- Improved creating concept from attributes (without useless dict creation). When the Concept has no given structure and no explicit `refines`, set it to refine `native.Text`
+
 ## [v0.4.6] - 2025-06-24
 
 - Changed the link to the doc in the `README.md`: https://docs.pipelex.com
