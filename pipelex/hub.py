@@ -4,12 +4,16 @@ from typing import ClassVar, Dict, List, Optional, Type
 from kajson.class_registry_abstract import ClassRegistryAbstract
 
 from pipelex import log
-from pipelex.cogt.content_generation.content_generator_protocol import ContentGeneratorProtocol
+from pipelex.cogt.content_generation.content_generator_protocol import (
+    ContentGeneratorProtocol,
+)
 from pipelex.cogt.imgg.imgg_worker_abstract import ImggWorkerAbstract
 from pipelex.cogt.inference.inference_manager_protocol import InferenceManagerProtocol
 from pipelex.cogt.llm.llm_models.llm_deck_abstract import LLMDeckAbstract
 from pipelex.cogt.llm.llm_models.llm_engine_blueprint import LLMEngineBlueprint
-from pipelex.cogt.llm.llm_models.llm_model_provider_abstract import LLMModelProviderAbstract
+from pipelex.cogt.llm.llm_models.llm_model_provider_abstract import (
+    LLMModelProviderAbstract,
+)
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
 from pipelex.cogt.ocr.ocr_worker_abstract import OcrWorkerAbstract
 from pipelex.cogt.plugin_manager import PluginManager
@@ -28,6 +32,7 @@ from pipelex.reporting.reporting_protocol import ReportingProtocol
 from pipelex.tools.config.manager import config_manager
 from pipelex.tools.config.models import ConfigRoot
 from pipelex.tools.secrets.secrets_provider_abstract import SecretsProviderAbstract
+from pipelex.tools.storage.storage_provider_abstract import StorageProviderAbstract
 from pipelex.tools.templating.template_provider_abstract import TemplateProviderAbstract
 
 
@@ -46,6 +51,7 @@ class PipelexHub:
         self._secrets_provider: Optional[SecretsProviderAbstract] = None
         self._template_provider: Optional[TemplateProviderAbstract] = None
         self._class_registry: Optional[ClassRegistryAbstract] = None
+        self._storage_provider: Optional[StorageProviderAbstract] = None
         # cogt
         self._llm_models_provider: Optional[LLMModelProviderAbstract] = None
         self._llm_deck_provider: Optional[LLMDeckAbstract] = None
@@ -111,6 +117,9 @@ class PipelexHub:
 
     def set_secrets_provider(self, secrets_provider: SecretsProviderAbstract):
         self._secrets_provider = secrets_provider
+
+    def set_storage_provider(self, storage_provider: StorageProviderAbstract | None):
+        self._storage_provider = storage_provider
 
     def set_template_provider(self, template_provider: TemplateProviderAbstract):
         self._template_provider = template_provider
@@ -197,6 +206,11 @@ class PipelexHub:
         if self._class_registry is None:
             raise RuntimeError("ClassRegistry is not initialized")
         return self._class_registry
+
+    def get_storage_provider(self) -> StorageProviderAbstract:
+        if self._storage_provider is None:
+            raise RuntimeError("StorageProvider is not initialized")
+        return self._storage_provider
 
     # cogt
 
@@ -297,6 +311,10 @@ def get_secrets_provider() -> SecretsProviderAbstract:
     return get_pipelex_hub().get_required_secrets_provider()
 
 
+def get_storage_provider() -> StorageProviderAbstract:
+    return get_pipelex_hub().get_storage_provider()
+
+
 def get_template_provider() -> TemplateProviderAbstract:
     return get_pipelex_hub().get_required_template_provider()
 
@@ -391,7 +409,9 @@ def get_pipe_provider() -> PipeProviderAbstract:
     return get_pipelex_hub().get_required_pipe_provider()
 
 
-def get_pipes_by_domain(excluded_domains: Optional[List[str]] = None) -> Dict[str, List[str]]:
+def get_pipes_by_domain(
+    excluded_domains: Optional[List[str]] = None,
+) -> Dict[str, List[str]]:
     pipes = get_pipe_provider().get_pipes()
     pipes_by_domain: Dict[str, List[str]] = defaultdict(list)
     for pipe in pipes:
