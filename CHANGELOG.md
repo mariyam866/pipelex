@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.4.9] - 2025-06-30
+
+### Highlights
+
+**Plugin System Refactoring** - Complete overhaul of the plugin architecture to support external LLM providers.
+
+### Added
+
+- **External Plugin Support**: New `LLMWorkerAbstract` base class for integrating custom LLM providers, and we don't mean only an OpenAI-SDK-based LLM with a custom endpoint, now the implementation can be anything, as long as it implements the `LLMWorkerAbstract` interface.
+- **Plugin SDK Registry**: Better management of SDK instances with proper teardown handling
+- **Enhanced Error Formatting**: Improved Pydantic validation error messages for enums
+
+### Changed
+
+- **Plugin Architecture**: Moved plugin system to dedicated `pipelex.plugins` package
+- **LLM Workers**: Split into `LLMWorkerInternalAbstract` (for built-in providers) and `LLMWorkerAbstract` (for external plugins)
+- **Configuration**: Plugin configs moved from main `pipelex.toml` to separate `pipelex_libraries/plugins/plugin_config.toml` (⚠️ breaking change)
+- **Error Handling**: Standardized credential errors with new `CredentialsError` base class
+
 ## [v0.4.8] - 2025-06-26
 
 - Added `StorageProviderAbstract`
