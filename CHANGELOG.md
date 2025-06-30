@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.10] - 2025-06-30
+
+- Fixed a bad import statement
+
 ## [v0.4.9] - 2025-06-30
 
 ### Highlights
