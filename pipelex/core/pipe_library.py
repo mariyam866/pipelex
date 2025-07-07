@@ -1,7 +1,7 @@
 from itertools import groupby
 from typing import Dict, List, Optional
 
-from pydantic import Field, RootModel
+from pydantic import RootModel
 from rich import box
 from rich.table import Table
 from typing_extensions import override
@@ -16,8 +16,6 @@ PipeLibraryRoot = Dict[str, PipeAbstract]
 
 
 class PipeLibrary(RootModel[PipeLibraryRoot], PipeProviderAbstract):
-    root: PipeLibraryRoot = Field(default_factory=dict)
-
     def validate_with_libraries(self):
         concept_provider = get_concept_provider()
         for pipe in self.root.values():
@@ -34,6 +32,10 @@ class PipeLibrary(RootModel[PipeLibraryRoot], PipeProviderAbstract):
                 pipe.validate_with_libraries()
             except (ConceptLibraryConceptNotFoundError, PipeLibraryPipeNotFoundError) as not_found_error:
                 raise PipeLibraryError(f"Missing dependency for pipe '{pipe.code}': {not_found_error}") from not_found_error
+
+    @classmethod
+    def make_empty(cls):
+        return cls(root={})
 
     def add_new_pipe(self, pipe: PipeAbstract):
         name = pipe.code

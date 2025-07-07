@@ -31,7 +31,7 @@ PipeLLM = "Imagine a product of nature"
 inputs = { color = "Color" }
 output = "ProductOfNature"
 prompt_template = """
-Propose a product of nature of this color: {{ color|format("plain") }}.
+Propose a product of nature of this color: $color.
 Just state what it is in a single sentence.
 """
 
@@ -42,20 +42,10 @@ output = "FantasyScene"
 prompt_template = """
 Imagine a fantasy scene including the following products of nature:
 
-{{ product_of_nature|tag("products of nature") }}
+@product_of_nature
 
 Keep it short and concise, just one sentence.
 """
-
-[pipe.imagine_nature_product_list]
-PipeSequence = "Imagine nature products of different colors"
-output = "Image"
-steps = [
-    { pipe = "choose_colors", result = "color", nb_output = 3 },
-    { pipe = "imagine_nature_product", result = "product_of_nature" },
-    { pipe = "imagine_fantasy_scene_including_products_of_nature", result = "imgg_prompt" },
-    # { pipe = "generate_image", result = "image" },
-]
 
 [pipe.imagine_nature_scene_of_original_power_rangers_colors]
 PipeSequence = "Imagine nature scenes of Power Rangers colors"
@@ -64,7 +54,6 @@ steps = [
     { pipe = "original_power_ranger_colors", result = "color" },
     { pipe = "imagine_nature_product", result = "product_of_nature" },
     { pipe = "imagine_fantasy_scene_including_products_of_nature", result = "imgg_prompt" },
-    # { pipe = "generate_image", result = "image" },
 ]
 
 
@@ -75,5 +64,5 @@ steps = [
     { pipe = "alltime_power_ranger_colors", result = "color", multiple_output = true },
     { pipe = "imagine_nature_product", result = "product_of_nature" },
     { pipe = "imagine_fantasy_scene_including_products_of_nature", result = "imgg_prompt" },
-    # { pipe = "generate_image", result = "image" },
 ]
+

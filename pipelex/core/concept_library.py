@@ -50,6 +50,10 @@ class ConceptLibrary(RootModel[ConceptLibraryRoot], ConceptProviderAbstract):
     def reset(self):
         self.root = {}
 
+    @classmethod
+    def make_empty(cls):
+        return cls(root={})
+
     @override
     def is_concept_implicit(self, concept_code: str) -> bool:
         concept_names = self._list_concept_names()
@@ -64,6 +68,16 @@ class ConceptLibrary(RootModel[ConceptLibraryRoot], ConceptProviderAbstract):
 
     def _list_concept_names(self) -> List[str]:
         return [Concept.extract_domain_and_concept_from_str(c.code)[1] for c in self.list_concepts()]
+
+    @override
+    def is_concept_code_legal(self, concept_code: str) -> bool:
+        """Given a `domain.concept_code` concept_str verifies that this concept does belong to this domain or not."""
+        if Concept.concept_str_contains_domain(concept_str=concept_code):
+            domain = Concept.extract_domain_from_str(concept_str=concept_code)
+            concept_code = Concept.extract_concept_name_from_str(concept_str=concept_code)
+            return f"{domain}.{concept_code}" in self.root
+        else:
+            return False
 
     @override
     def list_concepts_by_domain(self, domain: str) -> List[Concept]:
@@ -108,7 +122,7 @@ class ConceptLibrary(RootModel[ConceptLibraryRoot], ConceptProviderAbstract):
 
     @override
     def get_required_concept(self, concept_code: str) -> Concept:
-        if self.is_native_concept(concept_str=concept_code):
+        if Concept.is_native_concept(concept_str=concept_code):
             if Concept.concept_str_contains_domain(concept_str=concept_code):
                 domain, concept_code = Concept.extract_domain_and_concept_from_str(concept_str=concept_code)
                 concept_code = f"{domain}.{concept_code}"
@@ -155,10 +169,3 @@ class ConceptLibrary(RootModel[ConceptLibraryRoot], ConceptProviderAbstract):
         is_image_class = bool(pydantic_model and issubclass(pydantic_model, ImageContent))
         refines_image = self.is_compatible_by_concept_code(tested_concept_code=concept.code, wanted_concept_code=NativeConcept.IMAGE.code)
         return is_image_class or refines_image
-
-    def is_native_concept(self, concept_str: str) -> bool:
-        if Concept.concept_str_contains_domain(concept_str=concept_str):
-            domain = Concept.extract_domain_from_str(concept_str=concept_str)
-            return domain == SpecialDomain.NATIVE.value
-        else:
-            return concept_str in NativeConcept.names()

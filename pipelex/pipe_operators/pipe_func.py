@@ -1,8 +1,9 @@
-from typing import List, Optional, cast
+from typing import List, Optional, Set, cast
 
 from typing_extensions import override
 
 from pipelex import log
+from pipelex.core.pipe_input_spec import PipeInputSpec
 from pipelex.core.pipe_output import PipeOutput
 from pipelex.core.pipe_run_params import PipeRunParams
 from pipelex.core.stuff_content import ListContent, StuffContent, TextContent
@@ -19,6 +20,14 @@ class PipeFuncOutput(PipeOutput):
 
 class PipeFunc(PipeOperator):
     function_name: str
+
+    @override
+    def required_variables(self) -> Set[str]:
+        return set()
+
+    @override
+    def needed_inputs(self) -> PipeInputSpec:
+        return PipeInputSpec.make_empty()
 
     @override
     async def _run_operator_pipe(
@@ -62,3 +71,13 @@ class PipeFunc(PipeOperator):
             pipeline_run_id=job_metadata.pipeline_run_id,
         )
         return pipe_output
+
+    @override
+    async def _dry_run_operator_pipe(
+        self,
+        job_metadata: JobMetadata,
+        working_memory: WorkingMemory,
+        pipe_run_params: PipeRunParams,
+        output_name: Optional[str] = None,
+    ) -> PipeOutput:
+        raise NotImplementedError("Dry run not yet implemented for PipeFunc")

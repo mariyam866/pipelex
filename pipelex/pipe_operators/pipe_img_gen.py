@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import List, Literal, Optional, Set, Union
 
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import Self, override
@@ -11,8 +11,10 @@ from pipelex.cogt.imgg.imgg_job_components import AspectRatio, Background, ImggJ
 from pipelex.cogt.imgg.imgg_prompt import ImggPrompt
 from pipelex.config import StaticValidationReaction, get_config
 from pipelex.core.concept_native import NativeConcept
+from pipelex.core.pipe_input_spec import PipeInputSpec
 from pipelex.core.pipe_output import PipeOutput
-from pipelex.core.pipe_run_params import PipeOutputMultiplicity, PipeRunParams, output_multiplicity_to_apply
+from pipelex.core.pipe_run_params import PipeOutputMultiplicity, PipeRunMode, PipeRunParams, output_multiplicity_to_apply
+from pipelex.core.pipe_run_params_factory import PipeRunParamsFactory
 from pipelex.core.stuff_content import ImageContent, ListContent, StuffContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory import WorkingMemory
@@ -74,6 +76,20 @@ class PipeImgGen(PipeOperator):
     def validate_inputs(self) -> Self:
         self._validate_inputs()
         return self
+
+    @override
+    def needed_inputs(self) -> PipeInputSpec:
+        needed_inputs = PipeInputSpec.make_empty()
+        if self.imgg_prompt:
+            needed_inputs.add_requirement(variable_name="imgg_prompt", concept_code=NativeConcept.TEXT.code)
+        else:
+            for input_name, input_concept_code in self.inputs.items:
+                needed_inputs.add_requirement(variable_name=input_name, concept_code=input_concept_code)
+        return needed_inputs
+
+    @override
+    def required_variables(self) -> Set[str]:
+        return {"imgg_prompt"}
 
     def _validate_inputs(self):
         concept_provider = get_concept_provider()
@@ -282,12 +298,12 @@ class PipeImgGen(PipeOperator):
         pipe_run_params: PipeRunParams,
         output_name: Optional[str] = None,
     ) -> PipeOutput:
-        log.info(f"PipeImgGen: dry run operator pipe: {self.code}")
+        log.debug(f"PipeImgGen: dry run operator pipe: {self.code}")
         content_generator_dry = ContentGeneratorDry()
         pipe_output = await self._run_operator_pipe(
             job_metadata=job_metadata,
             working_memory=working_memory,
-            pipe_run_params=pipe_run_params,
+            pipe_run_params=pipe_run_params or PipeRunParamsFactory.make_run_params(pipe_run_mode=PipeRunMode.DRY),
             output_name=output_name,
             content_generator=content_generator_dry,
         )

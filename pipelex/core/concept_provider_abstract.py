@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Type
 
 from pipelex.core.concept import Concept
 
+ConceptLibraryRoot = Dict[str, Concept]
+
 
 class ConceptProviderAbstract(ABC):
-    _instance: ClassVar[Optional["ConceptProviderAbstract"]] = None
-
     @abstractmethod
     def get_concept(self, concept_code: str) -> Optional[Concept]:
         pass
@@ -49,4 +49,8 @@ class ConceptProviderAbstract(ABC):
 
     @abstractmethod
     def is_image_concept(self, concept_code: str) -> bool:
+        pass
+
+    @abstractmethod
+    def is_concept_code_legal(self, concept_code: str) -> bool:
         pass

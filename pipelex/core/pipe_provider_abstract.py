@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import ClassVar, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from pipelex.core.pipe_abstract import PipeAbstract
 
+PipeLibraryRoot = Dict[str, PipeAbstract]
+
 
 class PipeProviderAbstract(ABC):
-    _instance: ClassVar[Optional["PipeProviderAbstract"]] = None
-
     @abstractmethod
     def get_required_pipe(self, pipe_code: str) -> PipeAbstract:
         pass
