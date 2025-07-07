@@ -18,6 +18,9 @@ from pipelex.cogt.inference.inference_manager import InferenceManager
 from pipelex.cogt.llm.llm_models.llm_model import LATEST_VERSION_NAME
 from pipelex.cogt.llm.llm_models.llm_model_library import LLMModelLibrary
 from pipelex.config import PipelexConfig, get_config
+from pipelex.core.concept_library import ConceptLibrary
+from pipelex.core.domain_library import DomainLibrary
+from pipelex.core.pipe_library import PipeLibrary
 from pipelex.core.registry_models import PipelexRegistryModels
 from pipelex.exceptions import PipelexConfigError, PipelexSetupError
 from pipelex.hub import PipelexHub, set_pipelex_hub
@@ -144,10 +147,15 @@ class Pipelex:
         self.pipelex_hub.set_report_delegate(self.reporting_delegate)
 
         # pipelex libraries
-        self.library_manager = LibraryManager()
-        self.pipelex_hub.set_domain_provider(domain_provider=self.library_manager.domain_library)
-        self.pipelex_hub.set_concept_provider(concept_provider=self.library_manager.concept_library)
-        self.pipelex_hub.set_pipe_provider(pipe_provider=self.library_manager.pipe_library)
+        domain_library = DomainLibrary.make_empty()
+        concept_library = ConceptLibrary.make_empty()
+        pipe_library = PipeLibrary.make_empty()
+        self.pipelex_hub.set_domain_provider(domain_provider=domain_library)
+        self.pipelex_hub.set_concept_provider(concept_provider=concept_library)
+        self.pipelex_hub.set_pipe_provider(pipe_provider=pipe_library)
+        self.library_manager = LibraryManager(domain_library=domain_library, concept_library=concept_library, pipe_library=pipe_library)
+        self.library_manager.setup()
+        self.pipelex_hub.set_library_manager(library_manager=self.library_manager)
 
         # pipelex pipeline
         self.pipeline_tracker: PipelineTrackerProtocol
@@ -205,7 +213,7 @@ class Pipelex:
 
         log.debug(f"{PACKAGE_NAME} version {PACKAGE_VERSION} setup done for {get_config().project_name}")
 
-    def finish_setup(self):
+    def setup_libraries(self):
         try:
             self.template_provider.setup()
             self.llm_model_provider.setup()
@@ -215,17 +223,20 @@ class Pipelex:
                     llm_deck.add_llm_name_as_handle_with_defaults(
                         llm_name=llm_model.llm_name,
                     )
-            llm_deck.validate_llm_presets()
             self.library_manager.load_libraries()
-            if self.library_manager.llm_deck is None:
-                raise PipelexSetupError("LLM deck is not loaded")
+            self.pipelex_hub.set_llm_deck_provider(llm_deck_provider=llm_deck)
+        except ValidationError as exc:
+            error_msg = format_pydantic_validation_error(exc)
+            raise PipelexSetupError(f"Error because of: {error_msg}") from exc
+        log.debug(f"{PACKAGE_NAME} version {PACKAGE_VERSION} setup libraries done for {get_config().project_name}")
 
-            self.pipelex_hub.set_llm_deck_provider(llm_deck_provider=self.library_manager.llm_deck)
+    def validate_libraries(self):
+        try:
             self.library_manager.validate_libraries()
         except ValidationError as exc:
             error_msg = format_pydantic_validation_error(exc)
             raise PipelexSetupError(f"Error because of: {error_msg}") from exc
-        log.debug(f"{PACKAGE_NAME} version {PACKAGE_VERSION} finish setup done for {get_config().project_name}")
+        log.debug(f"{PACKAGE_NAME} version {PACKAGE_VERSION} validate libraries done for {get_config().project_name}")
 
     def teardown(self):
         # pipelex
@@ -257,7 +268,7 @@ class Pipelex:
     def make(cls, structure_classes: Optional[List[Type[Any]]] = None) -> Self:
         pipelex_instance = cls()
         pipelex_instance.setup(structure_classes=structure_classes)
-        pipelex_instance.finish_setup()
+        pipelex_instance.setup_libraries()
         log.info(f"Pipelex {PACKAGE_VERSION} initialized.")
         return pipelex_instance
 

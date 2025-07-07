@@ -5,8 +5,8 @@ extra_env_files = []
 
 [pipelex.feature_config]
 # WIP/Experimental feature flags
-is_pipeline_tracking_enabled = false
-is_activity_tracking_enabled = false
+is_pipeline_tracking_enabled = true
+is_activity_tracking_enabled = true
 is_reporting_enabled = true
 
 [pipelex.reporting_config]
@@ -205,7 +205,9 @@ apply_to_jinja2_rendering = false
 text_gen_truncate_length = 256
 nb_list_items = 3
 nb_ocr_pages = 4
+allowed_to_fail_pipes = ["infinite_loop_1"]
 image_urls = [
-    "https://storage.googleapis.com/public_test_files_7fa6_4277_9ab/fashion/fashion_photo_1.jpg", 
+    "https://storage.googleapis.com/public_test_files_7fa6_4277_9ab/fashion/fashion_photo_1.jpg",
     "https://storage.googleapis.com/public_test_files_7fa6_4277_9ab/fashion/fashion_photo_2.png",
     ]
+

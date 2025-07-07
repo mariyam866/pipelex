@@ -2,18 +2,20 @@ import asyncio
 from typing import Any, Coroutine, List, Optional, Set, cast
 
 import shortuuid
-from typing_extensions import override
+from pydantic import model_validator
+from typing_extensions import Self, override
 
 from pipelex import log
 from pipelex.config import get_config
+from pipelex.core.pipe_input_spec import PipeInputSpec
 from pipelex.core.pipe_output import PipeOutput
-from pipelex.core.pipe_run_params import BatchParams, PipeRunParams
+from pipelex.core.pipe_run_params import BatchParams, PipeRunMode, PipeRunParams
 from pipelex.core.stuff import Stuff
 from pipelex.core.stuff_content import ListContent, StuffContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory import MAIN_STUFF_NAME, WorkingMemory
 from pipelex.exceptions import PipeInputError, PipeInputNotFoundError, WorkingMemoryStuffNotFoundError
-from pipelex.hub import get_pipe_router, get_pipeline_tracker, get_required_pipe
+from pipelex.hub import get_pipeline_tracker, get_required_pipe
 from pipelex.pipe_controllers.pipe_controller import PipeController
 from pipelex.pipeline.job_metadata import JobMetadata
 
@@ -28,15 +30,50 @@ class PipeBatch(PipeController):
     def pipe_dependencies(self) -> Set[str]:
         return set([self.branch_pipe_code])
 
+    @model_validator(mode="after")
+    def validate_required_variables(self) -> Self:
+        # Skip for now
+        return self
+
     @override
-    async def _run_controller_pipe(
+    def validate_with_libraries(self):
+        self._validate_required_variables()
+
+    def _validate_required_variables(self) -> Self:
+        # Now check that the required vairables ARE in the inputs of the pipe
+        required_variables = self.required_variables()
+        for variable_name in required_variables:
+            if variable_name not in self.inputs.root.keys():
+                raise PipeInputError(f"Input '{variable_name}' of pipe '{self.code}' is not in the inputs of the pipe '{self.branch_pipe_code}'")
+        return self
+
+    @override
+    def required_variables(self) -> Set[str]:
+        required_variables: Set[str] = set()
+        # 1. Check that the inputs of the pipe branch_pipe_code are in the inputs of the pipe
+        pipe = get_required_pipe(pipe_code=self.branch_pipe_code)
+        for variable_name, _ in pipe.inputs.items:
+            required_variables.add(variable_name)
+        # 2. Check that the input_item_stuff_name is in the inputs of the pipe
+        if self.batch_params and self.batch_params.input_item_stuff_name:
+            required_variables.add(self.batch_params.input_item_stuff_name)
+        return required_variables
+
+    @override
+    def needed_inputs(self) -> PipeInputSpec:
+        needed_inputs = PipeInputSpec.make_empty()
+        for variable_name, concept_code in self.inputs.items:
+            needed_inputs.add_requirement(variable_name, concept_code)
+        return needed_inputs
+
+    async def _run_batch_pipe(
         self,
         job_metadata: JobMetadata,
         working_memory: WorkingMemory,
         pipe_run_params: PipeRunParams,
         output_name: Optional[str] = None,
     ) -> PipeOutput:
-        """Run a pipe in batch mode for each item in the input list."""
+        """Common logic for running or dry-running a pipe in batch mode."""
         batch_params = pipe_run_params.batch_params or self.batch_params or BatchParams.make_default()
         input_item_stuff_name = batch_params.input_item_stuff_name
         try:
@@ -47,7 +84,8 @@ class PipeBatch(PipeController):
             ) from exc
 
         if pipe_run_params.final_stuff_code:
-            log.debug(f"PipeBatch.run_pipe() final_stuff_code: {pipe_run_params.final_stuff_code}")
+            method_name = "dry_run_pipe" if pipe_run_params.run_mode == PipeRunMode.DRY else "_run_controller_pipe"
+            log.debug(f"PipeBatch.{method_name}() final_stuff_code: {pipe_run_params.final_stuff_code}")
             pipe_run_params.final_stuff_code = None
 
         pipe_run_params.push_pipe_layer(pipe_code=self.branch_pipe_code)
@@ -66,7 +104,6 @@ class PipeBatch(PipeController):
             )
         input_content = cast(ListContent[StuffContent], input_content)
 
-        pipe_router = get_pipe_router()
         # TODO: Make commented code work when inputing images named "a.b.c"
         sub_pipe = get_required_pipe(pipe_code=self.branch_pipe_code)
         nb_history_items_limit = get_config().pipelex.tracker_config.applied_nb_items_limit
@@ -75,6 +112,7 @@ class PipeBatch(PipeController):
         item_stuffs: List[Stuff] = []
         required_stuff_lists: List[List[Stuff]] = []
         branch_output_item_codes: List[str] = []
+
         for branch_index, item in enumerate(input_content.items):
             branch_output_item_code = f"{batch_output_stuff_code}-branch-{branch_index}"
             branch_output_item_codes.append(branch_output_item_code)
@@ -96,15 +134,23 @@ class PipeBatch(PipeController):
             required_stuffs = [required_stuff for required_stuff in required_stuffs if required_stuff.stuff_code != input_stuff_code]
             required_stuff_lists.append(required_stuffs)
             branch_pipe_run_params = pipe_run_params.deep_copy_with_final_stuff_code(final_stuff_code=branch_output_item_code)
-            tasks.append(
-                pipe_router.run_pipe_code(
-                    pipe_code=self.branch_pipe_code,
+
+            if pipe_run_params.run_mode == PipeRunMode.DRY:
+                branch_pipe_run_params.run_mode = PipeRunMode.DRY
+                task = sub_pipe.run_pipe(
                     job_metadata=job_metadata,
                     working_memory=branch_memory,
                     output_name=f"Batch result {branch_index + 1} of {output_name}",
                     pipe_run_params=branch_pipe_run_params,
                 )
-            )
+            else:
+                task = sub_pipe.run_pipe(
+                    job_metadata=job_metadata,
+                    working_memory=branch_memory,
+                    output_name=f"Batch result {branch_index + 1} of {output_name}",
+                    pipe_run_params=branch_pipe_run_params,
+                )
+            tasks.append(task)
 
         pipe_outputs = await asyncio.gather(*tasks)
 
@@ -124,6 +170,7 @@ class PipeBatch(PipeController):
             name=output_name,
         )
 
+        method_name = "dry_run_pipe" if pipe_run_params.run_mode == PipeRunMode.DRY else "run_pipe"
         for branch_index, (
             required_stuff_list,
             item_input_stuff,
@@ -134,7 +181,7 @@ class PipeBatch(PipeController):
                 to_stuff=item_input_stuff,
                 to_branch_index=branch_index,
                 pipe_layer=pipe_run_params.pipe_layers,
-                comment="PipeBatch.run_pipe() in zip",
+                comment=f"PipeBatch.{method_name}() in zip",
             )
             for required_stuff in required_stuff_list:
                 get_pipeline_tracker().add_pipe_step(
@@ -142,7 +189,7 @@ class PipeBatch(PipeController):
                     to_stuff=item_output_stuff,
                     pipe_code=self.branch_pipe_code,
                     pipe_layer=pipe_run_params.pipe_layers,
-                    comment="PipeBatch.run_pipe() on required_stuff_list",
+                    comment=f"PipeBatch.{method_name}() on required_stuff_list",
                     as_item_index=branch_index,
                     is_with_edge=(required_stuff.stuff_name != MAIN_STUFF_NAME),
                 )
@@ -153,7 +200,7 @@ class PipeBatch(PipeController):
                 from_stuff=branch_output_stuff,
                 to_stuff=output_stuff,
                 pipe_layer=pipe_run_params.pipe_layers,
-                comment="PipeBatch.run_pipe() on branch_index of batch",
+                comment=f"PipeBatch.{method_name}() on branch_index of batch",
             )
 
         working_memory.set_new_main_stuff(
@@ -164,4 +211,36 @@ class PipeBatch(PipeController):
         return PipeOutput(
             working_memory=working_memory,
             pipeline_run_id=job_metadata.pipeline_run_id,
+        )
+
+    @override
+    async def _run_controller_pipe(
+        self,
+        job_metadata: JobMetadata,
+        working_memory: WorkingMemory,
+        pipe_run_params: PipeRunParams,
+        output_name: Optional[str] = None,
+    ) -> PipeOutput:
+        """Run a pipe in batch mode for each item in the input list."""
+        return await self._run_batch_pipe(
+            job_metadata=job_metadata,
+            working_memory=working_memory,
+            pipe_run_params=pipe_run_params,
+            output_name=output_name,
+        )
+
+    @override
+    async def _dry_run_controller_pipe(
+        self,
+        job_metadata: JobMetadata,
+        working_memory: WorkingMemory,
+        pipe_run_params: PipeRunParams,
+        output_name: Optional[str] = None,
+    ) -> PipeOutput:
+        """Dry run a pipe in batch mode for each item in the input list."""
+        return await self._run_batch_pipe(
+            job_metadata=job_metadata,
+            working_memory=working_memory,
+            pipe_run_params=pipe_run_params,
+            output_name=output_name,
         )

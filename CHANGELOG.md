@@ -1,5 +1,37 @@
 # Changelog
 
+## [v0.5.0] - 2025-07-01
+
+### Highlight: Vibe Coding an AI workflow becomes a reality
+
+**Create AI workflows from natural language without writing code** - The combination of Pipelex's declarative language, comprehensive Cursor rules, and robust validation tools enables AI assistants to autonomously iterate on pipelines until all errors are resolved and workflows are ready to run.
+
+### Added
+
+- **Complete Dry Run & Static Validation System** - A comprehensive validation framework that catches configuration and pipeline errors before any expensive inference operations.
+- **WorkingMemoryFactory Enhancement**: New `make_for_dry_run()` method creates working memory with realistic mock objects for zero-cost pipeline testing
+- **Enhanced Dry Run System**: Complete dry run support for all pipe controllers (`PipeCondition`, `PipeParallel`, `PipeBatch`) with mock data generation using `polyfactory`
+- **Comprehensive Static Validation**: Enhanced static validation with configurable error handling for missing/extraneous input variables and domain validation
+- **TOML File Validation**: Automatic detection and prevention of trailing whitespaces, formatting issues, and compilation blockers in pipeline files
+- **Pipeline Testing Framework**: New `dry_run_all_pipes()` method enables comprehensive testing of entire pipeline libraries
+- **Enhanced Library Loading**: Improved error handling and validation during TOML file loading with proper exception propagation
+
+### Configuration
+
+- **Dry Run Configuration**: New `allowed_to_fail_pipes` setting allows specific pipes (like infinite loop examples that fail on purpose) to be excluded from dry run validation
+- **Static Validation Control**: Configurable error reactions (`raise`, `log`, `ignore`) for different validation error types
+
+### Documentation & Development Experience
+
+- **Cursor Rules Enhancement**: Comprehensive pipe controller documentation covering `PipeSequence`, `PipeCondition`, `PipeBatch`, and `PipeParallel`, improved PipeOperator documentation for `PipeLLM`, `PipeOCR`
+- **Pipeline Validation CLI**: Enhanced `pipelex validate` command with better error reporting and validation coverage
+- **Improved Error Messages**: Better formatting and context for pipeline configuration errors
+
+### Changed
+
+- **OCR Input Standardization**: Changed OCR pipe input parameter naming to consistently use `ocr_input` for both image and PDF inputs, improving consistency across the API
+- **Error Message Improvements**: Updated PipeCondition error messages to reference `expression_template` instead of deprecated `expression_jinja2`
+
 ## [v0.4.11] - 2025-06-30
 
 - **LLM Settings Simplification**: Streamlined LLM choice system by removing complex `for_object_direct`, `for_object_list`, and `for_object_list_direct` options. LLM selection now uses a simpler fallback pattern: specific choice → text choice → overrides → defaults.

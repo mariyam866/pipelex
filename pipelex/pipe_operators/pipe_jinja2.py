@@ -10,8 +10,10 @@ from pipelex.cogt.content_generation.content_generator_dry import ContentGenerat
 from pipelex.cogt.content_generation.content_generator_protocol import ContentGeneratorProtocol
 from pipelex.config import get_config
 from pipelex.core.concept_native import NativeConcept
+from pipelex.core.pipe_input_spec import PipeInputSpec
 from pipelex.core.pipe_output import PipeOutput
-from pipelex.core.pipe_run_params import PipeRunParams
+from pipelex.core.pipe_run_params import PipeRunMode, PipeRunParams
+from pipelex.core.pipe_run_params_factory import PipeRunParamsFactory
 from pipelex.core.stuff import Stuff
 from pipelex.core.stuff_content import TextContent
 from pipelex.core.working_memory import WorkingMemory
@@ -56,11 +58,31 @@ class PipeJinja2(PipeOperator):
                 raise Jinja2TemplateError(f"Could not parse Jinja2 template included in PipeJinja2: {exc}") from exc
         return self
 
+    @model_validator(mode="after")
+    def validate_inputs(self) -> Self:
+        self._validate_required_variables()
+        return self
+
+    def _validate_required_variables(self) -> Self:
+        """This method checks that all required variables are in the inputs"""
+        required_variables = self.required_variables()
+        for required_variable_name in required_variables:
+            if required_variable_name not in self.inputs.variables:
+                raise PipeDefinitionError(f"Required variable '{required_variable_name}' is not in the inputs of pipe {self.code}")
+        return self
+
     @override
     def validate_with_libraries(self):
         if self.jinja2_name:
             the_template = get_template(template_name=self.jinja2_name)
             log.debug(f"Validated jinja2 template '{self.jinja2_name}':\n{the_template}")
+
+    @override
+    def needed_inputs(self) -> PipeInputSpec:
+        needed_inputs = PipeInputSpec.make_empty()
+        for input_name, concept_code in self.inputs.root.items():
+            needed_inputs.add_requirement(variable_name=input_name, concept_code=concept_code)
+        return needed_inputs
 
     @property
     def desc(self) -> str:
@@ -79,7 +101,11 @@ class PipeJinja2(PipeOperator):
             jinja2_name=self.jinja2_name,
             jinja2=self.jinja2,
         )
-        return required_variables
+        return {
+            variable_name
+            for variable_name in required_variables
+            if not variable_name.startswith("_") and variable_name != "preliminary_text" and variable_name != "place_holder"
+        }
 
     @override
     async def _run_operator_pipe(
@@ -142,15 +168,16 @@ class PipeJinja2(PipeOperator):
     ) -> PipeOutput:
         content_generator_used: ContentGeneratorProtocol
         if get_config().pipelex.dry_run_config.apply_to_jinja2_rendering:
-            log.info(f"PipeJinja2: using dry run operator pipe for jinja2 rendering: {self.code}")
+            log.debug(f"PipeJinja2: using dry run operator pipe for jinja2 rendering: {self.code}")
             content_generator_used = ContentGeneratorDry()
         else:
-            log.info(f"PipeJinja2: using regular operator pipe for jinja2 rendering (dry run not applied to jinja2): {self.code}")
+            log.debug(f"PipeJinja2: using regular operator pipe for jinja2 rendering (dry run not applied to jinja2): {self.code}")
             content_generator_used = get_content_generator()
+
         pipe_output = await self._run_operator_pipe(
             job_metadata=job_metadata,
             working_memory=working_memory,
-            pipe_run_params=pipe_run_params,
+            pipe_run_params=pipe_run_params or PipeRunParamsFactory.make_run_params(pipe_run_mode=PipeRunMode.DRY),
             output_name=output_name,
             content_generator=content_generator_used,
         )

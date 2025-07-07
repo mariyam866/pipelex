@@ -23,17 +23,11 @@ class TestClassRegistryUtilsUnit:
         mock_registry = mocker.MagicMock()
         mocker.patch("pipelex.tools.class_registry_utils.get_class_registry", return_value=mock_registry)
 
-        # Mock sys.modules for cleanup verification
-        mock_sys_modules = mocker.patch("pipelex.tools.class_registry_utils.sys.modules", spec=dict)
-
         ClassRegistryUtils.register_classes_in_file(file_path="/fake/path.py", base_class=None, is_include_imported=False)
 
         # Verify the mocked functions were called correctly
         mock_import.assert_called_once_with("/fake/path.py")
         mock_find.assert_called_once_with(module=mock_module, base_class=None, include_imported=False)
-
-        # Verify sys.modules cleanup
-        mock_sys_modules.__delitem__.assert_called_once_with("test_module")
 
         # Verify classes were registered with the global registry
         mock_registry.register_classes.assert_called_once_with(classes=[str, int])

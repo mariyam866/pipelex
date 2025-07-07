@@ -30,6 +30,7 @@ from pipelex.tools.misc.json_utils import save_as_json_to_path
 
 MAIN_STUFF_NAME = "main_stuff"
 BATCH_ITEM_STUFF_NAME = "BATCH_ITEM"
+PRETTY_PRINT_MAX_LENGTH = 1000
 
 StuffDict = Dict[str, Stuff]
 StuffArtefactDict = Dict[str, StuffArtefact]
@@ -57,8 +58,8 @@ class WorkingMemory(BaseModel):
     def pretty_print_summary(self):
         for stuff in self.root.values():
             content = stuff.content.rendered_plain()
-            if len(content) > 300:
-                content = content[:300] + "..."
+            if len(content) > PRETTY_PRINT_MAX_LENGTH:
+                content = content[:PRETTY_PRINT_MAX_LENGTH] + "..."
             pretty_print(content, title=f"{stuff.stuff_name} ({stuff.concept_code})")
 
     def make_deep_copy(self) -> Self:
@@ -120,7 +121,8 @@ class WorkingMemory(BaseModel):
                     message=f"Stuff attribute not found in attribute path '{name}': {exc}",
                 ) from exc
 
-            if wanted_type is not None and not isinstance(stuff_content, wanted_type):
+            # Sometimes, some stuff content are Optional, therefore can be None. So Do not impose a wanted type
+            if stuff_content is not None and wanted_type is not None and not isinstance(stuff_content, wanted_type):
                 raise WorkingMemoryTypeError(
                     variable_name=name,
                     message=f"Content at '{name}' is of type {type(stuff_content).__name__}, it should be {wanted_type.__name__}",

@@ -11,6 +11,7 @@ from pipelex.core.stuff_content import (
 )
 from pipelex.core.stuff_factory import StuffBlueprint, StuffFactory
 from pipelex.exceptions import PipeStackOverflowError
+from pipelex.pipe_operators.pipe_ocr import PIPE_OCR_INPUT_NAME
 from tests.cases import ImageTestCases, PDFTestCases
 
 
@@ -57,7 +58,7 @@ class PipeTestCases:
         content=ImageContent(url=URL_IMG_FASHION_PHOTO_1),
     )
     SIMPLE_STUFF_PDF = StuffFactory.make_stuff(
-        name="pdf",
+        name=PIPE_OCR_INPUT_NAME,
         concept_str="PDF",
         content=PDFContent(url=PDFTestCases.DOCUMENT_URLS[0]),
     )
@@ -145,24 +146,6 @@ class PipeTestCases:
         ),
     ]
 
-    BATCH_TEST: ClassVar[List[Tuple[str, Stuff, str, str]]] = [  # pipe_code, stuff, input_list_stuff_name, input_item_stuff_name
-        (
-            "batch_test",
-            StuffFactory.make_stuff(
-                concept_str="flows.Color",
-                name="colors",
-                content=ListContent(
-                    items=[
-                        TextContent(text="blue"),
-                        TextContent(text="red"),
-                        TextContent(text="green"),
-                    ]
-                ),
-            ),
-            "colors",
-            "color",
-        ),
-    ]
     STUFF_AND_PIPE: ClassVar[List[Tuple[str, Stuff, str]]] = [  # topic, stuff, pipe_code
         (
             "Process Simple Image",

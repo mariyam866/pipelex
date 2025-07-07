@@ -68,19 +68,62 @@ class PipeLLM(PipeOperator):
     system_prompt_to_structure: Optional[str] = None
     output_multiplicity: Optional[PipeOutputMultiplicity] = None
 
-    def needed_inputs(self) -> PipeInputSpec:
-        pipe_llm_prompt_needed_inputs = self.pipe_llm_prompt.needed_inputs()
-        # The images are not tagged in the prompt_template. Therefore if an image is provided in the
-        # inputs, it becomes a needed input.
-        concept_provider = get_concept_provider()
-        for input_name, concept_code in self.inputs.root.items():
-            if concept_provider.is_image_concept(concept_code=concept_code):
-                pipe_llm_prompt_needed_inputs.add_requirement(variable_name=input_name, concept_code=NativeConcept.IMAGE.code)
-        return pipe_llm_prompt_needed_inputs
-
     @model_validator(mode="after")
     def validate_inputs(self) -> Self:
+        self._validate_required_variables()
         self._validate_inputs()
+        return self
+
+    @model_validator(mode="after")
+    def validate_output_concept_consistency(self) -> Self:
+        if self.structuring_method is not None:
+            output_concept = get_required_concept(concept_code=self.output_concept_code)
+            if output_concept.structure_class_name == NativeConceptClass.TEXT:
+                raise PipeDefinitionError(f"Output concept '{self.output_concept_code}' is a Text concept, so it cannot be structured")
+        return self
+
+    @override
+    def validate_with_libraries(self):
+        self._validate_inputs()
+        self.pipe_llm_prompt.validate_with_libraries()
+        if self.prompt_template_to_structure:
+            get_template(template_name=self.prompt_template_to_structure)
+        if self.system_prompt_to_structure:
+            get_template(template_name=self.system_prompt_to_structure)
+        if self.llm_choices:
+            for llm_setting in self.llm_choices.list_used_presets():
+                check_llm_setting_with_deck(llm_setting_or_preset_id=llm_setting)
+
+    @override
+    def needed_inputs(self) -> PipeInputSpec:
+        """Needed inputs are the inputs needed to run the pipe, specified in the inputs attribute of the pipe"""
+        # The images are not tagged in the prompt_template.
+        # Therefore if an image is provided in the inputs, it becomes a needed input.
+        needed_inputs = PipeInputSpec.make_empty()
+        concept_provider = get_concept_provider()
+
+        for input_name, concept_code in self.inputs.items:
+            if concept_provider.is_image_concept(concept_code=concept_code):
+                needed_inputs.add_requirement(variable_name=input_name, concept_code=NativeConcept.IMAGE.code)
+            else:
+                needed_inputs.add_requirement(variable_name=input_name, concept_code=concept_code)
+
+        return needed_inputs
+
+    @override
+    def required_variables(self) -> Set[str]:
+        """Required variables are the variables that are used in the current prompt template or system prompt"""
+        required_variables: Set[str] = set()
+        required_variables.update(self.pipe_llm_prompt.required_variables())
+        required_variables = {variable_name for variable_name in required_variables if not variable_name.startswith("_")}
+        return required_variables
+
+    def _validate_required_variables(self) -> Self:
+        """This method checks that all required variables are in the inputs"""
+        required_variables = self.required_variables()
+        for required_variable_name in required_variables:
+            if required_variable_name not in self.inputs.variables:
+                raise PipeDefinitionError(f"Required variable '{required_variable_name}' is not in the inputs of pipe {self.code}")
         return self
 
     def _validate_inputs(self):
@@ -174,32 +217,6 @@ class PipeLLM(PipeOperator):
                         f"Image variables are automatically passed to vision-enabled LLMs."
                     )
 
-    @model_validator(mode="after")
-    def validate_output_concept_consistency(self) -> Self:
-        if self.structuring_method is not None:
-            output_concept = get_required_concept(concept_code=self.output_concept_code)
-            if output_concept.structure_class_name == NativeConceptClass.TEXT:
-                raise PipeDefinitionError(f"Output concept '{self.output_concept_code}' is a TextConcept, so it cannot be structured")
-        return self
-
-    @override
-    def validate_with_libraries(self):
-        self._validate_inputs()
-        self.pipe_llm_prompt.validate_with_libraries()
-        if self.prompt_template_to_structure:
-            get_template(template_name=self.prompt_template_to_structure)
-        if self.system_prompt_to_structure:
-            get_template(template_name=self.system_prompt_to_structure)
-        if self.llm_choices:
-            for llm_setting in self.llm_choices.list_used_presets():
-                check_llm_setting_with_deck(llm_setting_or_preset_id=llm_setting)
-
-    @override
-    def required_variables(self) -> Set[str]:
-        required_variables: Set[str] = set()
-        required_variables.update(self.pipe_llm_prompt.required_variables())
-        return required_variables
-
     @override
     async def _run_operator_pipe(
         self,
@@ -221,7 +238,7 @@ class PipeLLM(PipeOperator):
             output_concept_code = pipe_run_params.dynamic_output_concept_code or pipe_run_params.params.get(PipeRunParamKey.DYNAMIC_OUTPUT_CONCEPT)
 
             if not output_concept_code:
-                raise RuntimeError(f"No output concept code provided for dynamic output pipe '{self.code}'")
+                output_concept_code = NativeConcept.TEXT.code
         else:
             output_concept_code = self.output_concept_code
 
@@ -492,7 +509,6 @@ class PipeLLM(PipeOperator):
         pipe_run_params: PipeRunParams,
         output_name: Optional[str] = None,
     ) -> PipeOutput:
-        log.info(f"PipeLLM: dry run operator pipe: {self.code}")
         content_generator_dry = ContentGeneratorDry()
         pipe_output = await self._run_operator_pipe(
             job_metadata=job_metadata,

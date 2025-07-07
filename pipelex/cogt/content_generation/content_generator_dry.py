@@ -62,6 +62,7 @@ class ContentGeneratorDry(ContentGeneratorProtocol):
         class ObjectFactory(ModelFactory[object_class]):  # type: ignore
             __model__ = object_class
             __use_examples__ = True
+            __allow_none_optionals__ = False  # Ensure Optional fields always get values
 
         obj = ObjectFactory.build()
         return obj
@@ -186,6 +187,7 @@ class ContentGeneratorDry(ContentGeneratorProtocol):
         prompting_style: Optional[PromptingStyle] = None,
         template_category: Jinja2TemplateCategory = Jinja2TemplateCategory.LLM_PROMPT,
     ) -> str:
+        # TODO: Use the code that checks if the jinja2 is a valid template
         func_name = "make_jinja2_text"
         log.dev(f"🤡 DRY RUN: {self.__class__.__name__}.{func_name}")
         jinja2_truncated = jinja2[: self._text_gen_truncate_length] if jinja2 else None

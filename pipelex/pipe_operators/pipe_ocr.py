@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from pydantic import model_validator
 from typing_extensions import Self, override
@@ -12,10 +12,9 @@ from pipelex.cogt.ocr.ocr_input import OcrInput
 from pipelex.cogt.ocr.ocr_job_components import OcrJobConfig, OcrJobParams
 from pipelex.config import StaticValidationReaction, get_config
 from pipelex.core.concept_native import NativeConcept
+from pipelex.core.pipe_input_spec import PipeInputSpec
 from pipelex.core.pipe_output import PipeOutput
-from pipelex.core.pipe_run_params import (
-    PipeRunParams,
-)
+from pipelex.core.pipe_run_params import PipeRunMode, PipeRunParams
 from pipelex.core.stuff_content import ImageContent, ListContent, PageContent, TextAndImagesContent, TextContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory import WorkingMemory
@@ -37,6 +36,9 @@ class PipeOcrOutput(PipeOutput):
     pass
 
 
+PIPE_OCR_INPUT_NAME = "ocr_input"
+
+
 class PipeOcr(PipeOperator):
     ocr_engine: Optional[OcrEngine] = None
     should_caption_images: bool
@@ -51,6 +53,10 @@ class PipeOcr(PipeOperator):
     def validate_inputs(self) -> Self:
         self._validate_inputs()
         return self
+
+    @override
+    def required_variables(self) -> Set[str]:
+        return {PIPE_OCR_INPUT_NAME}
 
     def _validate_inputs(self):
         concept_provider = get_concept_provider()
@@ -119,6 +125,10 @@ class PipeOcr(PipeOperator):
                     log.error(missing_input_var_error.desc())
                 case StaticValidationReaction.RAISE:
                     raise missing_input_var_error
+
+    @override
+    def needed_inputs(self) -> PipeInputSpec:
+        return PipeInputSpec.make_from_dict({PIPE_OCR_INPUT_NAME: self.inputs.root[PIPE_OCR_INPUT_NAME]})
 
     @override
     async def _run_operator_pipe(
@@ -229,7 +239,10 @@ class PipeOcr(PipeOperator):
         pipe_run_params: PipeRunParams,
         output_name: Optional[str] = None,
     ) -> PipeOutput:
-        log.info(f"PipeOcr: dry run operator pipe: {self.code}")
+        log.debug(f"PipeOcr: dry run operator pipe: {self.code}")
+        if pipe_run_params.run_mode != PipeRunMode.DRY:
+            raise PipeDefinitionError(f"Running pipe '{self.code}' (PipeOcr) _dry_run_operator_pipe() in non-dry mode is not allowed.")
+
         content_generator_dry = ContentGeneratorDry()
         pipe_output = await self._run_operator_pipe(
             job_metadata=job_metadata,
