@@ -12,17 +12,11 @@ from pipelex.pipeline.job_metadata import JobMetadata
 from pipelex.types import StrEnum
 
 
-class PipeType(StrEnum):
-    OPERATOR = "operator"
-    CONTROLLER = "controller"
-
-
 class PipeAbstract(ABC, BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
 
     code: str
     domain: str
-    pipe_type: PipeType
     definition: Optional[str] = None
     # TODO: support auto (implicit) input, it makes sense for pipe controllers
     inputs: PipeInputSpec = Field(default_factory=PipeInputSpec)
