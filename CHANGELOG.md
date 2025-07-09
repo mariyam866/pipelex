@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.5.1] - 2025-07-09
+
+## Fixed
+
+- Fixed the `ConceptFactory.make_from_blueprint` method: Concepts defined in single-line format no longer automatically refine `TextContent` when a structure class with the same name exists
+- `ConceptFactory.make_concept_from_definition` is now `ConceptFactory.make_concept_from_definition_str`
+
+## Added
+
+- Bumped `kajson` to `v0.3.0`: Introducing `MetaSingleton` for better singleton management
+- Unit tests for `ConceptLibrary.is_compatible_by_concept_code`
+
 ## [v0.5.0] - 2025-07-01
 
 ### Highlight: Vibe Coding an AI workflow becomes a reality
