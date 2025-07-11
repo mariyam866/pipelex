@@ -2,10 +2,14 @@
   <a href="https://www.pipelex.com/"><img src="https://raw.githubusercontent.com/Pipelex/pipelex/main/.github/assets/logo.png" alt="Pipelex Logo" width="400" style="max-width: 100%; height: auto;"></a>
 
   <h2 align="center">Open-source language for repeatable AI workflows</h2>
-  <p align="center">Pipelex is based on a simple declarative language that lets you define repeatable, structured, composable AI workflows.</p>
+Pipelex is an open-source devtool that transforms how you build repeatable AI workflows. Think of it as Docker or SQL for AI operations.
+
+Create modular "pipes", each using a different LLM and guaranteeing structured outputs. Connect them like LEGO blocks sequentially, in parallel, or conditionally, to build complex knowledge transformations from simple, reusable components.
+
+Stop reinventing AI workflows from scratch. With Pipelex, your proven methods become shareable, versioned artifacts that work across different LLMs. What took weeks to perfect can now be forked, adapted, and scaled instantly.
 
   <div>
-    <a href="https://www.pipelex.com/demo"><strong>Demo</strong></a> -
+    <a href="https://go.pipelex.com/demo"><strong>Demo</strong></a> -
     <a href="https://docs.pipelex.com/"><strong>Documentation</strong></a> -
     <a href="https://github.com/Pipelex/pipelex/issues"><strong>Report Bug</strong></a> -
     <a href="https://github.com/Pipelex/pipelex/discussions"><strong>Feature Request</strong></a>
@@ -31,12 +35,12 @@
 <div align="center">
   <h2 align="center">📜 The Knowledge Pipeline Manifesto</h2>
   <p align="center">
-    <a href="https://www.pipelex.com/post/the-knowledge-pipeline-manifesto"><strong>Read why we built Pipelex to transform unreliable AI workflows into deterministic pipelines 🔗</strong></a>
+    <a href="https://go.pipelex.com/manifesto"><strong>Read why we built Pipelex to transform unreliable AI workflows into deterministic pipelines 🔗</strong></a>
   </p>
 
   <h2 align="center">🚀 See Pipelex in Action</h2>
   <p align="center">
-    <a href="https://www.pipelex.com/demo"><strong>Checkout our Demo</strong></a>
+    <a href="https://go.pipelex.com/demo"><img src="https://go.pipelex.com/demo-thumbnail" alt="Pipelex Demo" width="600" style="max-width: 100%; height: auto;"></a>
   </p>
   
 </div>
