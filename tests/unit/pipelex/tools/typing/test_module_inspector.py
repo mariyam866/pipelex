@@ -69,7 +69,7 @@ class TestClass:
     def test_import_nonexistent_file_raises_error(self, tmp_path: Path):
         """Test that importing a nonexistent file raises FileNotFoundError."""
         nonexistent_file_path = "nonexistent.py"
-        with pytest.raises(ModuleNotFoundError):
+        with pytest.raises(FileNotFoundError):
             import_module_from_file(nonexistent_file_path)
 
     def test_import_file_with_syntax_error_raises_error(self, tmp_path: Path):
@@ -102,7 +102,9 @@ def test_function():
     return "test_value"
 """)
         module = import_module_from_file(test_file_path)
+        # The module name should be the actual module path derived from the file path
         expected_module_name = "test_module"
+        assert module.__name__ == expected_module_name
         assert expected_module_name in sys.modules
         assert sys.modules[expected_module_name] is module
 
