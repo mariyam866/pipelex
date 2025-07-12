@@ -188,7 +188,7 @@ class Pipelex(metaclass=MetaSingleton):
 
         log.debug(f"{PACKAGE_NAME} version {PACKAGE_VERSION} setup done for {get_config().project_name}")
 
-    def setup_libraries(self, relative_config_folder_path: str):
+    def setup_libraries(self):
         try:
             self.template_provider.setup()
             self.llm_model_provider.setup()
@@ -242,22 +242,53 @@ class Pipelex(metaclass=MetaSingleton):
 
     # TODO: add kwargs to make() so that subclasses can employ specific parameters
     @classmethod
-    def make(cls, relative_config_folder_path: str, from_file: Optional[bool] = True) -> Self:
-        if from_file:  # from_file means it's going to merge the relative_config_folder_path with the caller's file path
-            current_frame = inspect.currentframe()
-            if current_frame is None:
-                raise RuntimeError("Failed to get current frame")
-            if current_frame.f_back is None:
-                raise RuntimeError("Failed to get caller frame")
-            caller_file = current_frame.f_back.f_code.co_filename
-            caller_dir = os.path.dirname(os.path.abspath(caller_file))
-            config_folder_path = os.path.abspath(os.path.join(caller_dir, relative_config_folder_path))
+    def make(
+        cls, relative_config_folder_path: Optional[str] = None, absolute_config_folder_path: Optional[str] = None, from_file: Optional[bool] = True
+    ) -> Self:
+        """Create and initialize a Pipelex instance.
+
+        Args:
+            relative_config_folder_path: Path to config folder relative to either the caller file or current working directory.
+                Cannot be used together with absolute_config_folder_path.
+            absolute_config_folder_path: Absolute path to config folder.
+                Cannot be used together with relative_config_folder_path.
+            from_file: Only used when relative_config_folder_path is provided.
+                If True (default), the relative path is resolved relative to the file where make() was called.
+                If False, the relative path is resolved relative to the current working directory (useful for CLI scenarios).
+
+        Returns:
+            Initialized Pipelex instance.
+
+        Raises:
+            ValueError: If both relative_config_folder_path and absolute_config_folder_path are provided.
+            RuntimeError: If frame inspection fails when using relative paths with from_file=True.
+
+        Note:
+            If neither path is provided, defaults to "./pipelex_libraries".
+        """
+        if relative_config_folder_path is not None and absolute_config_folder_path is not None:
+            raise ValueError("Cannot specify both relative_config_folder_path and absolute_config_folder_path")
+
+        if relative_config_folder_path is not None:
+            if from_file:
+                current_frame = inspect.currentframe()
+                if current_frame is None:
+                    raise RuntimeError("Failed to get current frame")
+                if current_frame.f_back is None:
+                    raise RuntimeError("Failed to get caller frame")
+                caller_file = current_frame.f_back.f_code.co_filename
+                caller_dir = os.path.dirname(os.path.abspath(caller_file))
+                config_folder_path = os.path.abspath(os.path.join(caller_dir, relative_config_folder_path))
+            else:
+                config_folder_path = os.path.abspath(os.path.join(os.getcwd(), relative_config_folder_path))
+        elif absolute_config_folder_path is not None:
+            config_folder_path = absolute_config_folder_path
         else:
-            config_folder_path = os.path.abspath(os.path.join(os.getcwd(), relative_config_folder_path))
+            config_folder_path = "./pipelex_libraries"
 
         pipelex_instance = cls(config_folder_path=config_folder_path)
         pipelex_instance.setup()
-        pipelex_instance.setup_libraries(relative_config_folder_path=relative_config_folder_path)
+        pipelex_instance.setup_libraries()
         log.info(f"Pipelex {PACKAGE_VERSION} initialized.")
         return pipelex_instance
 

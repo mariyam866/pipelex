@@ -3,7 +3,9 @@
 ## [v0.6.0] - 2025-07-12
 
 ### Changed 
-- The `Pipelex.make()` now takes a `relative_config_folder_path` argument, which is considered to be a relative path to the current working directory, pointing to the config folder path of pipelex. The argument `from_file` indicates if the path is relative to the caller's file path. If False, the path is considered to be absolute from where the process was started.
+- **Enhanced `Pipelex.make()` method**: Complete overhaul of the initialization method with new path configuration options and robust validation:
+  - Added `relative_config_folder_path` and `absolute_config_folder_path` parameters for flexible config folder specification
+  - The `from_file` parameter controls path resolution: if `True` (default), relative paths are resolved relative to the caller's file location; if `False`, relative to the current working directory (useful for CLI scenarios)
 
 ### Added
 - Added github action for inference tests
