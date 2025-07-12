@@ -1,47 +1,91 @@
-name: 🐛 Report an Issue
-description: File a bug report to help improve Pipelex
-title: "bug: "
-labels: ["bug-unverified"]
+name: "🐞 Bug report"
+description: "Report a reproducible problem with the library"
+type: Bug
+labels:
+  - status:needs-triage
+
 body:
-  - type: textarea
+  - type: markdown
     attributes:
-      label: Issue Description
-      description: Provide a clear and detailed description of the issue you encountered and what you expected to happen instead.
-      placeholder: |
-        What happened?
-        What did you expect to happen?
+      value: |
+        **Thanks for taking the time to file a bug!**
+        Please complete **all required sections**—incomplete reports will be sent back for more information.
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: "Before submitting"
+      options:
+        - label: "I'm using the **latest released** version of the library"
+          required: true
+        - label: "I've searched [open issues](issues?q=is%3Aissue%20state%3Aopen%20type%3ABug) and found no duplicate"
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Describe the bug, tell us what went wrong"
+      placeholder: "A clear and concise description of what went wrong. What did you expect to happen vs. what actually happened."
     validations:
       required: true
 
   - type: textarea
+    id: reproduction
     attributes:
-      label: Reproduction Steps
-      description: Help us understand the issue by providing detailed steps to reproduce it. Include code examples, error messages, or configuration files if relevant.
+      label: "Reproduction snippet"
+      description: "How can we reproduce the bug?"
       placeholder: |
-        1. Install package with '...'
-        2. Configure pipeline with '...'
-        3. Run the following code '...'
-        4. Error occurs
+        Provide the cli command that reproduces the bug:
+        ```bash
+        # paste command here
+        ```
+        or the smallest possible script that reproduces the bug:
+        ```python
+        # paste code here
+        ```
+    validations:
+      required: false
+
+  - type: input
+    id: lib_version
+    attributes:
+      label: "Library version"
+      placeholder: "e.g. 1.4.2"
     validations:
       required: true
 
-  - type: textarea
+  - type: input
+    id: python_version
     attributes:
-      label: Environment Details
-      description: Please provide information about your setup. This helps us identify if the issue is environment-specific.
-      placeholder: |
-        - Python Version: 
-        - Pipelex Version:
-        - Operating System:
-        - Installation Method (pip/poetry/uv):
-        - Relevant Dependencies:
+      label: "Python version"
+      placeholder: "e.g. 3.12.0"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: "Operating system"
+      placeholder: "e.g. Ubuntu 22.04 LTS / MacOS 14.3"
+    validations:
+      required: false
 
   - type: textarea
+    id: logs
     attributes:
-      label: Additional Context
-      description: Add any other relevant information, screenshots, logs, or context that might help us understand and fix the issue.
-      placeholder: |
-        Error logs, related configuration, or other helpful details...
+      label: "Stack trace / error output"
+      description: "Paste any relevant logs here."
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: "Additional context & screenshots"
+      placeholder: "Anything else that might help us debug."
+    validations:
+      required: false
 
   - type: dropdown
     id: contribution
@@ -53,13 +97,3 @@ body:
         - "Yes, I'd like to contribute"
     validations:
       required: true
-
-  - type: checkboxes
-    attributes:
-      label: Confirmations
-      description: Please confirm the following
-      options:
-        - label: I have checked that this issue hasn't already been reported
-          required: true
-        - label: I have tested with the latest version of Pipelex
-          required: true 
