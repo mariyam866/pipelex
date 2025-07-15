@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.6.0] - 2025-07-15
+
+### Changed 
+- **Enhanced `Pipelex.make()` method**: Complete overhaul of the initialization method with new path configuration options and robust validation:
+  - Added `relative_config_folder_path` and `absolute_config_folder_path` parameters for flexible config folder specification
+  - The `from_file` parameter controls path resolution: if `True` (default), relative paths are resolved relative to the caller's file location; if `False`, relative to the current working directory (useful for CLI scenarios)
+- Renamed Makefile targets like `make doc` to `make docs` for consistency
+
+### Added
+- Added github action for inference tests
+- `load_json_list_from_path` function in `pipelex.tools.misc.file_utils`: Loads a JSON file and ensures it contains a list.
+- Added issue templates
+- Updated Azure/OpenAI integrations, using dated deployment names systematically
+
 ## [v0.5.2] - 2025-07-11
 
 - log a warning when dry running a `PipeFunc`

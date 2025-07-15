@@ -1,3 +1,5 @@
+import inspect
+import os
 from importlib.metadata import metadata
 from typing import Any, List, Optional, Type, cast
 
@@ -59,9 +61,10 @@ PACKAGE_VERSION = metadata(PACKAGE_NAME)["Version"]
 class Pipelex(metaclass=MetaSingleton):
     def __init__(
         self,
+        config_folder_path: str,
+        # Dependency injection
         pipelex_hub: Optional[PipelexHub] = None,
         config_cls: Optional[Type[ConfigRoot]] = None,
-        ready_made_config: Optional[ConfigRoot] = None,
         class_registry: Optional[ClassRegistryAbstract] = None,
         template_provider: Optional[TemplateLibrary] = None,
         llm_model_provider: Optional[LLMModelLibrary] = None,
@@ -71,24 +74,20 @@ class Pipelex(metaclass=MetaSingleton):
         activity_manager: Optional[ActivityManagerProtocol] = None,
         reporting_delegate: Optional[ReportingProtocol] = None,
     ) -> None:
+        self.config_folder_path = config_folder_path
         self.pipelex_hub = pipelex_hub or PipelexHub()
         set_pipelex_hub(self.pipelex_hub)
 
         # tools
-        if ready_made_config is not None:
-            if config_cls is not None:
-                raise PipelexConfigError("config_cls must be None when ready_made_config is provided")
-            self.pipelex_hub.set_config(ready_made_config)
-        else:
-            if config_cls is None:
-                config_cls = PipelexConfig
-            try:
-                self.pipelex_hub.setup_config(config_cls=config_cls)
-            except ValidationError as exc:
-                error_msg = format_pydantic_validation_error(exc)
-                raise PipelexConfigError(f"Error because of: {error_msg}") from exc
+        try:
+            self.pipelex_hub.setup_config(config_cls=config_cls or PipelexConfig)
+        except ValidationError as exc:
+            error_msg = format_pydantic_validation_error(exc)
+            raise PipelexConfigError(f"Could not setup config because of: {error_msg}") from exc
+
         for extra_env_file in get_config().pipelex.extra_env_files:
             load_dotenv(dotenv_path=extra_env_file, override=True)
+
         log.configure(
             project_name=get_config().project_name or "unknown_project",
             log_config=get_config().pipelex.log_config,
@@ -96,8 +95,9 @@ class Pipelex(metaclass=MetaSingleton):
         log.debug("Logs are configured")
 
         # tools
-        self.template_provider = template_provider or TemplateLibrary()
+        self.template_provider = template_provider or TemplateLibrary.make_empty(config_folder_path=config_folder_path)
         self.pipelex_hub.set_template_provider(self.template_provider)
+
         self.class_registry = class_registry or ClassRegistry()
         self.pipelex_hub.set_class_registry(self.class_registry)
         self.kajson_manager = KajsonManager(class_registry=self.class_registry)
@@ -105,7 +105,7 @@ class Pipelex(metaclass=MetaSingleton):
         # cogt
         self.plugin_manager = PluginManager()
         self.pipelex_hub.set_plugin_manager(self.plugin_manager)
-        self.llm_model_provider = llm_model_provider or LLMModelLibrary()
+        self.llm_model_provider = llm_model_provider or LLMModelLibrary.make_empty(config_folder_path=config_folder_path)
         self.pipelex_hub.set_llm_models_provider(self.llm_model_provider)
         self.inference_manager = inference_manager or InferenceManager()
         self.pipelex_hub.set_inference_manager(self.inference_manager)
@@ -124,10 +124,11 @@ class Pipelex(metaclass=MetaSingleton):
         self.pipelex_hub.set_domain_provider(domain_provider=domain_library)
         self.pipelex_hub.set_concept_provider(concept_provider=concept_library)
         self.pipelex_hub.set_pipe_provider(pipe_provider=pipe_library)
-        self.library_manager = LibraryManager(
+        self.library_manager = LibraryManager.make(
             domain_library=domain_library,
             concept_library=concept_library,
             pipe_library=pipe_library,
+            config_folder_path=config_folder_path,
         )
         self.library_manager.setup()
         self.pipelex_hub.set_library_manager(library_manager=self.library_manager)
@@ -167,7 +168,7 @@ class Pipelex(metaclass=MetaSingleton):
         self.pipelex_hub.set_secrets_provider(secrets_provider or EnvSecretsProvider())
         self.pipelex_hub.set_storage_provider(storage_provider)
         # cogt
-        self.plugin_manager.setup()
+        self.plugin_manager.setup(library_config=self.library_manager.library_config)
         self.pipelex_hub.set_content_generator(content_generator or ContentGenerator())
         self.reporting_delegate.setup()
         self.class_registry.register_classes(PipelexRegistryModels.get_all_models())
@@ -201,7 +202,7 @@ class Pipelex(metaclass=MetaSingleton):
             self.pipelex_hub.set_llm_deck_provider(llm_deck_provider=llm_deck)
         except ValidationError as exc:
             error_msg = format_pydantic_validation_error(exc)
-            raise PipelexSetupError(f"Error because of: {error_msg}") from exc
+            raise PipelexSetupError(f"Could not setup libraries because of: {error_msg}") from exc
         log.debug(f"{PACKAGE_NAME} version {PACKAGE_VERSION} setup libraries done for {get_config().project_name}")
 
     def validate_libraries(self):
@@ -209,7 +210,7 @@ class Pipelex(metaclass=MetaSingleton):
             self.library_manager.validate_libraries()
         except ValidationError as exc:
             error_msg = format_pydantic_validation_error(exc)
-            raise PipelexSetupError(f"Error because of: {error_msg}") from exc
+            raise PipelexSetupError(f"Could not validate libraries because of: {error_msg}") from exc
         log.debug(f"{PACKAGE_NAME} version {PACKAGE_VERSION} validate libraries done for {get_config().project_name}")
 
     def teardown(self):
@@ -241,9 +242,52 @@ class Pipelex(metaclass=MetaSingleton):
 
     # TODO: add kwargs to make() so that subclasses can employ specific parameters
     @classmethod
-    def make(cls, structure_classes: Optional[List[Type[Any]]] = None) -> Self:
-        pipelex_instance = cls()
-        pipelex_instance.setup(structure_classes=structure_classes)
+    def make(
+        cls, relative_config_folder_path: Optional[str] = None, absolute_config_folder_path: Optional[str] = None, from_file: Optional[bool] = True
+    ) -> Self:
+        """Create and initialize a Pipelex instance.
+
+        Args:
+            relative_config_folder_path: Path to config folder relative to either the caller file or current working directory.
+                Cannot be used together with absolute_config_folder_path.
+            absolute_config_folder_path: Absolute path to config folder.
+                Cannot be used together with relative_config_folder_path.
+            from_file: Only used when relative_config_folder_path is provided.
+                If True (default), the relative path is resolved relative to the file where make() was called.
+                If False, the relative path is resolved relative to the current working directory (useful for CLI scenarios).
+
+        Returns:
+            Initialized Pipelex instance.
+
+        Raises:
+            PipelexSetupError: If both relative_config_folder_path and absolute_config_folder_path are provided.
+            Or if frame inspection fails when using relative paths with from_file=True.
+
+        Note:
+            If neither path is provided, defaults to "./pipelex_libraries".
+        """
+        if relative_config_folder_path is not None and absolute_config_folder_path is not None:
+            raise PipelexSetupError("Cannot specify both relative_config_folder_path and absolute_config_folder_path")
+
+        if relative_config_folder_path is not None:
+            if from_file:
+                current_frame = inspect.currentframe()
+                if current_frame is None:
+                    raise PipelexSetupError("Could not find relative config folder path because of: Failed to get current frame")
+                if current_frame.f_back is None:
+                    raise PipelexSetupError("Could not find relative config folder path because of: Failed to get caller frame")
+                caller_file = current_frame.f_back.f_code.co_filename
+                caller_dir = os.path.dirname(os.path.abspath(caller_file))
+                config_folder_path = os.path.abspath(os.path.join(caller_dir, relative_config_folder_path))
+            else:
+                config_folder_path = os.path.abspath(os.path.join(os.getcwd(), relative_config_folder_path))
+        elif absolute_config_folder_path is not None:
+            config_folder_path = absolute_config_folder_path
+        else:
+            config_folder_path = "./pipelex_libraries"
+
+        pipelex_instance = cls(config_folder_path=config_folder_path)
+        pipelex_instance.setup()
         pipelex_instance.setup_libraries()
         log.info(f"Pipelex {PACKAGE_VERSION} initialized.")
         return pipelex_instance
