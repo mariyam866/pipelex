@@ -83,7 +83,7 @@ class Pipelex(metaclass=MetaSingleton):
             self.pipelex_hub.setup_config(config_cls=config_cls or PipelexConfig)
         except ValidationError as exc:
             error_msg = format_pydantic_validation_error(exc)
-            raise PipelexConfigError(f"Error because of: {error_msg}") from exc
+            raise PipelexConfigError(f"Could not setup config because of: {error_msg}") from exc
 
         for extra_env_file in get_config().pipelex.extra_env_files:
             load_dotenv(dotenv_path=extra_env_file, override=True)
@@ -202,7 +202,7 @@ class Pipelex(metaclass=MetaSingleton):
             self.pipelex_hub.set_llm_deck_provider(llm_deck_provider=llm_deck)
         except ValidationError as exc:
             error_msg = format_pydantic_validation_error(exc)
-            raise PipelexSetupError(f"Error because of: {error_msg}") from exc
+            raise PipelexSetupError(f"Could not setup libraries because of: {error_msg}") from exc
         log.debug(f"{PACKAGE_NAME} version {PACKAGE_VERSION} setup libraries done for {get_config().project_name}")
 
     def validate_libraries(self):
@@ -210,7 +210,7 @@ class Pipelex(metaclass=MetaSingleton):
             self.library_manager.validate_libraries()
         except ValidationError as exc:
             error_msg = format_pydantic_validation_error(exc)
-            raise PipelexSetupError(f"Error because of: {error_msg}") from exc
+            raise PipelexSetupError(f"Could not validate libraries because of: {error_msg}") from exc
         log.debug(f"{PACKAGE_NAME} version {PACKAGE_VERSION} validate libraries done for {get_config().project_name}")
 
     def teardown(self):
@@ -260,22 +260,22 @@ class Pipelex(metaclass=MetaSingleton):
             Initialized Pipelex instance.
 
         Raises:
-            ValueError: If both relative_config_folder_path and absolute_config_folder_path are provided.
-            RuntimeError: If frame inspection fails when using relative paths with from_file=True.
+            PipelexSetupError: If both relative_config_folder_path and absolute_config_folder_path are provided.
+            Or if frame inspection fails when using relative paths with from_file=True.
 
         Note:
             If neither path is provided, defaults to "./pipelex_libraries".
         """
         if relative_config_folder_path is not None and absolute_config_folder_path is not None:
-            raise ValueError("Cannot specify both relative_config_folder_path and absolute_config_folder_path")
+            raise PipelexSetupError("Cannot specify both relative_config_folder_path and absolute_config_folder_path")
 
         if relative_config_folder_path is not None:
             if from_file:
                 current_frame = inspect.currentframe()
                 if current_frame is None:
-                    raise RuntimeError("Failed to get current frame")
+                    raise PipelexSetupError("Could not find relative config folder path because of: Failed to get current frame")
                 if current_frame.f_back is None:
-                    raise RuntimeError("Failed to get caller frame")
+                    raise PipelexSetupError("Could not find relative config folder path because of: Failed to get caller frame")
                 caller_file = current_frame.f_back.f_code.co_filename
                 caller_dir = os.path.dirname(os.path.abspath(caller_file))
                 config_folder_path = os.path.abspath(os.path.join(caller_dir, relative_config_folder_path))
