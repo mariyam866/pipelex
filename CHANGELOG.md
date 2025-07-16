@@ -1,6 +1,10 @@
 # Changelog
 
-## [v0.6.0] - 2025-07-15
+## [v0.6.1] - 2025-07-16
+
+- Can execute pipelines with `input_memory`: It is a `CompactMemory: Dict[str, Dict[str, Any]]`
+
+## [v0.6.0] - 2025-07-12
 
 ### Changed 
 - **Enhanced `Pipelex.make()` method**: Complete overhaul of the initialization method with new path configuration options and robust validation:

@@ -2,15 +2,13 @@ from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Optional, cast
 
 from pipelex.client.protocol import CompactMemory
 from pipelex.core.concept_native import NativeConcept
 from pipelex.core.pipe_output import PipeOutput
-from pipelex.core.stuff_content import StuffContent, TextContent
-from pipelex.core.stuff_factory import StuffContentFactory
+from pipelex.core.stuff_content import TextContent
 from pipelex.core.working_memory import WorkingMemory
-from pipelex.exceptions import ApiSerializationError
 
 
 class ApiSerializer:
@@ -21,7 +19,7 @@ class ApiSerializer:
     FIELDS_TO_SKIP = ("__class__", "__module__")
 
     @classmethod
-    def serialize_working_memory_for_api(cls, working_memory: WorkingMemory) -> CompactMemory:
+    def serialize_working_memory_for_api(cls, working_memory: Optional[WorkingMemory] = None) -> CompactMemory:
         """
         Convert WorkingMemory to API-ready format using kajson with proper datetime handling.
 
@@ -32,6 +30,8 @@ class ApiSerializer:
             Dict ready for API transmission with datetime strings and no __class__/__module__
         """
         compact_memory: CompactMemory = {}
+        if working_memory is None:
+            return compact_memory
 
         for stuff_name, stuff in working_memory.root.items():
             if stuff.concept_code == NativeConcept.TEXT.code:
@@ -101,24 +101,3 @@ class ApiSerializer:
             return str(content)  # Convert Path to string representation
         else:
             return content
-
-    @classmethod
-    def make_stuff_content_from_api_data(cls, concept_code: str, value: Dict[str, Any] | str) -> StuffContent:
-        """
-        Create StuffContent from API data using concept code.
-
-        Args:
-            concept_code: The concept code to determine the content type
-            value: The content value from API
-
-        Returns:
-            StuffContent instance
-
-        Raises:
-            ApiSerializationError: If concept cannot be resolved or content creation fails
-        """
-        try:
-            return StuffContentFactory.make_stuffcontent_from_concept_code_with_fallback(concept_code=concept_code, value=value)
-
-        except Exception as exc:
-            raise ApiSerializationError(f"Failed to create StuffContent for concept '{concept_code}': {exc}") from exc
