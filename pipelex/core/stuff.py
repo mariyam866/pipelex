@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional, Type, Union
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, ValidationError
 from typing_extensions import override
 
 from pipelex import log
@@ -18,9 +18,9 @@ from pipelex.core.stuff_content import (
     TextAndImagesContent,
     TextContent,
 )
-from pipelex.exceptions import StuffError
+from pipelex.exceptions import StuffContentValidationError, StuffError
 from pipelex.tools.misc.string_utils import pascal_case_to_snake_case
-from pipelex.tools.typing.pydantic_utils import CustomBaseModel
+from pipelex.tools.typing.pydantic_utils import CustomBaseModel, format_pydantic_validation_error
 
 
 class Stuff(CustomBaseModel):
@@ -106,9 +106,25 @@ class Stuff(CustomBaseModel):
 
     def content_as(self, content_type: Type[StuffContentType]) -> StuffContentType:
         """Get content with proper typing if it's of the expected type."""
-        if not isinstance(self.content, content_type):
-            raise TypeError(f"Content is of type '{type(self.content)}', instead of the expected '{content_type}'")
-        return self.content
+        # First try the direct isinstance check for performance
+        if isinstance(self.content, content_type):
+            return self.content
+
+        # If isinstance failed, try model validation approach
+        try:
+            # Check if class names match (quick filter before attempting validation)
+            if type(self.content).__name__ == content_type.__name__:
+                content_dict = self.content.smart_dump()
+                validated_content = content_type.model_validate(content_dict)
+                log.debug(f"Model validation passed: converted {type(self.content).__name__} to {content_type.__name__}")
+                return validated_content
+        except ValidationError as exc:
+            formatted_error = format_pydantic_validation_error(exc)
+            raise StuffContentValidationError(
+                original_type=type(self.content).__name__, target_type=content_type.__name__, validation_error=formatted_error
+            ) from exc
+
+        raise TypeError(f"Content is of type '{type(self.content)}', instead of the expected '{content_type}'")
 
     def as_list_content(self) -> ListContent:  # pyright: ignore[reportMissingTypeArgument, reportUnknownParameterType]
         """Get content as ListContent with items of any type."""
