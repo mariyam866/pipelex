@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.6.2] - 2025-07-18
+
+### Added
+- New `dry-run-pipe` cli command to dry run a single pipe by its code
+- New `show-pipe` cli command to display pipe definitions from the pipe library
+- New `dry_run_single_pipe()` function for running individual pipe dry runs
+
+### Changed
+- Updated `init-libraries` command to accept a directory argument and create `pipelex_libraries` folder in specified location
+- Updated `validate` command to use `-c` flag for the config folder path
+
 ## [v0.6.1] - 2025-07-16
 
 - Can execute pipelines with `input_memory`: It is a `CompactMemory: Dict[str, Dict[str, Any]]`
