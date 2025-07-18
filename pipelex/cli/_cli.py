@@ -10,11 +10,40 @@ from typing_extensions import override
 
 from pipelex import log, pretty_print
 from pipelex.exceptions import PipelexCLIError, PipelexConfigError
-from pipelex.hub import get_pipe_provider
+from pipelex.hub import get_pipe_provider, get_pipeline_tracker, get_required_pipe
 from pipelex.libraries.library_config import LibraryConfig
-from pipelex.pipe_works.pipe_dry import dry_run_all_pipes
+from pipelex.pipe_works.pipe_dry import dry_run_all_pipes, dry_run_single_pipe
 from pipelex.pipelex import Pipelex
 from pipelex.tools.config.manager import config_manager
+
+
+def is_pipelex_libraries_folder(folder_path: str) -> bool:
+    """Check if the given folder path contains a valid pipelex libraries structure.
+
+    A valid pipelex libraries folder should contain the following subdirectories:
+    - pipelines
+    - llm_deck
+    - llm_integrations
+    - plugins
+    - templates
+
+    Args:
+        folder_path: Path to the folder to check
+
+    Returns:
+        True if the folder contains all required subdirectories, False otherwise
+    """
+    if not os.path.exists(folder_path) or not os.path.isdir(folder_path):
+        return False
+
+    required_subdirs = ["pipelines", "llm_deck", "llm_integrations", "plugins", "templates"]
+
+    for subdir in required_subdirs:
+        subdir_path = os.path.join(folder_path, subdir)
+        if not os.path.exists(subdir_path) or not os.path.isdir(subdir_path):
+            return False
+
+    return True
 
 
 class PipelexCLI(TyperGroup):
@@ -38,22 +67,31 @@ app = typer.Typer(
 
 @app.command("init-libraries")
 def init_libraries(
+    directory: Annotated[str, typer.Argument(help="Directory where to create the pipelex_libraries folder")] = ".",
     overwrite: Annotated[bool, typer.Option("--overwrite", "-o", help="Warning: If set, existing files will be overwritten.")] = False,
 ) -> None:
-    """Initialize pipelex libraries in the current directory.
+    """Initialize pipelex libraries in a pipelex_libraries folder in the specified directory.
 
     If overwrite is False, only create files that don't exist yet.
     If overwrite is True, all files will be overwritten even if they exist.
     """
     try:
-        # TODO: Have a more proper print message regarding the overwrited files (e.g. list of files that were overwritten or not)
-        LibraryConfig().export_libraries(overwrite=overwrite)
+        # Always create a pipelex_libraries folder in the specified directory
+        target_path = os.path.join(directory, "pipelex_libraries")
+
+        # Create the target directory if it doesn't exist
+        os.makedirs(directory, exist_ok=True)
+
+        # Create a LibraryConfig instance with the target path
+        library_config = LibraryConfig(config_folder_path=target_path)
+        library_config.export_libraries(overwrite=overwrite)
+
         if overwrite:
-            typer.echo("Successfully initialized pipelex libraries (all files overwritten)")
+            typer.echo(f"✅ Successfully initialized pipelex libraries at '{target_path}' (all files overwritten)")
         else:
-            typer.echo("Successfully initialized pipelex libraries (only created non-existing files)")
+            typer.echo(f"✅ Successfully initialized pipelex libraries at '{target_path}' (only created non-existing files)")
     except Exception as e:
-        raise PipelexCLIError(f"Failed to initialize libraries: {e}")
+        raise PipelexCLIError(f"Failed to initialize libraries at '{directory}': {e}")
 
 
 @app.command("init-config")
@@ -79,15 +117,47 @@ def init_config(
 def validate(
     relative_config_folder_path: Annotated[
         str, typer.Option("--config-folder-path", "-c", help="Relative path to the config folder path")
-    ] = "pipelex_libraries",
+    ] = "./pipelex_libraries",
 ) -> None:
     """Run the setup sequence."""
-    config_folder_path = os.path.join(os.getcwd(), relative_config_folder_path)
-    LibraryConfig(config_folder_path=config_folder_path).export_libraries()
+    # Check if pipelex libraries folder exists
+    if not is_pipelex_libraries_folder(relative_config_folder_path):
+        typer.echo(f"❌ No pipelex libraries folder found at '{relative_config_folder_path}'")
+        typer.echo("To create a pipelex libraries folder, run: pipelex init-libraries")
+        raise typer.Exit(1)
+
     pipelex_instance = Pipelex.make(relative_config_folder_path=relative_config_folder_path, from_file=False)
     pipelex_instance.validate_libraries()
     asyncio.run(dry_run_all_pipes())
     log.info("Setup sequence passed OK, config and pipelines are validated.")
+
+
+@app.command()
+def dry_run_pipe(
+    pipe_code: Annotated[str, typer.Argument(help="The pipe code to dry run")],
+    relative_config_folder_path: Annotated[
+        str, typer.Option("--config-folder-path", "-c", help="Relative path to the config folder path")
+    ] = "./pipelex_libraries",
+) -> None:
+    """Dry run a single pipe."""
+    # Check if pipelex libraries folder exists
+    if not is_pipelex_libraries_folder(relative_config_folder_path):
+        typer.echo(f"❌ No pipelex libraries folder found at '{relative_config_folder_path}'")
+        typer.echo("To create a pipelex libraries folder, run: pipelex init-libraries")
+        raise typer.Exit(1)
+
+    try:
+        # Initialize Pipelex
+        pipelex_instance = Pipelex.make(relative_config_folder_path=relative_config_folder_path, from_file=False)
+        pipelex_instance.validate_libraries()
+
+        # Run the single pipe dry run
+        asyncio.run(dry_run_single_pipe(pipe_code))
+        get_pipeline_tracker().output_flowchart()
+
+    except Exception as e:
+        typer.echo(f"❌ Error running dry run for pipe '{pipe_code}': {e}")
+        raise typer.Exit(1)
 
 
 @app.command()
@@ -114,6 +184,22 @@ def list_pipes(
 
     except Exception as e:
         raise PipelexCLIError(f"Failed to list pipes: {e}")
+
+
+@app.command("show-pipe")
+def show_pipe(
+    pipe_code: Annotated[
+        str,
+        typer.Argument(help="Pipeline code to show definition for"),
+    ],
+    relative_config_folder_path: Annotated[
+        str, typer.Option("--config-folder-path", "-c", help="Relative path to the config folder path")
+    ] = "./pipelex_libraries",
+) -> None:
+    """Show pipe from the pipe library."""
+    Pipelex.make(relative_config_folder_path=relative_config_folder_path, from_file=False)
+    pipe = get_required_pipe(pipe_code=pipe_code)
+    pretty_print(pipe, title=f"Pipe '{pipe_code}'")
 
 
 def main() -> None:
