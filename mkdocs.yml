@@ -148,6 +148,14 @@ nav:
       - Logging: pages/tools/logging.md
     - Advanced Customizations:
       - Overview: pages/advanced-customization/index.md
+      - Architecture Overview: pages/advanced-customization/on_boarding.md
+      - Client & API Layer: pages/advanced-customization/Client_API_Layer.md
+      - Core Orchestration Engine: pages/advanced-customization/Core_Orchestration_Engine.md
+      - AI Integration Layer: pages/advanced-customization/AI_Integration_Layer.md
+      - Pipe Operators: pages/advanced-customization/Pipe_Operators.md
+      - Data & Working Memory: pages/advanced-customization/Data_Working_Memory.md
+      - Configuration & Extensibility: pages/advanced-customization/Configuration_Extensibility_Management.md
+      - Observability & Reporting: pages/advanced-customization/Observability_Reporting.md
       - Secrets Provider: pages/advanced-customization/secrets-provider-injection.md
       - Reporting Delegate: pages/advanced-customization/reporting-delegate-injection.md
       - Pipeline Tracker: pages/advanced-customization/pipeline-tracker-injection.md
