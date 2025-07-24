@@ -1,0 +1,257 @@
+{
+  "description": "One paragraph explaining the functionality which is represented by this graph. What the main flow is and what is its purpose.",
+  "components": [
+    {
+      "name": "Core Orchestration Engine",
+      "description": "Parses declarative TOML pipeline definitions, orchestrating the execution flow of individual Pipe Operators.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipelex.Pipelex",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipelex.py",
+          "reference_start_line": 60,
+          "reference_end_line": 304
+        },
+        {
+          "qualified_name": "pipelex.pipe_works.pipe_router.PipeRouter",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipe_works/pipe_router.py",
+          "reference_start_line": 15,
+          "reference_end_line": 58
+        },
+        {
+          "qualified_name": "pipelex.pipeline.pipeline_manager.PipelineManager",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipeline/pipeline_manager.py",
+          "reference_start_line": 13,
+          "reference_end_line": 43
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Pipe Operators",
+      "description": "Reusable, modular units encapsulating specific tasks like LLM calls, image generation, or custom functions.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipe_operators.pipe_operator",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipe_operators/pipe_operator.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.pipe_operators.pipe_llm",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipe_operators/pipe_llm.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.pipe_operators.pipe_img_gen",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipe_operators/pipe_img_gen.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.pipe_operators.pipe_ocr",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipe_operators/pipe_ocr.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.pipe_operators.pipe_func",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipe_operators/pipe_func.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.pipe_operators.pipe_jinja2",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipe_operators/pipe_jinja2.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "AI Integration Layer",
+      "description": "Provides a unified interface to various AI service providers, abstracting away their specific APIs, and is utilized by the Pipe Operators for AI-related tasks.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.inference.inference_manager",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/cogt/inference/inference_manager.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.cogt.llm",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipelex.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.cogt.imgg",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipelex.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.cogt.ocr",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipelex.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Configuration & Extensibility Management",
+      "description": "Manages all workflow definitions, reusable components, and external plugins, which ensures the system's adaptability and future-proofing.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.config.PipelexConfig",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/config.py",
+          "reference_start_line": 113,
+          "reference_end_line": 116
+        },
+        {
+          "qualified_name": "pipelex.tools.config.manager",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/tools/config/manager.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.plugins.plugin_manager.PluginManager",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/plugins/plugin_manager.py",
+          "reference_start_line": 8,
+          "reference_end_line": 26
+        },
+        {
+          "qualified_name": "pipelex.libraries.library_manager.LibraryManager",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/libraries/library_manager.py",
+          "reference_start_line": 55,
+          "reference_end_line": 405
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Data & Working Memory",
+      "description": "Handles data flow and state within pipelines, providing a shared context for seamless information exchange between pipes.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.working_memory.WorkingMemory",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/core/working_memory.py",
+          "reference_start_line": 38,
+          "reference_end_line": 375
+        },
+        {
+          "qualified_name": "pipelex.core.working_memory_factory",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/core/working_memory_factory.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.core.stuff",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/core/stuff.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.core.stuff_content",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/core/stuff_content.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Client & API Layer",
+      "description": "Facilitates external interaction with the engine.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cli._cli",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/cli/_cli.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.pipelex.Pipelex",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipelex.py",
+          "reference_start_line": 60,
+          "reference_end_line": 304
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Observability & Reporting",
+      "description": "Provides crucial insights into pipeline execution, performance, and costs, aiding in debugging and monitoring.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.reporting.reporting_manager.ReportingManager",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/reporting/reporting_manager.py",
+          "reference_start_line": 29,
+          "reference_end_line": 121
+        },
+        {
+          "qualified_name": "pipelex.pipeline.track.pipeline_tracker.PipelineTracker",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipeline/track/pipeline_tracker.py",
+          "reference_start_line": 29,
+          "reference_end_line": 357
+        },
+        {
+          "qualified_name": "pipelex.tools.log.log",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/tools/log/log.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "orchestrates execution of",
+      "src_name": "Core Orchestration Engine",
+      "dst_name": "Pipe Operators"
+    },
+    {
+      "relation": "manages data flow with",
+      "src_name": "Core Orchestration Engine",
+      "dst_name": "Data & Working Memory"
+    },
+    {
+      "relation": "loads configurations from",
+      "src_name": "Core Orchestration Engine",
+      "dst_name": "Configuration & Extensibility Management"
+    },
+    {
+      "relation": "sends metrics to",
+      "src_name": "Core Orchestration Engine",
+      "dst_name": "Observability & Reporting"
+    },
+    {
+      "relation": "interacts with",
+      "src_name": "Client & API Layer",
+      "dst_name": "Core Orchestration Engine"
+    },
+    {
+      "relation": "sends AI inference requests to",
+      "src_name": "Pipe Operators",
+      "dst_name": "AI Integration Layer"
+    },
+    {
+      "relation": "utilizes configurations/plugins from",
+      "src_name": "AI Integration Layer",
+      "dst_name": "Configuration & Extensibility Management"
+    },
+    {
+      "relation": "sends metrics to",
+      "src_name": "AI Integration Layer",
+      "dst_name": "Observability & Reporting"
+    },
+    {
+      "relation": "interacts with",
+      "src_name": "Pipe Operators",
+      "dst_name": "Data & Working Memory"
+    }
+  ]
+}

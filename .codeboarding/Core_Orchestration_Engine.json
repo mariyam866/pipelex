@@ -1,0 +1,99 @@
+{
+  "description": "The `Core Orchestration Engine` subsystem is the heart of Pipelex, responsible for interpreting declarative pipeline definitions and managing the execution flow of individual operations. It embodies the core pipeline architecture pattern, ensuring that workflows are parsed, managed, and executed efficiently.",
+  "components": [
+    {
+      "name": "Pipelex Core",
+      "description": "The primary entry point and top-level orchestrator of the entire Pipelex system. It is responsible for the overall system lifecycle, including initializing and coordinating the main managers (Configuration, Pipeline, and Pipe Router), acting as the central hub that initiates the orchestration process.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipelex.Pipelex",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipelex.py",
+          "reference_start_line": 60,
+          "reference_end_line": 304
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Configuration Manager",
+      "description": "Dedicated to loading, parsing, and validating declarative pipeline definitions from TOML files. It ensures that workflows are correctly structured and provides the necessary configuration data to other core components for execution.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.config",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/config.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Pipeline Manager",
+      "description": "Manages the lifecycle of defined pipelines, including their registration, retrieval, and overall execution flow. It oversees the high-level orchestration of a complete pipeline, delegating the execution of individual pipes to the Pipe Router.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.pipeline_manager.PipelineManager",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipeline/pipeline_manager.py",
+          "reference_start_line": 13,
+          "reference_end_line": 43
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Pipe Router",
+      "description": "The core execution engine for individual 'pipes'. It dispatches execution requests for each pipe, manages data flow between them, and invokes the specific logic of each pipe operator. This component directly orchestrates the execution of individual steps within a pipeline.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipe_works.pipe_router.PipeRouter",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipe_works/pipe_router.py",
+          "reference_start_line": 15,
+          "reference_end_line": 58
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "initializes and coordinates",
+      "src_name": "Pipelex Core",
+      "dst_name": "Configuration Manager"
+    },
+    {
+      "relation": "initializes and coordinates",
+      "src_name": "Pipelex Core",
+      "dst_name": "Pipeline Manager"
+    },
+    {
+      "relation": "provides parsed pipeline definitions to",
+      "src_name": "Configuration Manager",
+      "dst_name": "Pipelex Core"
+    },
+    {
+      "relation": "provides parsed pipeline definitions to",
+      "src_name": "Configuration Manager",
+      "dst_name": "Pipeline Manager"
+    },
+    {
+      "relation": "delegates individual pipe execution to",
+      "src_name": "Pipeline Manager",
+      "dst_name": "Pipe Router"
+    },
+    {
+      "relation": "receives pipeline definitions from",
+      "src_name": "Pipeline Manager",
+      "dst_name": "Configuration Manager"
+    },
+    {
+      "relation": "receives execution requests from",
+      "src_name": "Pipe Router",
+      "dst_name": "Pipeline Manager"
+    },
+    {
+      "relation": "is initialized and coordinated by",
+      "src_name": "Pipe Router",
+      "dst_name": "Pipelex Core"
+    }
+  ]
+}

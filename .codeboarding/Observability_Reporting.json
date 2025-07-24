@@ -1,0 +1,133 @@
+{
+  "description": "This subsystem is critical for providing insights into pipeline execution, performance, and costs, thereby aiding in debugging and monitoring of AI workflows. It adheres to the Workflow Orchestration Engine / AI Workflow Framework patterns by centralizing monitoring and reporting functionalities, which are essential for managing complex, long-running processes.",
+  "components": [
+    {
+      "name": "Pipeline Tracker",
+      "description": "Responsible for monitoring and recording the execution flow, state, and key metrics of individual pipelines and their constituent pipes. It provides the raw data necessary for understanding pipeline behavior and identifying bottlenecks.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.reporting.tracker.PipelineTracker",
+          "reference_file": "pipelex/reporting/tracker/PipelineTracker.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Reporting Manager",
+      "description": "Aggregates and processes data collected from various sources (like the Pipeline Tracker and Cost Registry) to generate comprehensive reports on pipeline performance, costs, and overall operational health. It acts as the central hub for report generation.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.reporting.manager.ReportingManager",
+          "reference_file": "pipelex/reporting/manager/ReportingManager.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Logging Core",
+      "description": "Provides the foundational logging infrastructure for the entire system, centralizing the collection of events, warnings, and errors from various components. It ensures a consistent logging standard across the observability subsystem.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.logging.core.LoggingCore",
+          "reference_file": "pipelex/logging/core/LoggingCore.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Log Dispatcher",
+      "description": "Handles the routing and distribution of log messages received from the Logging Core to various output destinations, such as console, files, or external monitoring systems. It ensures logs are delivered efficiently to where they are needed.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.logging.dispatcher.LogDispatcher",
+          "reference_file": "pipelex/logging/dispatcher/LogDispatcher.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Cost Registry",
+      "description": "Maintains a dedicated registry for tracking and registering costs associated with pipeline execution, particularly for resource-intensive operations like LLM API calls. This component is crucial for cost analysis and optimization.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.reporting.cost_registry.CostRegistry",
+          "reference_file": "pipelex/reporting/cost_registry/CostRegistry.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "Mermaid Utilities",
+      "description": "Offers utility functions specifically designed to generate Mermaid syntax, enabling the creation of visual diagrams (e.g., flowcharts) that represent pipeline structures and execution flows, aiding in visual debugging and understanding.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.reporting.mermaid.MermaidUtilities",
+          "reference_file": "pipelex/reporting/mermaid/MermaidUtilities.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "Exception Handling",
+      "description": "Provides a centralized and consistent mechanism for catching, processing, and reporting exceptions across the system. Within the observability context, it ensures that errors are properly logged and can be integrated into reports for debugging and monitoring.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.common.exception_handling.ExceptionHandling",
+          "reference_file": "pipelex/common/exception_handling/ExceptionHandling.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "utilizes",
+      "src_name": "Pipeline Tracker",
+      "dst_name": "Mermaid Utilities"
+    },
+    {
+      "relation": "leverages",
+      "src_name": "Pipeline Tracker",
+      "dst_name": "Exception Handling"
+    },
+    {
+      "relation": "manages",
+      "src_name": "Reporting Manager",
+      "dst_name": "Cost Registry"
+    },
+    {
+      "relation": "uses",
+      "src_name": "Reporting Manager",
+      "dst_name": "Logging Core"
+    },
+    {
+      "relation": "leverages",
+      "src_name": "Reporting Manager",
+      "dst_name": "Exception Handling"
+    },
+    {
+      "relation": "delegates to",
+      "src_name": "Logging Core",
+      "dst_name": "Log Dispatcher"
+    },
+    {
+      "relation": "provides data to",
+      "src_name": "Cost Registry",
+      "dst_name": "Reporting Manager"
+    }
+  ]
+}

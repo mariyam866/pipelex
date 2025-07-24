@@ -1,0 +1,62 @@
+{
+  "description": "The `Client & API Layer` is fundamentally important as it defines how users and other systems access the workflow orchestration capabilities. Separating it into `CLI` and `Pipelex (Core Engine API)` components aligns with the \"Workflow Orchestration Engine / AI Workflow Framework\" pattern by distinguishing between direct human interaction (CLI) and programmatic integration (API). This separation promotes modularity, allowing different types of clients to interact with the core engine through appropriate interfaces, which is crucial for extensibility and maintainability in an AI workflow framework.",
+  "components": [
+    {
+      "name": "Client & API Layer",
+      "description": "This layer serves as the primary interface for external users and systems to interact with the Pipelex engine. It encompasses both the command-line interface for direct user interaction and the programmatic API exposed by the core `Pipelex` engine for integration with other systems or custom scripts. It acts as the gateway for initiating, managing, and monitoring AI workflows.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cli._cli",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/cli/_cli.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.pipelex.Pipelex",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipelex.py",
+          "reference_start_line": 60,
+          "reference_end_line": 304
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "CLI (Command-Line Interface)",
+      "description": "The `CLI` component provides a user-friendly command-line interface, enabling users to directly execute Pipelex commands, validate pipeline configurations, and manage workflow executions. It is the primary entry point for manual user interaction with the Pipelex system.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cli._cli",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/cli/_cli.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Pipelex (Core Engine API)",
+      "description": "While `Pipelex` represents the core orchestration engine, its public methods and attributes form the primary programmatic API. This API allows external clients, including the `CLI` and other integrated systems, to programmatically control and manage workflows, define pipelines, and interact with the engine's functionalities.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipelex.Pipelex",
+          "reference_file": "/mnt/e/StartUp/pipelex/pipelex/pipelex.py",
+          "reference_start_line": 60,
+          "reference_end_line": 304
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "interacts with",
+      "src_name": "CLI (Command-Line Interface)",
+      "dst_name": "Pipelex (Core Engine API)"
+    },
+    {
+      "relation": "exposes API to",
+      "src_name": "Pipelex (Core Engine API)",
+      "dst_name": "Client & API Layer"
+    }
+  ]
+}
