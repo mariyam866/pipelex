@@ -5,7 +5,7 @@ graph LR
     Pipelex_Core_Engine_API_["Pipelex (Core Engine API)"]
     CLI_Command_Line_Interface_ -- "interacts with" --> Pipelex_Core_Engine_API_
     Pipelex_Core_Engine_API_ -- "exposes API to" --> Client_API_Layer
-    click Client_API_Layer href "https://github.com/CodeBoarding/pipelex/blob/main/.codeboarding/Client_API_Layer.md" "Details"
+    click Client_API_Layer href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/Client_API_Layer.md" "Details"
 ```
 
 [![CodeBoarding](https://img.shields.io/badge/Generated%20by-CodeBoarding-9cf?style=flat-square)](https://github.com/CodeBoarding/GeneratedOnBoardings)[![Demo](https://img.shields.io/badge/Try%20our-Demo-blue?style=flat-square)](https://www.codeboarding.org/demo)[![Contact](https://img.shields.io/badge/Contact%20us%20-%20contact@codeboarding.org-lightgrey?style=flat-square)](mailto:contact@codeboarding.org)
@@ -21,7 +21,7 @@ This layer serves as the primary interface for external users and systems to int
 **Related Classes/Methods**:
 
 - `pipelex.cli._cli`
-- <a href="https://github.com/CodeBoarding/pipelex/blob/main/pipelex/pipelex.py#L60-L304" target="_blank" rel="noopener noreferrer">`pipelex.pipelex.Pipelex` (60:304)</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/main/pipelex/pipelex.py#L60-L304" target="_blank" rel="noopener noreferrer">`pipelex.pipelex.Pipelex` (60:304)</a>
 
 
 ### CLI (Command-Line Interface)
@@ -39,7 +39,7 @@ While `Pipelex` represents the core orchestration engine, its public methods and
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/CodeBoarding/pipelex/blob/main/pipelex/pipelex.py#L60-L304" target="_blank" rel="noopener noreferrer">`pipelex.pipelex.Pipelex` (60:304)</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/main/pipelex/pipelex.py#L60-L304" target="_blank" rel="noopener noreferrer">`pipelex.pipelex.Pipelex` (60:304)</a>
 
 
 

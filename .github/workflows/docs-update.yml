@@ -8,7 +8,7 @@ on:
       repository_url:
         description: 'Repository URL to test with'
         required: false
-        default: 'https://github.com/CodeBoarding/pipelex'
+        default: 'https://github.com/Pipelex/pipelex'
         type: string
       source_branch:
         description: 'Source branch for generation'

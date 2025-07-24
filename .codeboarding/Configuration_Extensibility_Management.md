@@ -28,7 +28,7 @@ Serves as the primary interface for loading, merging, and providing access to al
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/CodeBoarding/pipelex/blob/main/pipelex/tools/config/manager.py#L22-L222" target="_blank" rel="noopener noreferrer">`pipelex.tools.config.manager.ConfigManager` (22:222)</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/main/pipelex/tools/config/manager.py#L22-L222" target="_blank" rel="noopener noreferrer">`pipelex.tools.config.manager.ConfigManager` (22:222)</a>
 
 
 ### PipelexConfig
@@ -37,7 +37,7 @@ Acts as the central data structure holding the loaded and validated configuratio
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/CodeBoarding/pipelex/blob/main/pipelex/config.py#L113-L116" target="_blank" rel="noopener noreferrer">`pipelex.config.PipelexConfig` (113:116)</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/main/pipelex/config.py#L113-L116" target="_blank" rel="noopener noreferrer">`pipelex.config.PipelexConfig` (113:116)</a>
 
 
 ### LibraryManager
@@ -55,7 +55,7 @@ Manages the lifecycle of external plugins, including their discovery, loading, i
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/CodeBoarding/pipelex/blob/main/pipelex/plugins/plugin_manager.py#L8-L26" target="_blank" rel="noopener noreferrer">`pipelex.plugins.plugin_manager.PluginManager` (8:26)</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/main/pipelex/plugins/plugin_manager.py#L8-L26" target="_blank" rel="noopener noreferrer">`pipelex.plugins.plugin_manager.PluginManager` (8:26)</a>
 
 
 

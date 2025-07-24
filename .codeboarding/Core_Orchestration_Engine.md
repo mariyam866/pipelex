@@ -26,7 +26,7 @@ The primary entry point and top-level orchestrator of the entire Pipelex system.
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/CodeBoarding/pipelex/blob/main/pipelex/pipelex.py#L60-L304" target="_blank" rel="noopener noreferrer">`pipelex.pipelex.Pipelex` (60:304)</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/main/pipelex/pipelex.py#L60-L304" target="_blank" rel="noopener noreferrer">`pipelex.pipelex.Pipelex` (60:304)</a>
 
 
 ### Configuration Manager
@@ -44,7 +44,7 @@ Manages the lifecycle of defined pipelines, including their registration, retrie
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/CodeBoarding/pipelex/blob/main/pipelex/pipeline/pipeline_manager.py#L13-L43" target="_blank" rel="noopener noreferrer">`pipelex.pipeline.pipeline_manager.PipelineManager` (13:43)</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/main/pipelex/pipeline/pipeline_manager.py#L13-L43" target="_blank" rel="noopener noreferrer">`pipelex.pipeline.pipeline_manager.PipelineManager` (13:43)</a>
 
 
 ### Pipe Router
@@ -53,7 +53,7 @@ The core execution engine for individual 'pipes'. It dispatches execution reques
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/CodeBoarding/pipelex/blob/main/pipelex/pipe_works/pipe_router.py#L15-L58" target="_blank" rel="noopener noreferrer">`pipelex.pipe_works.pipe_router.PipeRouter` (15:58)</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/main/pipelex/pipe_works/pipe_router.py#L15-L58" target="_blank" rel="noopener noreferrer">`pipelex.pipe_works.pipe_router.PipeRouter` (15:58)</a>
 
 
 

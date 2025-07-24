@@ -55,7 +55,7 @@ The most fundamental abstract base (pipelex.core.pipe_abstract.PipeAbstract) tha
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/CodeBoarding/pipelex/blob/main/pipelex/core/pipe_abstract.py#L13-L81" target="_blank" rel="noopener noreferrer">`pipelex.core.pipe_abstract.PipeAbstract` (13:81)</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/main/pipelex/core/pipe_abstract.py#L13-L81" target="_blank" rel="noopener noreferrer">`pipelex.core.pipe_abstract.PipeAbstract` (13:81)</a>
 
 
 ### Core Engine
