@@ -17,8 +17,7 @@
           "reference_start_line": 60,
           "reference_end_line": 304
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "CLI (Command-Line Interface)",
@@ -30,8 +29,7 @@
           "reference_start_line": null,
           "reference_end_line": null
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Pipelex (Core Engine API)",
@@ -43,8 +41,7 @@
           "reference_start_line": 60,
           "reference_end_line": 304
         }
-      ],
-      "can_expand": true
+      ]
     }
   ],
   "components_relations": [

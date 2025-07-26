@@ -11,8 +11,7 @@
           "reference_start_line": 60,
           "reference_end_line": 304
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Configuration Manager",
@@ -24,8 +23,7 @@
           "reference_start_line": null,
           "reference_end_line": null
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Pipeline Manager",
@@ -37,8 +35,7 @@
           "reference_start_line": 13,
           "reference_end_line": 43
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Pipe Router",
@@ -50,8 +47,7 @@
           "reference_start_line": 15,
           "reference_end_line": 58
         }
-      ],
-      "can_expand": true
+      ]
     }
   ],
   "components_relations": [

@@ -11,8 +11,7 @@
           "reference_start_line": null,
           "reference_end_line": null
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Specialized Pipe Operators",
@@ -48,8 +47,7 @@
           "reference_start_line": null,
           "reference_end_line": null
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Pipe Abstract",
@@ -61,8 +59,7 @@
           "reference_start_line": 13,
           "reference_end_line": 81
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Core Engine",
@@ -74,8 +71,7 @@
           "reference_start_line": null,
           "reference_end_line": null
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "LLM Adapters/Providers",
@@ -87,8 +83,7 @@
           "reference_start_line": null,
           "reference_end_line": null
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Input/Output Management",
@@ -100,8 +95,7 @@
           "reference_start_line": null,
           "reference_end_line": null
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "Pipe Operator Factories",
@@ -113,8 +107,7 @@
           "reference_start_line": null,
           "reference_end_line": null
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Configuration Layer",
@@ -126,8 +119,7 @@
           "reference_start_line": null,
           "reference_end_line": null
         }
-      ],
-      "can_expand": false
+      ]
     }
   ],
   "components_relations": [

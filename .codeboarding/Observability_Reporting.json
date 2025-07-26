@@ -11,8 +11,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Reporting Manager",
@@ -24,8 +23,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Logging Core",
@@ -37,8 +35,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Log Dispatcher",
@@ -50,8 +47,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": true
+      ]
     },
     {
       "name": "Cost Registry",
@@ -63,8 +59,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "Mermaid Utilities",
@@ -76,8 +71,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": false
+      ]
     },
     {
       "name": "Exception Handling",
@@ -89,8 +83,7 @@
           "reference_start_line": 1,
           "reference_end_line": 1
         }
-      ],
-      "can_expand": false
+      ]
     }
   ],
   "components_relations": [
