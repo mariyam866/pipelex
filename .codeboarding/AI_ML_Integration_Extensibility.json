@@ -1,0 +1,66 @@
+{
+  "description": "This subsystem provides a unified facade for interacting with various AI/ML models (LLMs, Image Generators, OCR engines) from different platforms and manages the integration and lifecycle of external AI/ML SDKs and plugins. It is a critical part of the `pipelex` framework, embodying the \"Extensible AI Integration Layer\" and supporting the \"AI/ML Workflow Orchestration Framework/Library\" and \"Plugin/Extension Architecture\" patterns.",
+  "components": [
+    {
+      "name": "InferenceManager",
+      "description": "Acts as a unified facade and orchestrator for various AI/ML model workers, including Large Language Models (LLMs), Image Generators (Imgg), and Optical Character Recognition (OCR) engines. It is responsible for managing the lifecycle (setup, retrieval, and teardown) of these workers and provides a centralized point of access to different AI capabilities. It also supports dynamic registration of external LLM workers, reinforcing its role in extensibility. This component embodies aspects of the \"Core Workflow Engine\" (specifically the LLM Integration Layer) and the \"Facade Pattern.\"",
+      "referenced_source_code": [
+        {
+          "qualified_name": "InferenceManager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/inference_manager.py",
+          "reference_start_line": 23,
+          "reference_end_line": 186
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "ContentGenerator",
+      "description": "Specializes in generating diverse content (text, structured objects, images, OCR extractions, Jinja2 templated text) by leveraging the underlying AI/ML models. It encapsulates the logic for preparing prompts, handling model settings, and processing the outputs from various AI models. This component represents a specialized \"Pipe Operator/Implementation\" within the \"LLM Integration Layer\" and extends to other AI modalities like image generation and OCR.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "ContentGenerator",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/content_generator.py",
+          "reference_start_line": 39,
+          "reference_end_line": 281
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PluginManager",
+      "description": "Manages the lifecycle of plugins, including their discovery, loading, registration, and provision to other parts of the system. It is crucial for enabling the extensibility of the `pipelex` framework, allowing new AI models, data sources, or custom logic to be integrated seamlessly. This component directly implements the \"Extensibility & Plugin System\" and \"Plugin Management\" architectural patterns.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "PluginManager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/plugin_manager.py",
+          "reference_start_line": 9,
+          "reference_end_line": 27
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "leverages to discover and load",
+      "src_name": "InferenceManager",
+      "dst_name": "PluginManager"
+    },
+    {
+      "relation": "provides AI model workers to",
+      "src_name": "InferenceManager",
+      "dst_name": "ContentGenerator"
+    },
+    {
+      "relation": "relies on to obtain and utilize",
+      "src_name": "ContentGenerator",
+      "dst_name": "InferenceManager"
+    },
+    {
+      "relation": "enables extensibility for by providing",
+      "src_name": "PluginManager",
+      "dst_name": "InferenceManager"
+    }
+  ]
+}

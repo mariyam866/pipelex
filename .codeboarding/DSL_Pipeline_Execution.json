@@ -1,0 +1,196 @@
+{
+  "description": "The `pipelex` subsystem facilitates the creation and execution of domain-specific language (DSL) pipelines. The `PipeController` is the central component, responsible for interpreting the DSL defined by `Domain` and `Concept` elements and orchestrating the pipeline's execution. It leverages `PipeSequence` for sequential operations, `PipeBatch` for parallel processing, and `PipeCondition` for conditional branching, all of which rely on `PipeOperator` for atomic task execution. The `LibraryManager` is vital for extending the system's capabilities by dynamically providing access to various `PipeOperator` implementations, allowing for integration with external tools and services. This modular design ensures flexibility and extensibility in defining and executing complex workflows.",
+  "components": [
+    {
+      "name": "PipeController",
+      "description": "The primary orchestrator and interpreter of the DSL. It takes the defined pipeline (composed of `Domain` and `Concept` elements) and manages its execution flow, delegating to specific control flow components.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "PipeController",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/pipe_controller.py",
+          "reference_start_line": 14,
+          "reference_end_line": 79
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PipeSequence",
+      "description": "Implements sequential execution of `PipeOperator` instances. It ensures that pipeline steps are processed in a predefined, ordered manner, managing data flow between them.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "PipeSequence",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/pipe_sequence.py",
+          "reference_start_line": 23,
+          "reference_end_line": 195
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PipeBatch",
+      "description": "Manages the parallel or batch execution of multiple `PipeOperator` instances. This enables concurrent processing of data or tasks, optimizing workflow performance.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "PipeBatch",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/pipe_batch.py",
+          "reference_start_line": 27,
+          "reference_end_line": 247
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PipeCondition",
+      "description": "Provides conditional branching logic within a pipeline. It evaluates specified criteria and directs the execution flow to different `PipeSequence` or `PipeBatch` paths based on the outcome.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "PipeCondition",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/pipe_condition.py",
+          "reference_start_line": 32,
+          "reference_end_line": 379
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PipeOperator",
+      "description": "Serves as the abstract interface or base class for all individual, atomic operations within a pipeline. Concrete implementations perform specific tasks, such as LLM calls, data transformations, or external tool invocations.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "PipeOperator",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/pipe_operator.py",
+          "reference_start_line": 16,
+          "reference_end_line": 90
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Domain",
+      "description": "Defines the high-level structure and entities of the domain-specific language. It provides the conceptual framework for organizing `Concept`s and constructing pipelines, establishing the overall workflow blueprint.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "Domain",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/hub.py",
+          "reference_start_line": 405,
+          "reference_end_line": 406
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Concept",
+      "description": "Represents fundamental building blocks or atomic units within the `pipelex` DSL. These can be data types, abstract operations, or specific elements that `Domain` utilizes to define the granular aspects of workflows.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "Concept",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/hub.py",
+          "reference_start_line": 448,
+          "reference_end_line": 449
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "LibraryManager",
+      "description": "Manages the loading, registration, and access to external libraries, plugins, or integrations (e.g., LLM providers, specialized tools). It is crucial for the extensibility of the framework, allowing new `PipeOperator` implementations to be dynamically integrated.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "LibraryManager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/library_manager.py",
+          "reference_start_line": 56,
+          "reference_end_line": 406
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "orchestrates",
+      "src_name": "PipeController",
+      "dst_name": "PipeSequence"
+    },
+    {
+      "relation": "orchestrates",
+      "src_name": "PipeController",
+      "dst_name": "PipeBatch"
+    },
+    {
+      "relation": "orchestrates",
+      "src_name": "PipeController",
+      "dst_name": "PipeCondition"
+    },
+    {
+      "relation": "interprets DSL from",
+      "src_name": "PipeController",
+      "dst_name": "Domain"
+    },
+    {
+      "relation": "interprets DSL from",
+      "src_name": "PipeController",
+      "dst_name": "Concept"
+    },
+    {
+      "relation": "utilizes",
+      "src_name": "PipeSequence",
+      "dst_name": "PipeOperator"
+    },
+    {
+      "relation": "utilizes",
+      "src_name": "PipeBatch",
+      "dst_name": "PipeOperator"
+    },
+    {
+      "relation": "utilizes",
+      "src_name": "PipeCondition",
+      "dst_name": "PipeOperator"
+    },
+    {
+      "relation": "controls flow to",
+      "src_name": "PipeCondition",
+      "dst_name": "PipeSequence"
+    },
+    {
+      "relation": "controls flow to",
+      "src_name": "PipeCondition",
+      "dst_name": "PipeBatch"
+    },
+    {
+      "relation": "retrieves functionalities via",
+      "src_name": "PipeOperator",
+      "dst_name": "LibraryManager"
+    },
+    {
+      "relation": "provides model for",
+      "src_name": "Domain",
+      "dst_name": "PipeController"
+    },
+    {
+      "relation": "composed of",
+      "src_name": "Domain",
+      "dst_name": "Concept"
+    },
+    {
+      "relation": "provides model for",
+      "src_name": "Concept",
+      "dst_name": "PipeController"
+    },
+    {
+      "relation": "used within",
+      "src_name": "Concept",
+      "dst_name": "Domain"
+    },
+    {
+      "relation": "provides access to",
+      "src_name": "LibraryManager",
+      "dst_name": "PipeOperator"
+    },
+    {
+      "relation": "interacts with",
+      "src_name": "PipeController",
+      "dst_name": "LibraryManager"
+    }
+  ]
+}
