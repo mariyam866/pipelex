@@ -1,0 +1,87 @@
+{
+  "description": "The Pipeline Observability & Reporting subsystem encompasses core components responsible for monitoring, tracking, and reporting on pipeline execution and resource usage.",
+  "components": [
+    {
+      "name": "Pipeline Tracker",
+      "description": "Manages the structural definition and runtime tracking of the pipeline. It records pipeline steps, their interconnections, and execution flow, forming a graph representation of the workflow. It also handles the setup and teardown of tracking sessions. This component is fundamental for understanding the dynamic behavior and structure of any executed pipeline.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.track.pipeline_tracker",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/pipeline_tracker.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Flowchart Generator",
+      "description": "Visualizes the pipeline structure. It takes tracked pipeline data from the Pipeline Tracker and generates Mermaid flowchart code, including subgraphs and properly tagged edges, to provide a clear graphical representation of the workflow for analysis and debugging. This is crucial for human-readable insights into complex workflows.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.track.flow_chart",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/flow_chart.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Activity Manager",
+      "description": "Manages the lifecycle of individual pipeline activities. It handles the setup and teardown phases for activities, orchestrating how individual activity outputs and states are managed during pipeline execution. This component ensures that each step within the pipeline is properly observed and its state is available for tracking.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.activity.activity_manager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_manager.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Reporting Manager",
+      "description": "Collects, aggregates, and generates comprehensive reports on pipeline usage metrics, with a particular focus on LLM (Large Language Model) job costs, such as token usage. This component is vital for operational insights, cost analysis, and performance monitoring in AI/ML workflows.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.reporting.reporting_manager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/reporting/reporting_manager.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Usage Registry",
+      "description": "Serves as a dedicated data store for recording and managing usage statistics, primarily token consumption for LLM inference jobs. It acts as the backend for the Reporting Manager, providing a persistent and queryable source of truth for resource utilization.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.reporting.reporting_manager.UsageRegistry",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/reporting/reporting_manager.py",
+          "reference_start_line": 20,
+          "reference_end_line": 27
+        }
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "provides data to",
+      "src_name": "Pipeline Tracker",
+      "dst_name": "Flowchart Generator"
+    },
+    {
+      "relation": "provides details to",
+      "src_name": "Activity Manager",
+      "dst_name": "Pipeline Tracker"
+    },
+    {
+      "relation": "provides data to",
+      "src_name": "Usage Registry",
+      "dst_name": "Reporting Manager"
+    }
+  ]
+}
