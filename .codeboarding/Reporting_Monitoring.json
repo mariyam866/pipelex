@@ -1,0 +1,92 @@
+{
+  "description": "The `Reporting & Monitoring` subsystem is critical for providing visibility into pipeline execution, resource consumption, and operational activities within the `pipelex` AI Workflow Orchestration Library. It encompasses modules responsible for tracking pipeline flow, logging detailed activities, and generating usage reports.",
+  "components": [
+    {
+      "name": "ReportingManager",
+      "description": "Orchestrates the collection and aggregation of usage data, specifically focusing on token consumption from LLM inference. It is responsible for generating financial reports to manage AI workflow costs. It manages an internal `UsageRegistry`.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.reporting.reporting_manager.ReportingManager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/reporting/reporting_manager.py",
+          "reference_start_line": 30,
+          "reference_end_line": 122
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PipelineTracker",
+      "description": "Monitors and records the execution path of a pipeline, capturing each step (e.g., pipes, batches, conditions, choices) to construct a logical flow representation. Its primary output is data used for visual flowcharts.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.track.pipeline_tracker.PipelineTracker",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/pipeline_tracker.py",
+          "reference_start_line": 30,
+          "reference_end_line": 364
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "FlowChartGenerator",
+      "description": "Specializes in generating Mermaid syntax for visual flowcharts based on the structural data provided by the `PipelineTracker`.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.track.flow_chart.FlowChartGenerator",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/flow_chart.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "ActivityManager",
+      "description": "Manages the overall lifecycle of activity tracking within pipelines, including the proper initialization and cleanup of activity-related resources.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.activity.activity_manager.ActivityManager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_manager.py",
+          "reference_start_line": 16,
+          "reference_end_line": 46
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "ActivityHandler",
+      "description": "Processes and categorizes various types of content generated during pipeline execution (e.g., text, images, structured data, Mermaid diagrams), assigning unique identifiers to each activity.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.activity.activity_handler.ActivityHandler",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_handler.py",
+          "reference_start_line": 23,
+          "reference_end_line": 132
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "provides structural execution data to",
+      "src_name": "PipelineTracker",
+      "dst_name": "FlowChartGenerator"
+    },
+    {
+      "relation": "consumes structural data from",
+      "src_name": "FlowChartGenerator",
+      "dst_name": "PipelineTracker"
+    },
+    {
+      "relation": "orchestrates the operations of",
+      "src_name": "ActivityManager",
+      "dst_name": "ActivityHandler"
+    },
+    {
+      "relation": "is orchestrated by",
+      "src_name": "ActivityHandler",
+      "dst_name": "ActivityManager"
+    }
+  ]
+}

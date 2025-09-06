@@ -1,0 +1,130 @@
+{
+  "description": "The `pipelex` core memory and data artifact subsystem is designed around the `WorkingMemory` component, which serves as the central, transient store for all data artifacts, represented by `Stuff` objects. `WorkingMemoryFactory` is responsible for initializing `WorkingMemory` instances. Each `Stuff` object encapsulates `StuffContent`, which holds the raw data and handles type-specific operations, including rendering. `StuffFactory` facilitates the creation of `Stuff` and `StuffContent` from various inputs. For rendering purposes, `Stuff` can create a `StuffArtefact` from its `StuffContent`, providing a specialized, renderable view suitable for templating engines. This architecture ensures a clear separation of concerns, with dedicated components for data storage, content encapsulation, rendering representation, and object creation.",
+  "components": [
+    {
+      "name": "WorkingMemory",
+      "description": "The central, transient store for all data artifacts (`Stuff` objects) during pipeline execution. It manages the lifecycle of these artifacts, including adding, retrieving, updating, and aliasing, ensuring data availability and integrity across pipeline steps.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.memory.working_memory.WorkingMemory",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/memory/working_memory.py",
+          "reference_start_line": 37,
+          "reference_end_line": 344
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Stuff",
+      "description": "Represents a single, unified data artifact within the pipeline, encapsulating `StuffContent`. It provides a consistent interface for accessing and validating content, abstracting underlying data types to fulfill the \"knowledge-in, knowledge-out\" contract of the pipeline.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.stuffs.stuff.Stuff",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff.py",
+          "reference_start_line": 26,
+          "reference_end_line": 194
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "StuffContent",
+      "description": "Holds the raw data of a `Stuff` object and handles type-specific operations. It is responsible for rendering content into various output formats (e.g., HTML, JSON, plain text, Markdown) and supports content creation from basic types, performing the actual data validation and manipulation.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.stuffs.stuff_content.StuffContent",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff_content.py",
+          "reference_start_line": 30,
+          "reference_end_line": 70
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "StuffArtefact",
+      "description": "Provides a specialized, renderable view of `StuffContent`, primarily focused on rendering tagged content for templating engines (e.g., Jinja2). It facilitates the extraction and presentation of content in a format suitable for dynamic generation within the pipeline.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.stuffs.stuff_artefact.StuffArtefact",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff_artefact.py",
+          "reference_start_line": 13,
+          "reference_end_line": 60
+        }
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "WorkingMemoryFactory",
+      "description": "Manages the creation and initialization of `WorkingMemory` instances. It can construct `WorkingMemory` from various initial states, such as pre-existing data (text, image, PDF), compact memory representations, or for specific operational modes like dry runs.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.memory.working_memory_factory.WorkingMemoryFactory",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/memory/working_memory_factory.py",
+          "reference_start_line": 20,
+          "reference_end_line": 248
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "StuffFactory",
+      "description": "Handles the creation of `Stuff` and `StuffContent` objects from diverse inputs, including raw strings, concept definitions, blueprints, or by combining existing `Stuff` instances. It also manages error conditions that may arise during the creation process.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.stuffs.stuff_factory.StuffFactory",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff_factory.py",
+          "reference_start_line": 38,
+          "reference_end_line": 259
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "manages",
+      "src_name": "WorkingMemory",
+      "dst_name": "Stuff"
+    },
+    {
+      "relation": "delegates to",
+      "src_name": "WorkingMemory",
+      "dst_name": "Stuff"
+    },
+    {
+      "relation": "encapsulates",
+      "src_name": "Stuff",
+      "dst_name": "StuffContent"
+    },
+    {
+      "relation": "delegates to",
+      "src_name": "Stuff",
+      "dst_name": "StuffContent"
+    },
+    {
+      "relation": "creates",
+      "src_name": "Stuff",
+      "dst_name": "StuffArtefact"
+    },
+    {
+      "relation": "represents",
+      "src_name": "StuffArtefact",
+      "dst_name": "StuffContent"
+    },
+    {
+      "relation": "creates",
+      "src_name": "WorkingMemoryFactory",
+      "dst_name": "WorkingMemory"
+    },
+    {
+      "relation": "creates",
+      "src_name": "StuffFactory",
+      "dst_name": "Stuff"
+    },
+    {
+      "relation": "creates",
+      "src_name": "StuffFactory",
+      "dst_name": "StuffContent"
+    }
+  ]
+}

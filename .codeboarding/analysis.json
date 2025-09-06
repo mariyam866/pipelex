@@ -1,9 +1,28 @@
 {
-  "description": "The Pipelex architecture is designed around a workflow-centric, modular pipeline pattern, enabling declarative AI workflow automation. At its core, the Pipelex Core & User Interface serves as the central orchestrator, allowing users to define and initiate complex AI pipelines. These pipelines are structured by the Pipeline Definition & Data Schema, which translates declarative blueprints into executable workflows. The Workflow Execution Engine then takes charge, orchestrating the execution of individual Pipe Operators & Working Memory components. These operators perform the actual data processing, managing transient data within their working memory, and seamlessly integrating with various external AI services via the AI Service Integration Layer. Throughout the entire process, the Pipeline Observability & Reporting component provides comprehensive tracking and reporting, ensuring transparency and debuggability of the AI workflows. This design facilitates clear data and control flow, making it ideal for visual diagram generation that highlights the progression of data through defined stages and interactions with external AI capabilities.",
+  "description": "Pipelex is an AI workflow orchestration library centered around a declarative Domain-Specific Language (PLX). The `Pipelex Client` serves as the user's entry point, initiating workflows managed by the `Core Pipeline Orchestrator`. This orchestrator interprets pipeline definitions from the `PLX Definition & Registry`, which also manages loaded libraries and concept schemas. During execution, the `Core Pipeline Orchestrator` interacts with `Runtime Data & State` to manage all transient data artifacts (\"stuffs\"). AI-specific tasks are delegated to the `AI Service Abstraction` layer, which integrates various AI workers and external providers. Dynamic content generation within pipes is handled by the `Templating Engine`, while `Reporting & Monitoring` provides comprehensive insights into pipeline execution and resource usage. This modular design emphasizes clear separation of concerns, enabling flexible and extensible AI workflow automation.",
   "components": [
     {
-      "name": "Pipelex Core & User Interface",
-      "description": "The central application entry point and control unit, handling user interactions (CLI/Client) and orchestrating the overall system. It manages application initialization, configuration loading, and command handling.",
+      "name": "Pipelex Client (CLI/SDK)",
+      "description": "The primary external interface for users to interact with Pipelex, enabling programmatic control or command-line operations.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cli",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        },
+        {
+          "qualified_name": "pipelex.client",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Core Pipeline Orchestrator",
+      "description": "The central nervous system of Pipelex, responsible for setting up the environment, managing the lifecycle of pipelines, and coordinating the execution of individual pipes.",
       "referenced_source_code": [
         {
           "qualified_name": "pipelex.pipelex",
@@ -18,14 +37,20 @@
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.cli.commands.__init__",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/__init__.py",
-          "reference_start_line": 11,
-          "reference_end_line": 11
+          "qualified_name": "pipelex.pipeline.pipeline_manager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline_manager.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.client.client",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/client.py",
+          "qualified_name": "pipelex.pipe_controllers",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        },
+        {
+          "qualified_name": "pipelex.pipe_works.pipe_router",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_works/pipe_router.py",
           "reference_start_line": 1,
           "reference_end_line": 1
         }
@@ -33,8 +58,8 @@
       "can_expand": true
     },
     {
-      "name": "Pipeline Definition & Data Schema",
-      "description": "Manages the declarative definition of pipelines (e.g., TOML parsing) and the underlying data structures (concepts, domains) that define the data flowing through the pipes. It translates blueprints into executable internal representations.",
+      "name": "PLX Definition & Registry",
+      "description": "Manages the interpretation of the Pipelex DSL (PLX) for defining pipelines and concepts, and serves as the central repository for these definitions and loaded libraries.",
       "referenced_source_code": [
         {
           "qualified_name": "pipelex.core.interpreter",
@@ -43,32 +68,26 @@
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.core.pipes.pipe_factory",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_factory.py",
+          "qualified_name": "pipelex.libraries",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.core.pipes.pipe_library",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_library.py",
+          "qualified_name": "pipelex.tools.config.manager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/config/manager.py",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.libraries.library_manager",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/library_manager.py",
+          "qualified_name": "pipelex.core.concepts",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.core.concepts.concept_library",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/concept_library.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.core.domains.domain_library",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/domains/domain_library.py",
+          "qualified_name": "pipelex.core.pipes",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/",
           "reference_start_line": 1,
           "reference_end_line": 1
         }
@@ -76,30 +95,18 @@
       "can_expand": true
     },
     {
-      "name": "Workflow Execution Engine",
-      "description": "The core engine that orchestrates the execution of individual pipes within a defined pipeline. It manages control flow logic such as sequencing, conditional branching, and parallel execution, ensuring pipes are executed in the correct order.",
+      "name": "Runtime Data & State",
+      "description": "Handles the transient storage and manipulation of all data artifacts (\"stuffs\") that are produced and consumed during a pipeline's execution, ensuring data integrity and type validation.",
       "referenced_source_code": [
         {
-          "qualified_name": "pipelex.pipe_controllers.pipe_controller",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/pipe_controller.py",
+          "qualified_name": "pipelex.core.memory.working_memory",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/memory/working_memory.py",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.pipe_controllers.sequence.pipe_sequence",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/sequence/pipe_sequence.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipe_controllers.condition.pipe_condition",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/condition/pipe_condition.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipeline.pipeline_manager",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline_manager.py",
+          "qualified_name": "pipelex.core.stuffs",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/",
           "reference_start_line": 1,
           "reference_end_line": 1
         }
@@ -107,12 +114,30 @@
       "can_expand": true
     },
     {
-      "name": "Pipe Operators & Working Memory",
-      "description": "Atomic, pluggable units of work that perform specific data processing tasks. These operators interact directly with an internal transient data store (working memory) and utilize templating for dynamic content generation and manipulation.",
+      "name": "AI Service Abstraction",
+      "description": "A unified component for managing and providing access to various AI workers (LLM, Image Generation, OCR) and adapting to different third-party AI services via plugins.",
       "referenced_source_code": [
         {
-          "qualified_name": "pipelex.pipe_operators.pipe_operator",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/pipe_operator.py",
+          "qualified_name": "pipelex.cogt.inference.inference_manager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/inference_manager.py",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        },
+        {
+          "qualified_name": "pipelex.cogt.llm",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        },
+        {
+          "qualified_name": "pipelex.cogt.imgg",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/",
+          "reference_start_line": 1,
+          "reference_end_line": 1
+        },
+        {
+          "qualified_name": "pipelex.cogt.ocr",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
@@ -123,44 +148,20 @@
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.pipe_operators.ocr.pipe_ocr",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/ocr/pipe_ocr.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
           "qualified_name": "pipelex.pipe_operators.img_gen.pipe_img_gen",
           "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/img_gen/pipe_img_gen.py",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.core.memory.working_memory",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/memory/working_memory.py",
+          "qualified_name": "pipelex.pipe_operators.ocr.pipe_ocr",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/ocr/pipe_ocr.py",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.core.stuffs.stuff",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.core.stuffs.stuff_factory",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff_factory.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.tools.templating.jinja2_rendering",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_rendering.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.tools.templating.template_library",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/template_library.py",
+          "qualified_name": "pipelex.plugins",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/",
           "reference_start_line": 1,
           "reference_end_line": 1
         }
@@ -168,48 +169,18 @@
       "can_expand": true
     },
     {
-      "name": "AI Service Integration Layer",
-      "description": "Provides a unified and abstracted interface for interacting with various external AI/ML services (e.g., LLMs, Image Generation, OCR). It manages different AI provider adapters (plugins) and handles service requests, abstracting away third-party API specifics.",
+      "name": "Templating Engine",
+      "description": "Integrates Jinja2 for dynamic content generation within pipes, enabling flexible prompt and output formatting.",
       "referenced_source_code": [
         {
-          "qualified_name": "pipelex.cogt.inference.inference_manager",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/inference_manager.py",
+          "qualified_name": "pipelex.tools.templating",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.cogt.llm.llm_worker_abstract",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_worker_abstract.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.cogt.imgg.imgg_worker_abstract",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_worker_abstract.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.cogt.ocr.ocr_worker_abstract",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_worker_abstract.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.plugins.plugin_manager",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/plugin_manager.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.plugins.openai.openai_config",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/openai_config.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.plugins.anthropic.anthropic_config",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/anthropic/anthropic_config.py",
+          "qualified_name": "pipelex.pipe_operators.jinja2.pipe_jinja2",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/jinja2/pipe_jinja2.py",
           "reference_start_line": 1,
           "reference_end_line": 1
         }
@@ -217,30 +188,24 @@
       "can_expand": true
     },
     {
-      "name": "Pipeline Observability & Reporting",
-      "description": "Monitors pipeline execution, tracks activities, and generates reports and visualizations (e.g., flowcharts) for analysis, debugging, and operational insights. It provides the necessary data for understanding pipeline performance and behavior.",
+      "name": "Reporting & Monitoring",
+      "description": "Monitors and logs pipeline execution, including generating visual flowcharts, activity logs, and usage reports.",
       "referenced_source_code": [
         {
-          "qualified_name": "pipelex.pipeline.track.pipeline_tracker",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/pipeline_tracker.py",
+          "qualified_name": "pipelex.pipeline.track",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.pipeline.track.flow_chart",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/flow_chart.py",
+          "qualified_name": "pipelex.reporting",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/reporting/",
           "reference_start_line": 1,
           "reference_end_line": 1
         },
         {
-          "qualified_name": "pipelex.reporting.reporting_manager",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/reporting/reporting_manager.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipeline.activity.activity_manager",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_manager.py",
+          "qualified_name": "pipelex.pipeline.activity",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/",
           "reference_start_line": 1,
           "reference_end_line": 1
         }
@@ -250,49 +215,119 @@
   ],
   "components_relations": [
     {
-      "relation": "initiates pipeline execution",
-      "src_name": "Pipelex Core & User Interface",
-      "dst_name": "Pipeline Definition & Data Schema"
+      "relation": "Initiates Pipeline Execution",
+      "src_name": "Pipelex Client (CLI/SDK)",
+      "dst_name": "Core Pipeline Orchestrator"
     },
     {
-      "relation": "provides execution reports",
-      "src_name": "Pipeline Observability & Reporting",
-      "dst_name": "Pipelex Core & User Interface"
+      "relation": "Manages Pipeline Lifecycle",
+      "src_name": "Pipelex Client (CLI/SDK)",
+      "dst_name": "Core Pipeline Orchestrator"
     },
     {
-      "relation": "provides executable pipeline structure",
-      "src_name": "Pipeline Definition & Data Schema",
-      "dst_name": "Workflow Execution Engine"
+      "relation": "Configures Definitions",
+      "src_name": "Pipelex Client (CLI/SDK)",
+      "dst_name": "PLX Definition & Registry"
     },
     {
-      "relation": "defines data schemas",
-      "src_name": "Pipeline Definition & Data Schema",
-      "dst_name": "Pipe Operators & Working Memory"
+      "relation": "Loads Libraries",
+      "src_name": "Pipelex Client (CLI/SDK)",
+      "dst_name": "PLX Definition & Registry"
     },
     {
-      "relation": "orchestrates pipe execution",
-      "src_name": "Workflow Execution Engine",
-      "dst_name": "Pipe Operators & Working Memory"
+      "relation": "Retrieves Pipeline Blueprints",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "PLX Definition & Registry"
     },
     {
-      "relation": "sends execution events",
-      "src_name": "Workflow Execution Engine",
-      "dst_name": "Pipeline Observability & Reporting"
+      "relation": "Accesses Concept Definitions",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "PLX Definition & Registry"
     },
     {
-      "relation": "requests AI services",
-      "src_name": "Pipe Operators & Working Memory",
-      "dst_name": "AI Service Integration Layer"
+      "relation": "Stores/Retrieves Data Artifacts",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "Runtime Data & State"
     },
     {
-      "relation": "provides AI service responses",
-      "src_name": "AI Service Integration Layer",
-      "dst_name": "Pipe Operators & Working Memory"
+      "relation": "Manages Working Memory",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "Runtime Data & State"
     },
     {
-      "relation": "sends activity events",
-      "src_name": "Pipe Operators & Working Memory",
-      "dst_name": "Pipeline Observability & Reporting"
+      "relation": "Delegates AI Tasks",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "AI Service Abstraction"
+    },
+    {
+      "relation": "Invokes AI Workers",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "AI Service Abstraction"
+    },
+    {
+      "relation": "Renders Dynamic Content",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "Templating Engine"
+    },
+    {
+      "relation": "Formats Prompts/Outputs",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "Templating Engine"
+    },
+    {
+      "relation": "Reports Execution Status",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "Reporting & Monitoring"
+    },
+    {
+      "relation": "Logs Activities",
+      "src_name": "Core Pipeline Orchestrator",
+      "dst_name": "Reporting & Monitoring"
+    },
+    {
+      "relation": "Provides Data Schemas (Concepts) for Validation",
+      "src_name": "PLX Definition & Registry",
+      "dst_name": "Runtime Data & State"
+    },
+    {
+      "relation": "Processes Input Data",
+      "src_name": "AI Service Abstraction",
+      "dst_name": "Runtime Data & State"
+    },
+    {
+      "relation": "Stores Output Data",
+      "src_name": "AI Service Abstraction",
+      "dst_name": "Runtime Data & State"
+    },
+    {
+      "relation": "Accesses LLM Deck Configurations",
+      "src_name": "AI Service Abstraction",
+      "dst_name": "PLX Definition & Registry"
+    },
+    {
+      "relation": "Retrieves AI Worker Definitions",
+      "src_name": "AI Service Abstraction",
+      "dst_name": "PLX Definition & Registry"
+    },
+    {
+      "relation": "Collects Data for Reports",
+      "src_name": "Reporting & Monitoring",
+      "dst_name": "Runtime Data & State"
+    },
+    {
+      "relation": "Tracks Data Flow",
+      "src_name": "Reporting & Monitoring",
+      "dst_name": "Runtime Data & State"
+    },
+    {
+      "relation": "Gathers Inference Metrics",
+      "src_name": "Reporting & Monitoring",
+      "dst_name": "AI Service Abstraction"
+    },
+    {
+      "relation": "Logs AI Service Usage",
+      "src_name": "Reporting & Monitoring",
+      "dst_name": "AI Service Abstraction"
     }
   ]
 }

@@ -1,0 +1,153 @@
+{
+  "description": "The Pipelex AI subsystem is designed around a flexible plugin-based architecture for integrating diverse AI capabilities. The `InferenceManager` serves as the central orchestrator, acting as a factory and registry for various AI worker instances. It provides a unified interface for the system to access Large Language Model (`AbstractLLMWorker`), Image Generation (`AbstractImggWorker`), and Optical Character Recognition (`AbstractOcrWorker`) functionalities. Concrete implementations of these abstract workers are provided by `PluginWorker` components, which are dynamically loaded from the `pipelex.plugins` directory. These `PluginWorker` instances adapt generic AI calls to specific third-party AI service APIs, handling API interactions, request/response translation, and service-specific error handling. Each `PluginWorker` relies on `PluginConfig` for managing sensitive configuration details like API keys and endpoints, ensuring secure and centralized credential management. Additionally, `PluginWorker` components interact with the `LLMModelLibrary` to retrieve model-specific information and capabilities, enabling dynamic model selection and configuration. This design promotes extensibility, allowing new AI services to be integrated by simply adding new plugin implementations.",
+  "components": [
+    {
+      "name": "InferenceManager",
+      "description": "Acts as a centralized factory and registry for all AI worker instances (LLM, Image Generation, OCR). It provides a unified interface for the rest of the system to obtain AI capabilities, managing the lifecycle and configuration of these workers.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.inference.inference_manager.InferenceManager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/inference_manager.py",
+          "reference_start_line": 23,
+          "reference_end_line": 186
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "AbstractLLMWorker",
+      "description": "Defines the abstract contract for all Large Language Model (LLM) operations, including methods for generating text (`gen_text`) and structured objects (`gen_object`). This ensures a consistent interface across different LLM providers.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.llm.llm_worker_abstract.AbstractLLMWorker",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_worker_abstract.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "AbstractImggWorker",
+      "description": "Defines the abstract contract for all Image Generation (Imgg) operations, including methods for generating single images (`gen_image`) and lists of images (`gen_image_list`).",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.imgg.imgg_worker_abstract.AbstractImggWorker",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_worker_abstract.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "AbstractOcrWorker",
+      "description": "Defines the abstract contract for all Optical Character Recognition (OCR) operations, specifically for extracting text from pages (`ocr_extract_pages`).",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.ocr.ocr_worker_abstract.AbstractOcrWorker",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_worker_abstract.py",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PluginWorker",
+      "description": "Provides concrete implementations of the `AbstractWorker` interfaces (LLM, Imgg, OCR). These components adapt Pipelex's generic worker calls to the specific API requirements of various third-party AI services (e.g., Anthropic, OpenAI, Google Vertex). They handle API calls, request/response translation, and service-specific error handling.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.plugins.PluginWorker",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PluginConfig",
+      "description": "Manages and provides configuration details, including API keys, endpoints, and region settings, for specific third-party AI services. It acts as a secure and centralized store for sensitive credentials.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.plugins.PluginConfig",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins",
+          "reference_start_line": 0,
+          "reference_end_line": 0
+        }
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "LLMModelLibrary",
+      "description": "Manages a catalog of available LLM models, including their definitions, versions, and capabilities. It provides a mechanism to retrieve model-specific details and properties.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.llm.llm_models.llm_model_library.LLMModelLibrary",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_model_library.py",
+          "reference_start_line": 33,
+          "reference_end_line": 158
+        }
+      ],
+      "can_expand": true
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "manages and provides instances of",
+      "src_name": "InferenceManager",
+      "dst_name": "AbstractLLMWorker"
+    },
+    {
+      "relation": "manages and provides instances of",
+      "src_name": "InferenceManager",
+      "dst_name": "AbstractImggWorker"
+    },
+    {
+      "relation": "manages and provides instances of",
+      "src_name": "InferenceManager",
+      "dst_name": "AbstractOcrWorker"
+    },
+    {
+      "relation": "instantiates",
+      "src_name": "InferenceManager",
+      "dst_name": "PluginWorker"
+    },
+    {
+      "relation": "implements",
+      "src_name": "PluginWorker",
+      "dst_name": "AbstractLLMWorker"
+    },
+    {
+      "relation": "implements",
+      "src_name": "PluginWorker",
+      "dst_name": "AbstractImggWorker"
+    },
+    {
+      "relation": "implements",
+      "src_name": "PluginWorker",
+      "dst_name": "AbstractOcrWorker"
+    },
+    {
+      "relation": "uses",
+      "src_name": "PluginWorker",
+      "dst_name": "PluginConfig"
+    },
+    {
+      "relation": "queries",
+      "src_name": "PluginWorker",
+      "dst_name": "LLMModelLibrary"
+    },
+    {
+      "relation": "provides configuration to",
+      "src_name": "PluginConfig",
+      "dst_name": "PluginWorker"
+    },
+    {
+      "relation": "provides model information to",
+      "src_name": "LLMModelLibrary",
+      "dst_name": "PluginWorker"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "description": "This is a placeholder description.",
+  "components": [
+    {
+      "name": "ComponentA",
+      "description": "Description of ComponentA",
+      "referenced_source_code": [
+        {
+          "qualified_name": "module.ClassA",
+          "reference_file": null,
+          "reference_start_line": 10,
+          "reference_end_line": 20
+        }
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "uses",
+      "src_name": "ComponentA",
+      "dst_name": "ComponentB"
+    }
+  ]
+}
