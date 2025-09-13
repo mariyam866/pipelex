@@ -1,0 +1,138 @@
+{
+  "description": "The Pipelex system provides both a command-line interface (CLI) and a Python SDK for managing data pipelines. The `CLI Interface` leverages the `Python Client/SDK` for core operations and receives status reports from the `Pipeline Tracker`. The `Python Client/SDK` is the primary programmatic interface, allowing users to define, update, and monitor pipelines. It interacts with the `Pipeline Tracker` to update pipeline definitions and receive execution data, and directly utilizes the `Activity Manager` for granular control over pipeline steps. The `Pipeline Tracker` is central to managing pipeline lifecycles, status, and historical data, receiving detailed activity reports from the `Activity Manager` and providing overall pipeline status to both the `Python Client/SDK` and the `CLI Interface`. The `Activity Manager` is responsible for overseeing individual pipeline steps, providing granular execution details to the `Pipeline Tracker`.",
+  "components": [
+    {
+      "name": "CLI Interface",
+      "description": "Provides a user-friendly command-line interface for common Pipelex operations (e.g., `run`, `validate`, `status`). It acts as the entry point for command-line users by parsing commands and delegating to the core system.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cli",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/__init__.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/_cli.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/common.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/migrate_cmd.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/build_cmd.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/init_cmd.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/validate_cmd.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/show_cmd.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Python Client/SDK",
+      "description": "Offers a comprehensive Python API for developers to integrate Pipelex into their applications. It allows programmatic control over pipeline creation, execution, and monitoring, serving as a high-level API for defining and managing pipelines.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.client",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/pipeline_request_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/api_serializer.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/pipeline_response_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/client.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/protocol.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Pipeline Tracker",
+      "description": "Manages the lifecycle, status, and historical data of pipeline runs, including their structural definitions. It provides mechanisms for reporting and visualization of pipeline execution.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.track",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/__init__.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/pipeline_tracker_protocol.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/tracker_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/pipeline_tracker.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/flow_chart.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/tracker_config.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Activity Manager",
+      "description": "Oversees and manages the individual steps or \"activities\" within a pipeline, including their input, output, and execution status. It provides granular details of pipeline execution.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipeline.activity",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/__init__.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_handler.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_manager_protocol.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Unclassified",
+      "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
+      "referenced_source_code": [],
+      "assigned_files": [],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "depends on",
+      "src_name": "CLI Interface",
+      "dst_name": "Python Client/SDK"
+    },
+    {
+      "relation": "receives reports from",
+      "src_name": "CLI Interface",
+      "dst_name": "Pipeline Tracker"
+    },
+    {
+      "relation": "updates",
+      "src_name": "Python Client/SDK",
+      "dst_name": "Pipeline Tracker"
+    },
+    {
+      "relation": "reports data to",
+      "src_name": "Pipeline Tracker",
+      "dst_name": "Python Client/SDK"
+    },
+    {
+      "relation": "utilizes",
+      "src_name": "Python Client/SDK",
+      "dst_name": "Activity Manager"
+    },
+    {
+      "relation": "provides data for reports to",
+      "src_name": "Pipeline Tracker",
+      "dst_name": "CLI Interface"
+    },
+    {
+      "relation": "reports activity details to",
+      "src_name": "Activity Manager",
+      "dst_name": "Pipeline Tracker"
+    }
+  ]
+}

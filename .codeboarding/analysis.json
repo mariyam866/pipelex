@@ -1,333 +1,554 @@
 {
-  "description": "Pipelex is an AI workflow orchestration library centered around a declarative Domain-Specific Language (PLX). The `Pipelex Client` serves as the user's entry point, initiating workflows managed by the `Core Pipeline Orchestrator`. This orchestrator interprets pipeline definitions from the `PLX Definition & Registry`, which also manages loaded libraries and concept schemas. During execution, the `Core Pipeline Orchestrator` interacts with `Runtime Data & State` to manage all transient data artifacts (\"stuffs\"). AI-specific tasks are delegated to the `AI Service Abstraction` layer, which integrates various AI workers and external providers. Dynamic content generation within pipes is handled by the `Templating Engine`, while `Reporting & Monitoring` provides comprehensive insights into pipeline execution and resource usage. This modular design emphasizes clear separation of concerns, enabling flexible and extensible AI workflow automation.",
+  "description": "The Pipelex system is structured around a core set of components designed to facilitate the definition, execution, and management of AI/ML pipelines. The User Interaction Layer provides the primary interface for users to interact with the system, submitting pipeline definitions and initiating executions. These definitions are then processed by the Workflow Definition & Registry, which interprets the declarative PLX language and transforms it into an executable blueprint. The Pipeline Execution Core is responsible for orchestrating the actual pipeline runs, managing control flow, and executing individual pipe operations. During execution, the Working Memory & Data Store acts as a central data bus, managing the flow of intermediate data. For AI-specific tasks, the AI Service Integration Layer provides a unified interface to various AI inference workers. This architecture ensures a clear separation of concerns, enabling modular development and efficient data flow for complex AI workflows.",
   "components": [
     {
-      "name": "Pipelex Client (CLI/SDK)",
-      "description": "The primary external interface for users to interact with Pipelex, enabling programmatic control or command-line operations.",
+      "name": "User Interaction Layer",
+      "description": "Provides the primary interface for users to define, run, validate, and manage pipelines through command-line tools (CLI) or a programmatic Python API. It also serves as the gateway for receiving execution reports and logs.",
       "referenced_source_code": [
         {
-          "qualified_name": "pipelex.cli",
+          "qualified_name": "pipelex/cli/",
           "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
+          "reference_start_line": null,
+          "reference_end_line": null
         },
         {
-          "qualified_name": "pipelex.client",
+          "qualified_name": "pipelex/client/",
           "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        }
-      ],
-      "can_expand": true
-    },
-    {
-      "name": "Core Pipeline Orchestrator",
-      "description": "The central nervous system of Pipelex, responsible for setting up the environment, managing the lifecycle of pipelines, and coordinating the execution of individual pipes.",
-      "referenced_source_code": [
-        {
-          "qualified_name": "pipelex.pipelex",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipelex.py",
-          "reference_start_line": 61,
-          "reference_end_line": 305
+          "reference_start_line": null,
+          "reference_end_line": null
         },
         {
-          "qualified_name": "pipelex.hub",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/hub.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipeline.pipeline_manager",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline_manager.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipe_controllers",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipe_works.pipe_router",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_works/pipe_router.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        }
-      ],
-      "can_expand": true
-    },
-    {
-      "name": "PLX Definition & Registry",
-      "description": "Manages the interpretation of the Pipelex DSL (PLX) for defining pipelines and concepts, and serves as the central repository for these definitions and loaded libraries.",
-      "referenced_source_code": [
-        {
-          "qualified_name": "pipelex.core.interpreter",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/interpreter.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.libraries",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.tools.config.manager",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/config/manager.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.core.concepts",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.core.pipes",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        }
-      ],
-      "can_expand": true
-    },
-    {
-      "name": "Runtime Data & State",
-      "description": "Handles the transient storage and manipulation of all data artifacts (\"stuffs\") that are produced and consumed during a pipeline's execution, ensuring data integrity and type validation.",
-      "referenced_source_code": [
-        {
-          "qualified_name": "pipelex.core.memory.working_memory",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/memory/working_memory.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.core.stuffs",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        }
-      ],
-      "can_expand": true
-    },
-    {
-      "name": "AI Service Abstraction",
-      "description": "A unified component for managing and providing access to various AI workers (LLM, Image Generation, OCR) and adapting to different third-party AI services via plugins.",
-      "referenced_source_code": [
-        {
-          "qualified_name": "pipelex.cogt.inference.inference_manager",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/inference_manager.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.cogt.llm",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.cogt.imgg",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.cogt.ocr",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipe_operators.llm.pipe_llm",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/llm/pipe_llm.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipe_operators.img_gen.pipe_img_gen",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/img_gen/pipe_img_gen.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipe_operators.ocr.pipe_ocr",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/ocr/pipe_ocr.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.plugins",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        }
-      ],
-      "can_expand": true
-    },
-    {
-      "name": "Templating Engine",
-      "description": "Integrates Jinja2 for dynamic content generation within pipes, enabling flexible prompt and output formatting.",
-      "referenced_source_code": [
-        {
-          "qualified_name": "pipelex.tools.templating",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipe_operators.jinja2.pipe_jinja2",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/jinja2/pipe_jinja2.py",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        }
-      ],
-      "can_expand": true
-    },
-    {
-      "name": "Reporting & Monitoring",
-      "description": "Monitors and logs pipeline execution, including generating visual flowcharts, activity logs, and usage reports.",
-      "referenced_source_code": [
-        {
-          "qualified_name": "pipelex.pipeline.track",
+          "qualified_name": "pipelex/pipeline/track/",
           "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
+          "reference_start_line": null,
+          "reference_end_line": null
         },
         {
-          "qualified_name": "pipelex.reporting",
-          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/reporting/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
-        },
-        {
-          "qualified_name": "pipelex.pipeline.activity",
+          "qualified_name": "pipelex/pipeline/activity/",
           "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/",
-          "reference_start_line": 1,
-          "reference_end_line": 1
+          "reference_start_line": null,
+          "reference_end_line": null
         }
       ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/pipeline_tracker_protocol.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/tracker_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/pipeline_tracker.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/flow_chart.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/track/tracker_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_handler.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/activity/activity_manager_protocol.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/pipeline_request_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/api_serializer.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/pipeline_response_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/client.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/client/protocol.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/_cli.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/common.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/migrate_cmd.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/build_cmd.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/init_cmd.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/validate_cmd.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cli/commands/show_cmd.py"
+      ],
       "can_expand": true
+    },
+    {
+      "name": "Workflow Definition & Registry",
+      "description": "Interprets the declarative PLX language, transforming pipeline and concept definitions from raw PLX content into an executable internal blueprint. It also manages the lifecycle and availability of all user-defined and native pipes, concepts (data schemas), and domains.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.interpreter.PipelexInterpreter",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/interpreter.py",
+          "reference_start_line": 30,
+          "reference_end_line": 1016
+        },
+        {
+          "qualified_name": "pipelex/libraries/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/core/pipes/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/core/concepts/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/core/domains/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/domains/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/interpreter.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/domains/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/create/structured_output_generator.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/create/helpers.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/create/draft_pipeline.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/create/build_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/func_registry.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/class_registry_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/registry_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/typing/validation_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/typing/module_inspector.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/typing/type_inspector.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/typing/pydantic_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/interpreter.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/registry_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_input_spec_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_run_params.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_provider_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_output.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_input_spec_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_run_params_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_input_spec.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/pipes/pipe_library.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/domains/domain.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/domains/domain_library.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/domains/domain_provider_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/domains/domain_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/domains/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/domains/domain_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/bundles/pipelex_bundle_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/bundles/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/concept_provider_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/concept_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/concept.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/concept_library.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/concept_native.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/concepts/concept_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/library_manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/library_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/library_manager_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/library_manager_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/pipelines/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/libraries/pipelines/meta/pipeline_draft.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Pipeline Execution Core",
+      "description": "The foundational layer responsible for bootstrapping the Pipelex environment, initializing core services, and providing a central hub for accessing managers. It controls the overall execution flow of pipelines, managing sequences, parallel branches, conditional logic, and batch processing, and executes individual \"operator pipes\" for specific AI/ML tasks or data transformations, including internal activity tracking.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex/__init__.py",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/__init__.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/pipelex.py",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipelex.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/hub.py",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/hub.py",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex.pipeline.pipeline_manager.PipelineManager",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline_manager.py",
+          "reference_start_line": 14,
+          "reference_end_line": 44
+        },
+        {
+          "qualified_name": "pipelex/pipe_controllers/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/pipe_operators/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipelex.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/hub.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline_manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/sub_pipe_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/pipe_controller.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/sub_pipe.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/sub_pipe_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/parallel/pipe_parallel_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/parallel/pipe_parallel.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/parallel/pipe_parallel_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/condition/pipe_condition_details.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/condition/pipe_condition.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/condition/pipe_condition_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/condition/pipe_condition_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/sequence/pipe_sequence.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/sequence/pipe_sequence_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/sequence/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/sequence/pipe_sequence_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/batch/pipe_batch.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/batch/pipe_batch_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_controllers/batch/pipe_batch_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/runtime_manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/environment.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline_manager_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/job_metadata.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline_manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/start.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/pipeline.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipeline/execute.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/pipe_operator.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/ocr/pipe_ocr_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/ocr/pipe_ocr_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/ocr/pipe_ocr.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/func/pipe_func_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/func/pipe_func_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/func/pipe_func.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/llm/pipe_llm_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/llm/pipe_llm_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/llm/pipe_llm.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/img_gen/pipe_img_gen_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/img_gen/pipe_img_gen_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/img_gen/pipe_img_gen.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/jinja2/pipe_jinja2.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/jinja2/pipe_jinja2_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_operators/jinja2/pipe_jinja2_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_works/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_works/pipe_dry.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_works/pipe_router.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_works/pipe_job.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_works/pipe_router_protocol.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/pipe_works/pipe_job_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/__init__.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "AI Service Integration Layer",
+      "description": "Centralizes the management and provisioning of various AI inference workers (LLM, Image Generation, OCR) and tracks their operational costs. It provides abstract interfaces for interacting with different Large Language Model, Image Generation, and OCR providers, handling provider-specific API calls and prompt construction.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex/cogt/inference/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/cogt/llm/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/cogt/imgg/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/cogt/ocr/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/plugins/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_required_variables.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/template_library.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/templating_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_template_loader.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/template_preprocessor.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_errors.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_rendering.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/template_provider_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_environment.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_parsing.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_template_category.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/templating/jinja2_filters.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/pdf/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/pdf/pypdfium2_renderer.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/config_cogt.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_engine_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_platform.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_worker_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_job_components.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_handle.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_input.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_job.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_job_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_engine.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_output.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/ocr/ocr_worker_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/inference_job_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/inference_manager_protocol.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/inference_manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/cost_registry.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/inference/inference_worker_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_job_components.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_engine_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_prompt.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_handle.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_job.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_engine.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_platform.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_job_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_worker_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/imgg/imgg_worker_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/image/prompt_image.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/image/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/image/prompt_image_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/image/generated_image.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_job.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_job_components.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_prompt_template.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_worker_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_worker_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_prompt_spec.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_worker_internal_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_job_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_prompt_factory_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_report.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_prompt.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/token_category.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/structured_output.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_prompt_template_inputs.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_model.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_family.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_setting.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_model_provider_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_engine_blueprint.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_engine.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_deck.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_prompting_target.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_deck_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_engine_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_model_library.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_deck_check.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/llm/llm_models/llm_platform.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/content_generator_dry.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/assignment_models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/jinja2_generate.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/llm_generate.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/content_generator_protocol.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/ocr_generate.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/imgg_generate.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/cogt/content_generation/content_generator.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/plugin_sdk_registry.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/plugins_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/plugin_manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/custom_endpoint_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/openai_imgg_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/perplexity_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/openai_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/openai_llm_worker.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/openai_llms.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/vertexai_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/openai_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/azure_openai_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/openai_func.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/xai_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/openai/openai_imgg_worker.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/bedrock/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/bedrock/bedrock_client_protocol.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/bedrock/bedrock_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/bedrock/bedrock_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/bedrock/bedrock_message.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/bedrock/bedrock_llm_worker.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/bedrock/bedrock_client_aioboto3.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/bedrock/bedrock_client_boto3.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/anthropic/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/anthropic/anthropic_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/anthropic/anthropic_llm_worker.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/anthropic/anthropic_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/anthropic/anthropic_llms.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/specific_llm/specific_llm_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/fal/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/fal/fal_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/fal/fal_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/fal/fal_imgg_worker.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/mistral/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/mistral/mistral_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/mistral/mistral_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/mistral/mistral_llms.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/mistral/mistral_ocr_worker.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/mistral/mistral_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/plugins/mistral/mistral_llm_worker.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Working Memory & Data Store",
+      "description": "Manages the in-memory state and data (\"stuffs\") that flow through the pipeline. It supports various content types (text, image, PDF, structured objects) and ensures data consistency and accessibility across pipes, acting as the central data bus.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex/core/memory/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/memory/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        },
+        {
+          "qualified_name": "pipelex/core/stuffs/",
+          "reference_file": "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/",
+          "reference_start_line": null,
+          "reference_end_line": null
+        }
+      ],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/memory/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff_factory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff_content.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff_artefact.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/stuffs/stuff.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/memory/working_memory.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/memory/working_memory_factory.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Unclassified",
+      "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
+      "referenced_source_code": [],
+      "assigned_files": [
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/_bootstrap_user_libs.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/types.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/secrets/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/secrets/env_secrets_provider.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/secrets/secrets_errors.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/secrets/secrets_provider_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/config/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/config/manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/config/models.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/context_provider_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/attribute_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/base_64_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/path_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/file_fetch_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/pretty.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/toml_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/filetype_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/file_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/terminal_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/string_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/dict_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/json_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/markdown_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/misc/mermaid_utils.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/aws/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/aws/aws_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/storage/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/storage/storage_provider_abstract.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/log/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/log/log_config.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/log/log_formatter.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/log/log_levels.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/log/log_dispatch.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/tools/log/log.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/migration/__init__.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/migration/migration_result.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/migration/migrate_v0_1_0_to_v0_2_0.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/core/exceptions.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/reporting/reporting_manager.py",
+        "/home/ubuntu/CodeBoarding/repo/pipelex/pipelex/reporting/reporting_protocol.py"
+      ],
+      "can_expand": false
     }
   ],
   "components_relations": [
     {
-      "relation": "Initiates Pipeline Execution",
-      "src_name": "Pipelex Client (CLI/SDK)",
-      "dst_name": "Core Pipeline Orchestrator"
+      "relation": "Submits PLX definitions for parsing and registration.",
+      "src_name": "User Interaction Layer",
+      "dst_name": "Workflow Definition & Registry"
     },
     {
-      "relation": "Manages Pipeline Lifecycle",
-      "src_name": "Pipelex Client (CLI/SDK)",
-      "dst_name": "Core Pipeline Orchestrator"
+      "relation": "Initiates pipeline execution and receives execution reports/logs.",
+      "src_name": "User Interaction Layer",
+      "dst_name": "Pipeline Execution Core"
     },
     {
-      "relation": "Configures Definitions",
-      "src_name": "Pipelex Client (CLI/SDK)",
-      "dst_name": "PLX Definition & Registry"
+      "relation": "Provides the compiled pipeline blueprint and definitions of available pipes.",
+      "src_name": "Workflow Definition & Registry",
+      "dst_name": "Pipeline Execution Core"
     },
     {
-      "relation": "Loads Libraries",
-      "src_name": "Pipelex Client (CLI/SDK)",
-      "dst_name": "PLX Definition & Registry"
+      "relation": "Reads and writes intermediate data (\"stuffs\") during pipe execution.",
+      "src_name": "Pipeline Execution Core",
+      "dst_name": "Working Memory & Data Store"
     },
     {
-      "relation": "Retrieves Pipeline Blueprints",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "PLX Definition & Registry"
+      "relation": "Dispatches requests for AI inference tasks (e.g., LLM calls, OCR, image generation).",
+      "src_name": "Pipeline Execution Core",
+      "dst_name": "AI Service Integration Layer"
     },
     {
-      "relation": "Accesses Concept Definitions",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "PLX Definition & Registry"
-    },
-    {
-      "relation": "Stores/Retrieves Data Artifacts",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "Runtime Data & State"
-    },
-    {
-      "relation": "Manages Working Memory",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "Runtime Data & State"
-    },
-    {
-      "relation": "Delegates AI Tasks",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "AI Service Abstraction"
-    },
-    {
-      "relation": "Invokes AI Workers",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "AI Service Abstraction"
-    },
-    {
-      "relation": "Renders Dynamic Content",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "Templating Engine"
-    },
-    {
-      "relation": "Formats Prompts/Outputs",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "Templating Engine"
-    },
-    {
-      "relation": "Reports Execution Status",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "Reporting & Monitoring"
-    },
-    {
-      "relation": "Logs Activities",
-      "src_name": "Core Pipeline Orchestrator",
-      "dst_name": "Reporting & Monitoring"
-    },
-    {
-      "relation": "Provides Data Schemas (Concepts) for Validation",
-      "src_name": "PLX Definition & Registry",
-      "dst_name": "Runtime Data & State"
-    },
-    {
-      "relation": "Processes Input Data",
-      "src_name": "AI Service Abstraction",
-      "dst_name": "Runtime Data & State"
-    },
-    {
-      "relation": "Stores Output Data",
-      "src_name": "AI Service Abstraction",
-      "dst_name": "Runtime Data & State"
-    },
-    {
-      "relation": "Accesses LLM Deck Configurations",
-      "src_name": "AI Service Abstraction",
-      "dst_name": "PLX Definition & Registry"
-    },
-    {
-      "relation": "Retrieves AI Worker Definitions",
-      "src_name": "AI Service Abstraction",
-      "dst_name": "PLX Definition & Registry"
-    },
-    {
-      "relation": "Collects Data for Reports",
-      "src_name": "Reporting & Monitoring",
-      "dst_name": "Runtime Data & State"
-    },
-    {
-      "relation": "Tracks Data Flow",
-      "src_name": "Reporting & Monitoring",
-      "dst_name": "Runtime Data & State"
-    },
-    {
-      "relation": "Gathers Inference Metrics",
-      "src_name": "Reporting & Monitoring",
-      "dst_name": "AI Service Abstraction"
-    },
-    {
-      "relation": "Logs AI Service Usage",
-      "src_name": "Reporting & Monitoring",
-      "dst_name": "AI Service Abstraction"
+      "relation": "Consumes input content for AI tasks and produces output content back into the memory.",
+      "src_name": "AI Service Integration Layer",
+      "dst_name": "Working Memory & Data Store"
     }
   ]
 }
