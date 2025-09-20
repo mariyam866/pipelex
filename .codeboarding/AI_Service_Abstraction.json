@@ -1,0 +1,247 @@
+{
+  "description": "The core of the `pipelex` AI subsystem revolves around the `InferenceManager`, which acts as a central orchestrator for various AI tasks. It dynamically manages and delegates requests to specialized worker components like `LLMWorkerAbstract` for language models, `ImggEngine` for image generation, and `OCRWorkerAbstract` for optical character recognition. The `PluginManager` plays a crucial role in extending the system's capabilities by providing concrete implementations of these abstract workers to the `InferenceManager`. Higher-level components like `ContentGenerator` leverage the `InferenceManager` to compose complex AI workflows, demonstrating a clear separation of concerns and promoting extensibility through its plugin-based architecture. This design allows for flexible integration of diverse AI models and services, making the system adaptable to evolving AI landscapes.",
+  "components": [
+    {
+      "name": "InferenceManager",
+      "description": "Acts as the central orchestrator and facade for all AI inference tasks. It provides a unified entry point for AI requests and intelligently routes them to the appropriate specialized AI worker or engine based on the task type (LLM, image generation, OCR). This component is fundamental for abstracting the underlying AI services and centralizing inference control, aligning with the \"Workflow Orchestrator/Engine\" pattern.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.inference.inference_manager.InferenceManager",
+          "reference_file": "pipelex/cogt/inference/inference_manager.py",
+          "reference_start_line": 21,
+          "reference_end_line": 159
+        }
+      ],
+      "assigned_files": [
+        "pipelex/cogt/inference/__init__.py",
+        "pipelex/cogt/inference/inference_job_abstract.py",
+        "pipelex/cogt/inference/inference_manager_protocol.py",
+        "pipelex/cogt/inference/inference_manager.py",
+        "pipelex/cogt/inference/inference_worker_abstract.py",
+        "pipelex/cogt/model_routing/routing_models.py",
+        "pipelex/cogt/model_routing/__init__.py",
+        "pipelex/cogt/model_routing/routing_profile_factory.py",
+        "pipelex/cogt/model_routing/routing_profile_library.py",
+        "pipelex/cogt/model_routing/routing_profile.py",
+        "pipelex/cogt/models/__init__.py",
+        "pipelex/cogt/models/model_manager_abstract.py",
+        "pipelex/cogt/models/model_manager.py",
+        "pipelex/cogt/models/model_deck_check.py",
+        "pipelex/cogt/models/model_deck.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "LLMWorkerAbstract",
+      "description": "An abstract base class that defines the standardized interface for interacting with Large Language Models. It embodies the 'LLM Adapters/Providers' pattern, ensuring that different LLM backends can be seamlessly integrated and interchanged. This abstraction is critical for maintaining modularity and extensibility within the AI service layer.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.llm.llm_worker_abstract.LLMWorkerAbstract",
+          "reference_file": "pipelex/cogt/llm/llm_worker_abstract.py",
+          "reference_start_line": 14,
+          "reference_end_line": 121
+        }
+      ],
+      "assigned_files": [
+        "pipelex/cogt/llm/llm_job.py",
+        "pipelex/cogt/llm/llm_job_components.py",
+        "pipelex/cogt/llm/llm_prompt_template.py",
+        "pipelex/cogt/llm/__init__.py",
+        "pipelex/cogt/llm/llm_worker_abstract.py",
+        "pipelex/cogt/llm/llm_setting.py",
+        "pipelex/cogt/llm/llm_worker_factory.py",
+        "pipelex/cogt/llm/llm_prompt_spec.py",
+        "pipelex/cogt/llm/llm_worker_internal_abstract.py",
+        "pipelex/cogt/llm/llm_job_factory.py",
+        "pipelex/cogt/llm/llm_prompt_factory_abstract.py",
+        "pipelex/cogt/llm/llm_report.py",
+        "pipelex/cogt/llm/llm_prompt.py",
+        "pipelex/cogt/llm/structured_output.py",
+        "pipelex/cogt/llm/llm_prompt_template_inputs.py",
+        "pipelex/plugins/mistral/mistral_llms.py",
+        "pipelex/plugins/mistral/mistral_llm_worker.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "ImggEngine",
+      "description": "A concrete component responsible for handling image generation requests. It encapsulates the specific logic and API calls required to interact with image generation services. This component represents a specific 'Tool/Service Integration' within the AI abstraction, demonstrating how diverse AI capabilities are integrated.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.imgg.imgg_engine.ImggEngine",
+          "reference_file": "pipelex/cogt/imgg/imgg_engine.py",
+          "reference_start_line": 6,
+          "reference_end_line": 12
+        }
+      ],
+      "assigned_files": [
+        "pipelex/cogt/imgg/__init__.py",
+        "pipelex/cogt/imgg/imgg_job_components.py",
+        "pipelex/cogt/imgg/imgg_engine_factory.py",
+        "pipelex/cogt/imgg/imgg_prompt.py",
+        "pipelex/cogt/imgg/imgg_handle.py",
+        "pipelex/cogt/imgg/imgg_job.py",
+        "pipelex/cogt/imgg/imgg_engine.py",
+        "pipelex/cogt/imgg/imgg_platform.py",
+        "pipelex/cogt/imgg/imgg_job_factory.py",
+        "pipelex/cogt/imgg/imgg_worker_factory.py",
+        "pipelex/cogt/imgg/imgg_worker_abstract.py",
+        "pipelex/cogt/image/prompt_image.py",
+        "pipelex/cogt/image/__init__.py",
+        "pipelex/cogt/image/prompt_image_factory.py",
+        "pipelex/cogt/image/generated_image.py",
+        "pipelex/plugins/fal/fal_imgg_worker.py"
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "OCRWorkerAbstract",
+      "description": "An abstract base class for Optical Character Recognition services, providing a unified interface for different OCR providers. Similar to `LLMWorkerAbstract`, it defines the contract for OCR services, allowing for interchangeable OCR backends and supporting the \"Tool/Service Integrations\" pattern.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.ocr.ocr_worker_abstract.OcrWorkerAbstract",
+          "reference_file": "pipelex/cogt/ocr/ocr_worker_abstract.py",
+          "reference_start_line": 15,
+          "reference_end_line": 73
+        }
+      ],
+      "assigned_files": [
+        "pipelex/cogt/ocr/__init__.py",
+        "pipelex/cogt/ocr/ocr_job_components.py",
+        "pipelex/cogt/ocr/ocr_input.py",
+        "pipelex/cogt/ocr/ocr_job.py",
+        "pipelex/cogt/ocr/ocr_job_factory.py",
+        "pipelex/cogt/ocr/ocr_output.py",
+        "pipelex/cogt/ocr/ocr_worker_factory.py",
+        "pipelex/plugins/pypdfium2/pypdfium2_worker.py",
+        "pipelex/plugins/mistral/mistral_ocr_worker.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "ContentGenerator",
+      "description": "This component orchestrates multiple AI services (primarily LLMs) to generate more complex content. It acts as a higher-level consumer of the AI abstraction layer, composing and orchestrating calls to various AI services to produce structured or creative content. It represents a key aspect of the \"Pipe Executors/Runners\" by defining how AI tasks are combined into meaningful workflows.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.cogt.content_generation.content_generator.ContentGenerator",
+          "reference_file": "pipelex/cogt/content_generation/content_generator.py",
+          "reference_start_line": 38,
+          "reference_end_line": 280
+        }
+      ],
+      "assigned_files": [
+        "pipelex/cogt/content_generation/__init__.py",
+        "pipelex/cogt/content_generation/content_generator_dry.py",
+        "pipelex/cogt/content_generation/assignment_models.py",
+        "pipelex/cogt/content_generation/jinja2_generate.py",
+        "pipelex/cogt/content_generation/llm_generate.py",
+        "pipelex/cogt/content_generation/content_generator_protocol.py",
+        "pipelex/cogt/content_generation/ocr_generate.py",
+        "pipelex/cogt/content_generation/imgg_generate.py",
+        "pipelex/cogt/content_generation/content_generator.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PluginManager",
+      "description": "Essential for the 'Extensibility/Plugin-based Architecture,' this component manages the discovery, loading, and provision of concrete AI service implementations (e.g., specific LLM or OCR providers). It facilitates the dynamic extension of AI service capabilities, which is crucial for an AI Workflow Orchestration Library to support new and evolving AI models and services.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.plugins.plugin_manager.PluginManager",
+          "reference_file": "pipelex/plugins/plugin_manager.py",
+          "reference_start_line": 4,
+          "reference_end_line": 12
+        }
+      ],
+      "assigned_files": [
+        "pipelex/plugins/__init__.py",
+        "pipelex/plugins/plugin_sdk_registry.py",
+        "pipelex/plugins/plugin_manager.py",
+        "pipelex/plugins/openai/openai_imgg_factory.py",
+        "pipelex/plugins/openai/__init__.py",
+        "pipelex/plugins/openai/openai_llm_worker.py",
+        "pipelex/plugins/openai/openai_llms.py",
+        "pipelex/plugins/openai/openai_factory.py",
+        "pipelex/plugins/openai/openai_func.py",
+        "pipelex/plugins/openai/vertexai_factory.py",
+        "pipelex/plugins/openai/openai_imgg_worker.py",
+        "pipelex/plugins/bedrock/__init__.py",
+        "pipelex/plugins/bedrock/bedrock_client_protocol.py",
+        "pipelex/plugins/bedrock/bedrock_factory.py",
+        "pipelex/plugins/bedrock/bedrock_message.py",
+        "pipelex/plugins/bedrock/bedrock_llm_worker.py",
+        "pipelex/plugins/bedrock/bedrock_client_aioboto3.py",
+        "pipelex/plugins/bedrock/bedrock_client_boto3.py",
+        "pipelex/plugins/anthropic/__init__.py",
+        "pipelex/plugins/anthropic/anthropic_exceptions.py",
+        "pipelex/plugins/anthropic/anthropic_llm_worker.py",
+        "pipelex/plugins/anthropic/anthropic_factory.py",
+        "pipelex/plugins/anthropic/anthropic_llms.py",
+        "pipelex/cogt/model_backends/backend.py",
+        "pipelex/cogt/model_backends/backend_factory.py",
+        "pipelex/cogt/model_backends/__init__.py",
+        "pipelex/cogt/model_backends/model_constraints.py",
+        "pipelex/cogt/model_backends/model_spec_factory.py",
+        "pipelex/cogt/model_backends/prompting_target.py",
+        "pipelex/cogt/model_backends/backend_library.py",
+        "pipelex/cogt/model_backends/model_spec.py",
+        "pipelex/cogt/model_backends/model_type.py",
+        "pipelex/plugins/fal/__init__.py",
+        "pipelex/plugins/fal/fal_config.py",
+        "pipelex/plugins/fal/fal_factory.py",
+        "pipelex/plugins/mistral/__init__.py",
+        "pipelex/plugins/mistral/mistral_utils.py",
+        "pipelex/plugins/mistral/mistral_factory.py",
+        "pipelex/plugins/mistral/mistral_exceptions.py"
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "Unclassified",
+      "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
+      "referenced_source_code": [],
+      "assigned_files": [
+        "pipelex/cogt/__init__.py",
+        "pipelex/cogt/config_cogt.py",
+        "pipelex/cogt/exceptions.py",
+        "pipelex/cogt/usage/costs_per_token.py",
+        "pipelex/cogt/usage/cost_registry.py",
+        "pipelex/cogt/usage/token_category.py",
+        "pipelex/cogt/usage/cost_category.py"
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "delegates tasks to",
+      "src_name": "InferenceManager",
+      "dst_name": "LLMWorkerAbstract"
+    },
+    {
+      "relation": "delegates tasks to",
+      "src_name": "InferenceManager",
+      "dst_name": "ImggEngine"
+    },
+    {
+      "relation": "delegates tasks to",
+      "src_name": "InferenceManager",
+      "dst_name": "OCRWorkerAbstract"
+    },
+    {
+      "relation": "queries",
+      "src_name": "InferenceManager",
+      "dst_name": "PluginManager"
+    },
+    {
+      "relation": "uses",
+      "src_name": "ContentGenerator",
+      "dst_name": "InferenceManager"
+    },
+    {
+      "relation": "provides implementations to",
+      "src_name": "PluginManager",
+      "dst_name": "InferenceManager"
+    }
+  ]
+}

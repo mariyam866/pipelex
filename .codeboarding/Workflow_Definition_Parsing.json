@@ -1,0 +1,137 @@
+{
+  "description": "The core of the system revolves around the `Workflow Interpreter`, which is responsible for processing PLX workflow definitions. It relies on the `Concept Library Manager` to access and validate data schemas (\"concepts\") used within these workflows, ensuring data consistency. Additionally, the `Workflow Interpreter` interacts with the `Library Manager` to discover and load \"pipe\" and \"domain\" libraries, which provide the concrete operational components for executing the defined workflows. This architecture emphasizes a clear separation of concerns, with dedicated components for parsing, data schema management, and library management, facilitating extensibility and maintainability.",
+  "components": [
+    {
+      "name": "Workflow Interpreter",
+      "description": "This component is the core of the subsystem, responsible for parsing the declarative PLX workflow definition, validating its syntax, and translating it into an internal, executable representation. It acts as the primary implementation of the 'PLX Parser/Interpreter' pattern, understanding the flow, conditions, and steps defined in the DSL.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.interpreter.PipelexInterpreter",
+          "reference_file": "pipelex/core/interpreter.py",
+          "reference_start_line": 43,
+          "reference_end_line": 1043
+        }
+      ],
+      "assigned_files": [
+        "pipelex/core/interpreter.py",
+        "pipelex/core/interpreter/interpreter.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Concept Library Manager",
+      "description": "Manages and provides access to \"concepts,\" which are essentially data schemas defining the structure and types of data used within workflows. It ensures consistency and validity of data flowing through the pipes, aligning with the 'Knowledge/Data Management' aspect for data schemas.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.core.concepts.concept_library.ConceptLibrary",
+          "reference_file": "pipelex/core/concepts/concept_library.py",
+          "reference_start_line": 19,
+          "reference_end_line": 125
+        }
+      ],
+      "assigned_files": [
+        "pipelex/core/concepts/__init__.py",
+        "pipelex/core/concepts/concept_provider_abstract.py",
+        "pipelex/core/concepts/concept_blueprint.py",
+        "pipelex/core/concepts/concept.py",
+        "pipelex/core/concepts/concept_library.py",
+        "pipelex/core/concepts/concept_native.py",
+        "pipelex/core/concepts/exceptions.py",
+        "pipelex/core/concepts/concept_factory.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Library Manager",
+      "description": "Discovers, loads, and manages \"pipe\" and \"domain\" libraries. These libraries contain the concrete AI/ML operations and domain-specific functionalities that are referenced and utilized within the workflows. This component is vital for the project's 'Extensibility/Plugin-based Architecture'.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.libraries.library_manager.LibraryManager",
+          "reference_file": "pipelex/libraries/library_manager.py",
+          "reference_start_line": 53,
+          "reference_end_line": 268
+        }
+      ],
+      "assigned_files": [
+        "pipelex/libraries/__init__.py",
+        "pipelex/libraries/library_config.py",
+        "pipelex/libraries/library_manager.py",
+        "pipelex/libraries/library_manager_abstract.py",
+        "pipelex/libraries/library_manager_factory.py",
+        "pipelex/core/pipes/pipe_input_spec_blueprint.py",
+        "pipelex/core/pipes/pipe_run_params.py",
+        "pipelex/core/pipes/pipe_blueprint.py",
+        "pipelex/core/pipes/pipe_provider_abstract.py",
+        "pipelex/core/pipes/pipe_output.py",
+        "pipelex/core/pipes/pipe_factory.py",
+        "pipelex/core/pipes/pipe_abstract.py",
+        "pipelex/core/pipes/exceptions.py",
+        "pipelex/core/pipes/pipe_input_spec_factory.py",
+        "pipelex/core/pipes/pipe_run_params_factory.py",
+        "pipelex/core/pipes/pipe_input_spec.py",
+        "pipelex/core/pipes/pipe_library.py",
+        "pipelex/core/domains/domain.py",
+        "pipelex/core/domains/domain_library.py",
+        "pipelex/core/domains/domain_provider_abstract.py",
+        "pipelex/core/domains/domain_factory.py",
+        "pipelex/core/domains/exceptions.py",
+        "pipelex/core/domains/domain_blueprint.py",
+        "pipelex/libraries/pipelines/__init__.py",
+        "pipelex/libraries/pipelines/meta/pipeline_draft.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "Unclassified",
+      "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
+      "referenced_source_code": [],
+      "assigned_files": [
+        "pipelex/create/structured_output_generator.py",
+        "pipelex/create/helpers.py",
+        "pipelex/create/draft_pipeline.py",
+        "pipelex/create/build_blueprint.py",
+        "pipelex/tools/templating/jinja2_required_variables.py",
+        "pipelex/tools/templating/__init__.py",
+        "pipelex/tools/templating/template_library.py",
+        "pipelex/tools/templating/jinja2_models.py",
+        "pipelex/tools/templating/templating_models.py",
+        "pipelex/tools/templating/jinja2_blueprint.py",
+        "pipelex/tools/templating/jinja2_template_loader.py",
+        "pipelex/tools/templating/template_preprocessor.py",
+        "pipelex/tools/templating/jinja2_errors.py",
+        "pipelex/tools/templating/jinja2_rendering.py",
+        "pipelex/tools/templating/template_provider_abstract.py",
+        "pipelex/tools/templating/jinja2_environment.py",
+        "pipelex/tools/templating/jinja2_parsing.py",
+        "pipelex/tools/templating/jinja2_template_category.py",
+        "pipelex/tools/templating/jinja2_filters.py",
+        "pipelex/core/__init__.py",
+        "pipelex/core/bundles/pipelex_bundle_blueprint.py",
+        "pipelex/core/bundles/exceptions.py"
+      ],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "depends on",
+      "src_name": "Workflow Interpreter",
+      "dst_name": "Concept Library Manager"
+    },
+    {
+      "relation": "provides schema definitions to",
+      "src_name": "Concept Library Manager",
+      "dst_name": "Workflow Interpreter"
+    },
+    {
+      "relation": "depends on",
+      "src_name": "Workflow Interpreter",
+      "dst_name": "Library Manager"
+    },
+    {
+      "relation": "provides executable components to",
+      "src_name": "Library Manager",
+      "dst_name": "Workflow Interpreter"
+    }
+  ]
+}

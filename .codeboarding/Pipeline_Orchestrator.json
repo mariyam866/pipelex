@@ -1,0 +1,103 @@
+{
+  "description": "This system provides a framework for orchestrating AI tasks. The PipelineController acts as the central execution engine, responsible for interpreting workflows and managing the execution flow of various tasks. It coordinates the invocation of individual PipeOperator instances, which represent atomic, self-contained steps within the pipeline, such as LLM calls or data transformations. The overall purpose is to ensure robust and repeatable execution of AI workflows.",
+  "components": [
+    {
+      "name": "PipelineController",
+      "description": "This component serves as the core execution engine for the entire pipeline. It is responsible for interpreting the defined workflow, managing the execution flow (sequential, parallel, conditional, batch), and coordinating the invocation of individual `PipeOperator` instances. It embodies the \"Workflow Orchestrator/Engine\" pattern, ensuring robust and repeatable execution of AI tasks.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipelines.pipeline_controller",
+          "reference_file": "full/file/path/example.txt",
+          "reference_start_line": 10,
+          "reference_end_line": 25
+        }
+      ],
+      "assigned_files": [
+        "pipelex/pipe_controllers/__init__.py",
+        "pipelex/pipe_controllers/sub_pipe_blueprint.py",
+        "pipelex/pipe_controllers/sub_pipe.py",
+        "pipelex/pipe_controllers/sub_pipe_factory.py",
+        "pipelex/pipe_controllers/parallel/pipe_parallel_blueprint.py",
+        "pipelex/pipe_controllers/parallel/pipe_parallel.py",
+        "pipelex/pipe_controllers/parallel/pipe_parallel_factory.py",
+        "pipelex/pipe_controllers/condition/pipe_condition_details.py",
+        "pipelex/pipe_controllers/condition/pipe_condition.py",
+        "pipelex/pipe_controllers/condition/pipe_condition_blueprint.py",
+        "pipelex/pipe_controllers/condition/pipe_condition_factory.py",
+        "pipelex/pipe_controllers/sequence/pipe_sequence.py",
+        "pipelex/pipe_controllers/sequence/pipe_sequence_factory.py",
+        "pipelex/pipe_controllers/sequence/exceptions.py",
+        "pipelex/pipe_controllers/sequence/pipe_sequence_blueprint.py",
+        "pipelex/pipe_controllers/batch/pipe_batch.py",
+        "pipelex/pipe_controllers/batch/pipe_batch_factory.py",
+        "pipelex/pipe_controllers/batch/pipe_batch_blueprint.py",
+        "pipelex/pipeline/pipeline_models.py",
+        "pipelex/pipeline/pipeline_manager_abstract.py",
+        "pipelex/pipeline/job_metadata.py",
+        "pipelex/pipeline/pipeline_manager.py",
+        "pipelex/pipeline/start.py",
+        "pipelex/pipeline/pipeline_factory.py",
+        "pipelex/pipeline/pipeline.py",
+        "pipelex/pipeline/execute.py",
+        "pipelex/pipe_works/__init__.py",
+        "pipelex/pipe_works/pipe_dry.py",
+        "pipelex/pipe_works/pipe_router.py",
+        "pipelex/pipe_works/pipe_job.py",
+        "pipelex/pipe_works/pipe_router_protocol.py",
+        "pipelex/pipe_works/pipe_job_factory.py"
+      ],
+      "can_expand": true
+    },
+    {
+      "name": "PipeOperator",
+      "description": "Represents an atomic, self-contained step or task within a pipeline. Each `PipeOperator` encapsulates a specific operation, such as calling an LLM, performing data transformation, or integrating with an external service. It aligns with the \"Pipe Executors/Runners\" pattern, providing the modular units of work that the `PipelineController` orchestrates.",
+      "referenced_source_code": [
+        {
+          "qualified_name": "pipelex.pipelines.pipe_operator",
+          "reference_file": "pipelex/pipe_operators/pipe_operator.py",
+          "reference_start_line": 16,
+          "reference_end_line": 90
+        }
+      ],
+      "assigned_files": [
+        "pipelex/pipe_operators/__init__.py",
+        "pipelex/pipe_operators/pipe_operator.py",
+        "pipelex/pipe_operators/ocr/pipe_ocr_factory.py",
+        "pipelex/pipe_operators/ocr/pipe_ocr_blueprint.py",
+        "pipelex/pipe_operators/ocr/pipe_ocr.py",
+        "pipelex/pipe_operators/func/pipe_func_blueprint.py",
+        "pipelex/pipe_operators/func/pipe_func_factory.py",
+        "pipelex/pipe_operators/func/pipe_func.py",
+        "pipelex/pipe_operators/llm/pipe_llm_factory.py",
+        "pipelex/pipe_operators/llm/pipe_llm_blueprint.py",
+        "pipelex/pipe_operators/llm/pipe_llm.py",
+        "pipelex/pipe_operators/img_gen/pipe_img_gen_factory.py",
+        "pipelex/pipe_operators/img_gen/pipe_img_gen_blueprint.py",
+        "pipelex/pipe_operators/img_gen/pipe_img_gen.py",
+        "pipelex/pipe_operators/jinja2/pipe_jinja2.py",
+        "pipelex/pipe_operators/jinja2/pipe_jinja2_factory.py",
+        "pipelex/pipe_operators/jinja2/pipe_jinja2_blueprint.py"
+      ],
+      "can_expand": false
+    },
+    {
+      "name": "Unclassified",
+      "description": "Component for all unclassified files and utility functions (Utility functions/External Libraries/Dependencies)",
+      "referenced_source_code": [],
+      "assigned_files": [],
+      "can_expand": false
+    }
+  ],
+  "components_relations": [
+    {
+      "relation": "composes",
+      "src_name": "PipelineController",
+      "dst_name": "PipeOperator"
+    },
+    {
+      "relation": "orchestrates",
+      "src_name": "PipelineController",
+      "dst_name": "PipeOperator"
+    }
+  ]
+}
