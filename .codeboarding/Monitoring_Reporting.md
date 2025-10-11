@@ -1,58 +1,34 @@
 ```mermaid
 graph LR
-    pipelex_pipeline_pipeline_Pipeline["pipelex.pipeline.pipeline.Pipeline"]
-    pipelex_pipeline_track_pipeline_tracker_PipelineTracker["pipelex.pipeline.track.pipeline_tracker.PipelineTracker"]
-    pipelex_reporting_reporting_manager_ReportingManager["pipelex.reporting.reporting_manager.ReportingManager"]
-    pipelex_cli__cli_PipelexCLI["pipelex.cli._cli.PipelexCLI"]
+    Content_Generator["Content Generator"]
+    LLM_Report["LLM Report"]
     Unclassified["Unclassified"]
-    pipelex_pipeline_pipeline_Pipeline -- "emits execution data to" --> pipelex_pipeline_track_pipeline_tracker_PipelineTracker
-    pipelex_pipeline_pipeline_Pipeline -- "triggers execution events in" --> pipelex_pipeline_track_pipeline_tracker_PipelineTracker
-    pipelex_pipeline_track_pipeline_tracker_PipelineTracker -- "feeds raw data to" --> pipelex_reporting_reporting_manager_ReportingManager
-    pipelex_reporting_reporting_manager_ReportingManager -- "processes raw data from" --> pipelex_pipeline_track_pipeline_tracker_PipelineTracker
-    pipelex_cli__cli_PipelexCLI -- "requests reports from" --> pipelex_reporting_reporting_manager_ReportingManager
-    pipelex_reporting_reporting_manager_ReportingManager -- "provides reports to" --> pipelex_cli__cli_PipelexCLI
+    Content_Generator -- "initiates" --> LLM_Report
+    LLM_Report -- "summarizes" --> Content_Generator
 ```
 
 [![CodeBoarding](https://img.shields.io/badge/Generated%20by-CodeBoarding-9cf?style=flat-square)](https://github.com/CodeBoarding/CodeBoarding)[![Demo](https://img.shields.io/badge/Try%20our-Demo-blue?style=flat-square)](https://www.codeboarding.org/diagrams)[![Contact](https://img.shields.io/badge/Contact%20us%20-%20contact@codeboarding.org-lightgrey?style=flat-square)](mailto:contact@codeboarding.org)
 
 ## Details
 
-The `pipelex` system is structured around a core `Pipeline` component responsible for defining and orchestrating AI workflows. As pipelines execute, the `PipelineTracker` diligently monitors and collects granular execution data and events, forming the foundation for performance and activity insights. This raw tracking data is then consumed by the `ReportingManager`, which processes and transforms it into actionable reports and visualizations. Users interact with the system primarily through the `PipelexCLI`, which facilitates the request and display of these generated reports, enabling effective monitoring and analysis of pipeline operations.
+The `pipelex` system orchestrates content generation pipelines, primarily focusing on LLM, image generation, and OCR tasks. At its core, the system leverages a `Content Generator` to execute these pipelines, which in turn relies on various job components and workers for specific tasks. The `LLM Report` component is responsible for summarizing the outcomes of LLM-specific pipeline executions, providing insights into their performance and results. The overall architecture emphasizes modularity, allowing for flexible integration of different content generation technologies and robust reporting capabilities.
 
-### pipelex.pipeline.pipeline.Pipeline
-Represents the definition of an AI pipeline, outlining its structure and configuration. It serves as a blueprint for execution, defining the sequence of operations and data flow.
-
-
-**Related Classes/Methods**:
-
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipeline/pipeline.py#L4-L5" target="_blank" rel="noopener noreferrer">`pipelex.pipeline.pipeline.Pipeline`:4-5</a>
-
-
-### pipelex.pipeline.track.pipeline_tracker.PipelineTracker
-The data acquisition layer of the monitoring subsystem. It actively observes, collects, and records raw execution data, events, and metrics emitted by the pipeline during workflow execution. This component is crucial for capturing the granular details of each step.
+### Content Generator
+This central component is responsible for orchestrating and executing various content generation pipelines, including LLM, image generation, and OCR. It acts as the primary driver for initiating and managing the flow of tasks within the system.
 
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipeline/track/pipeline_tracker.py#L30-L364" target="_blank" rel="noopener noreferrer">`pipelex.pipeline.track.pipeline_tracker.PipelineTracker`:30-364</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cogt/content_generation/content_generator.py#L37-L278" target="_blank" rel="noopener noreferrer">`pipelex.cogt.content_generation.content_generator.ContentGenerator`:37-278</a>
 
 
-### pipelex.reporting.reporting_manager.ReportingManager
-The processing and presentation layer of the monitoring subsystem. It aggregates, analyzes, and transforms the raw tracking data received from `pipelex.pipeline.track.pipeline_tracker.PipelineTracker` into meaningful reports, summaries, and visualizations (e.g., activity logs, usage metrics, performance dashboards, and visual flowcharts).
-
-
-**Related Classes/Methods**:
-
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/reporting/reporting_manager.py#L30-L122" target="_blank" rel="noopener noreferrer">`pipelex.reporting.reporting_manager.ReportingManager`:30-122</a>
-
-
-### pipelex.cli._cli.PipelexCLI
-The command-line interface component that serves as the primary user interaction point. It allows users to interact with the system, including requesting and displaying reports generated by the `pipelex.reporting.reporting_manager.ReportingManager`.
+### LLM Report
+This component is dedicated to processing and presenting the results of LLM-based content generation pipelines. It aggregates data related to LLM job execution and generates structured reports, providing insights into the LLM's performance and output.
 
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cli/_cli.py#L12-L20" target="_blank" rel="noopener noreferrer">`pipelex.cli._cli.PipelexCLI`:12-20</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cogt/llm/llm_report.py" target="_blank" rel="noopener noreferrer">`pipelex.cogt.llm.llm_report.LLMReport`</a>
 
 
 ### Unclassified

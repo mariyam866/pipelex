@@ -1,29 +1,30 @@
 ```mermaid
 graph LR
-    User_Interface_System_Initialization["User Interface & System Initialization"]
-    Workflow_Definition_Parsing["Workflow Definition & Parsing"]
-    Pipeline_Orchestrator["Pipeline Orchestrator"]
-    AI_Service_Abstraction["AI Service Abstraction"]
-    Pipeline_Data_Store["Pipeline Data Store"]
-    Configuration_Secrets_Management["Configuration & Secrets Management"]
+    System_Core_Configuration["System Core & Configuration"]
+    PLX_Definition_Parsing["PLX Definition & Parsing"]
+    Pipeline_Orchestration["Pipeline Orchestration"]
+    Pipe_Execution_Units["Pipe Execution Units"]
+    AI_Services_Integration["AI Services & Integration"]
+    Data_Knowledge_Management["Data & Knowledge Management"]
     Monitoring_Reporting["Monitoring & Reporting"]
+    User_Interface_CLI_API_["User Interface (CLI/API)"]
     Unclassified["Unclassified"]
-    User_Interface_System_Initialization -- "initiates" --> Configuration_Secrets_Management
-    User_Interface_System_Initialization -- "triggers" --> Workflow_Definition_Parsing
-    Configuration_Secrets_Management -- "supplies settings to" --> Workflow_Definition_Parsing
-    Workflow_Definition_Parsing -- "generates plan for" --> Pipeline_Orchestrator
-    Pipeline_Orchestrator -- "receives settings from" --> Configuration_Secrets_Management
-    Pipeline_Orchestrator -- "reads from and writes to" --> Pipeline_Data_Store
-    Pipeline_Orchestrator -- "requests tasks from" --> AI_Service_Abstraction
-    AI_Service_Abstraction -- "utilizes credentials from" --> Configuration_Secrets_Management
-    Pipeline_Orchestrator -- "reports to" --> Monitoring_Reporting
-    Pipeline_Data_Store -- "provides data for" --> Monitoring_Reporting
-    click User_Interface_System_Initialization href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/User_Interface_System_Initialization.md" "Details"
-    click Workflow_Definition_Parsing href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/Workflow_Definition_Parsing.md" "Details"
-    click Pipeline_Orchestrator href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/Pipeline_Orchestrator.md" "Details"
-    click AI_Service_Abstraction href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/AI_Service_Abstraction.md" "Details"
-    click Pipeline_Data_Store href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/Pipeline_Data_Store.md" "Details"
-    click Configuration_Secrets_Management href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/Configuration_Secrets_Management.md" "Details"
+    User_Interface_CLI_API_ -- "initiates system setup" --> System_Core_Configuration
+    User_Interface_CLI_API_ -- "provides PLX definitions" --> PLX_Definition_Parsing
+    User_Interface_CLI_API_ -- "triggers pipeline execution" --> Pipeline_Orchestration
+    System_Core_Configuration -- "configures PLX processing" --> PLX_Definition_Parsing
+    System_Core_Configuration -- "provides core services" --> Pipeline_Orchestration
+    PLX_Definition_Parsing -- "generates executable blueprints" --> Pipeline_Orchestration
+    Pipeline_Orchestration -- "orchestrates pipe tasks" --> Pipe_Execution_Units
+    Pipeline_Orchestration -- "manages pipeline data" --> Data_Knowledge_Management
+    Pipeline_Orchestration -- "reports execution activity" --> Monitoring_Reporting
+    Pipe_Execution_Units -- "requests AI tasks" --> AI_Services_Integration
+    Pipe_Execution_Units -- "accesses pipe data" --> Data_Knowledge_Management
+    AI_Services_Integration -- "reports AI usage" --> Monitoring_Reporting
+    Data_Knowledge_Management -- "provides data structure definitions" --> PLX_Definition_Parsing
+    click Pipe_Execution_Units href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/Pipe_Execution_Units.md" "Details"
+    click AI_Services_Integration href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/AI_Services_Integration.md" "Details"
+    click Data_Knowledge_Management href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/Data_Knowledge_Management.md" "Details"
     click Monitoring_Reporting href "https://github.com/Pipelex/pipelex/blob/main/.codeboarding/Monitoring_Reporting.md" "Details"
 ```
 
@@ -31,86 +32,101 @@ graph LR
 
 ## Details
 
-The `pipelex` project is structured around a core pipeline execution engine that orchestrates AI-driven workflows. The `User Interface & System Initialization` component serves as the primary entry point, handling command-line interactions and bootstrapping the application environment. It initiates the `Configuration & Secrets Management` component to load necessary settings and credentials, which are then supplied to other components as needed.
+The Pipelex architecture is structured around a core set of components designed to facilitate the creation, execution, and monitoring of AI-driven pipelines. The User Interface (CLI/API) serves as the primary entry point, allowing users to interact with the system, initiate pipeline runs, and manage configurations. This interaction triggers the System Core & Configuration component, which is responsible for initializing the Pipelex environment, loading configurations, and setting up essential services.
 
-The `Workflow Definition & Parsing` component is responsible for interpreting user-defined pipeline specifications, translating them into an executable format, and managing data schemas ("concepts") and external libraries. This parsed workflow is then passed to the `Pipeline Orchestrator`, the central execution engine.
+Once configured, the system leverages the PLX Definition & Parsing component to interpret user-defined pipeline logic written in the Pipelex Language (PLX), transforming these declarative definitions into executable blueprints. These blueprints are then handed over to the Pipeline Orchestration component, which takes charge of managing the entire pipeline lifecycle, including sequential, parallel, conditional, and batch execution of individual pipeline steps.
 
-The `Pipeline Orchestrator` manages the flow of data and execution of individual "pipes" within a pipeline. It interacts with the `Pipeline Data Store` to store and retrieve intermediate data artifacts ("stuffs") that flow between pipes. For AI-related tasks, the Orchestrator dispatches requests to the `AI Service Abstraction` layer, which provides a unified interface to various AI models (LLMs, Image Generation, OCR). The `AI Service Abstraction` component utilizes credentials from `Configuration & Secrets Management` to interact with external AI platforms.
+The actual work within each pipeline step is performed by Pipe Execution Units. These units are specialized to handle various tasks, such as interacting with external AI Services & Integration for LLM, OCR, or image generation tasks, or performing custom data transformations. Both the Pipeline Orchestration and Pipe Execution Units rely heavily on the Data & Knowledge Management component to manage data objects, maintain working memory, and access predefined data structures and domains.
 
-Throughout the pipeline execution, the `Pipeline Orchestrator` reports its activities and metrics to the `Monitoring & Reporting` component. The `Monitoring & Reporting` component also receives data from the `Pipeline Data Store` to generate comprehensive reports and visual flowcharts, aiding in debugging and analysis.
+Throughout the pipeline's execution, the Monitoring & Reporting component actively tracks performance, resource usage (especially AI model costs), and generates comprehensive reports and visual flowcharts, providing crucial observability into the system's operations. This interconnected design ensures a robust and observable framework for building and running complex AI workflows.
 
-### User Interface & System Initialization [[Expand]](./User_Interface_System_Initialization.md)
-The entry point for user interaction, handling CLI commands, initial system setup, and environment bootstrapping.
-
-
-**Related Classes/Methods**:
-
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cli/_cli.py" target="_blank" rel="noopener noreferrer">`pipelex.cli._cli`</a>
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/_bootstrap_user_libs.py" target="_blank" rel="noopener noreferrer">`pipelex._bootstrap_user_libs`</a>
-
-
-### Workflow Definition & Parsing [[Expand]](./Workflow_Definition_Parsing.md)
-Responsible for interpreting the declarative PLX (TOML-based) workflow definitions, managing "concepts" (data schemas), and loading pipe and domain libraries into an executable internal representation.
+### System Core & Configuration
+Manages the foundational setup of the Pipelex environment, including loading global and local configurations, and providing a central registry for core services. It acts as the initial entry point for system initialization.
 
 
 **Related Classes/Methods**:
 
-- `pipelex.core.interpreter.interpreter`
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/core/concepts/concept_library.py" target="_blank" rel="noopener noreferrer">`pipelex.core.concepts.concept_library`</a>
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/libraries/library_manager.py" target="_blank" rel="noopener noreferrer">`pipelex.libraries.library_manager`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipelex.py#L261-L316" target="_blank" rel="noopener noreferrer">`pipelex.Pipelex.make`:261-316</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/hub.py" target="_blank" rel="noopener noreferrer">`pipelex.hub.PipelexHub`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/tools/config/manager.py" target="_blank" rel="noopener noreferrer">`pipelex.tools.config.manager.ConfigManager`</a>
 
 
-### Pipeline Orchestrator [[Expand]](./Pipeline_Orchestrator.md)
-The core execution engine that controls the overall flow of a defined pipeline, managing sequential, parallel, conditional, and batch processing of individual "pipes."
-
-
-**Related Classes/Methods**:
-
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipe_controllers/pipe_controller.py" target="_blank" rel="noopener noreferrer">`pipelex.pipe_controllers.pipe_controller`</a>
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipe_operators/pipe_operator.py" target="_blank" rel="noopener noreferrer">`pipelex.pipe_operators.pipe_operator`</a>
-
-
-### AI Service Abstraction [[Expand]](./AI_Service_Abstraction.md)
-Provides a unified interface for various AI inference capabilities, including Large Language Models (LLMs), Image Generation, and Optical Character Recognition (OCR), abstracting interactions with diverse external AI platforms.
+### PLX Definition & Parsing
+Handles the declarative Pipelex Language (PLX). This component is responsible for parsing PLX definitions into internal, executable blueprints and can also generate PLX content.
 
 
 **Related Classes/Methods**:
 
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cogt/inference/inference_manager.py" target="_blank" rel="noopener noreferrer">`pipelex.cogt.inference.inference_manager`</a>
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cogt/llm/llm_worker_abstract.py" target="_blank" rel="noopener noreferrer">`pipelex.cogt.llm.llm_worker_abstract`</a>
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cogt/imgg/imgg_engine.py" target="_blank" rel="noopener noreferrer">`pipelex.cogt.imgg.imgg_engine`</a>
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cogt/ocr/ocr_worker_abstract.py" target="_blank" rel="noopener noreferrer">`pipelex.cogt.ocr.ocr_worker_abstract`</a>
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cogt/content_generation/content_generator.py" target="_blank" rel="noopener noreferrer">`pipelex.cogt.content_generation.content_generator`</a>
-- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/plugins/plugin_manager.py" target="_blank" rel="noopener noreferrer">`pipelex.plugins.plugin_manager`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/language/plx_factory.py" target="_blank" rel="noopener noreferrer">`pipelex.language.plx_factory.PlxFactory`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/core/interpreter.py" target="_blank" rel="noopener noreferrer">`pipelex.core.interpreter.PipelexInterpreter`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/libraries/pipelines/builder/builder.py" target="_blank" rel="noopener noreferrer">`pipelex.libraries.pipelines.builder.builder.Builder`</a>
 
 
-### Pipeline Data Store [[Expand]](./Pipeline_Data_Store.md)
-The central, ephemeral data store (working memory) for a running pipeline, holding "stuffs" (data artifacts) that flow between pipes, facilitating data exchange and context management.
+### Pipeline Orchestration
+Controls the overall execution flow of a pipeline. It manages sequences, parallel execution, conditional branching, and batch processing of individual pipes based on the generated blueprints.
 
 
 **Related Classes/Methods**:
 
-- `pipelex.core.memory.memory_manager`
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipeline/pipeline_manager.py" target="_blank" rel="noopener noreferrer">`pipelex.pipeline.pipeline_manager.PipelineManager`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipe_controllers" target="_blank" rel="noopener noreferrer">`pipelex.pipe_controllers`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipe_works" target="_blank" rel="noopener noreferrer">`pipelex.pipe_works`</a>
 
 
-### Configuration & Secrets Management [[Expand]](./Configuration_Secrets_Management.md)
-Manages the loading, validation, and secure handling of project-wide configurations and sensitive information like API keys and credentials.
+### Pipe Execution Units [[Expand]](./Pipe_Execution_Units.md)
+Encapsulates the specific operational logic for individual steps (pipes) within a pipeline. These units perform tasks such as interacting with AI models, executing custom functions, or performing data transformations.
 
 
 **Related Classes/Methods**:
 
-- `pipelex.tools.config.config_manager`
-- `pipelex.tools.secrets.secrets_manager`
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipe_operators" target="_blank" rel="noopener noreferrer">`pipelex.pipe_operators`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/core/pipes" target="_blank" rel="noopener noreferrer">`pipelex.core.pipes`</a>
+
+
+### AI Services & Integration [[Expand]](./AI_Services_Integration.md)
+Provides a unified, abstract interface for interacting with various AI models (LLMs, OCR, Image Generation) and contains concrete implementations for integrating with specific third-party AI service providers.
+
+
+**Related Classes/Methods**:
+
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cogt" target="_blank" rel="noopener noreferrer">`pipelex.cogt`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cogt/inference" target="_blank" rel="noopener noreferrer">`pipelex.cogt.inference`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/plugins" target="_blank" rel="noopener noreferrer">`pipelex.plugins`</a>
+
+
+### Data & Knowledge Management [[Expand]](./Data_Knowledge_Management.md)
+Manages the lifecycle of data objects ('Stuff') within the pipeline, maintains the 'WorkingMemory', and defines/manages reusable data structures ('Concepts') and their organizational groupings ('Domains').
+
+
+**Related Classes/Methods**:
+
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/core/stuffs" target="_blank" rel="noopener noreferrer">`pipelex.core.stuffs`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/core/memory" target="_blank" rel="noopener noreferrer">`pipelex.core.memory`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/core/concepts" target="_blank" rel="noopener noreferrer">`pipelex.core.concepts`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/core/domains" target="_blank" rel="noopener noreferrer">`pipelex.core.domains`</a>
 
 
 ### Monitoring & Reporting [[Expand]](./Monitoring_Reporting.md)
-Monitors and records pipeline execution, capturing activity logs, usage metrics, and generating various reports, including visual flowcharts, for debugging and analysis.
+Monitors pipeline execution, records AI model usage and costs, and generates reports, logs, and visual flowcharts of the pipeline's activity for observability and analysis.
 
 
 **Related Classes/Methods**:
 
-- `pipelex.pipeline.track.tracker`
-- `pipelex.reporting.reporter`
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/reporting" target="_blank" rel="noopener noreferrer">`pipelex.reporting`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/observer" target="_blank" rel="noopener noreferrer">`pipelex.observer`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipeline/track" target="_blank" rel="noopener noreferrer">`pipelex.pipeline.track`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/pipeline/activity" target="_blank" rel="noopener noreferrer">`pipelex.pipeline.activity`</a>
+
+
+### User Interface (CLI/API)
+Provides command-line tools and a programmatic API for users to interact with Pipelex, including initiating pipelines, validating configurations, and querying pipeline status and details.
+
+
+**Related Classes/Methods**:
+
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cli/_cli.py" target="_blank" rel="noopener noreferrer">`pipelex.cli._cli.PipelexCLI`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/cli/commands" target="_blank" rel="noopener noreferrer">`pipelex.cli.commands`</a>
+- <a href="https://github.com/Pipelex/pipelex/blob/mainpipelex/client/client.py" target="_blank" rel="noopener noreferrer">`pipelex.client.client.PipelexClient`</a>
 
 
 ### Unclassified
